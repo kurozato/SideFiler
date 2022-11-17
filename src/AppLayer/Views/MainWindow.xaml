@@ -1,0 +1,363 @@
+﻿<mah:MetroWindow x:Class="SideFiler.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SideFiler"
+        xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro" 
+        xmlns:views="clr-namespace:BlackSugar.Views" xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+        d:DataContext="{d:DesignInstance Type=views:IMainViewModel}"
+        mc:Ignorable="d"
+        Height="680" Width="1110"
+        MinHeight="500" MinWidth="800"
+        Title="SideFiler"
+        TitleCharacterCasing="Normal"
+        TitleForeground ="Transparent"
+        ResizeMode="CanResizeWithGrip">
+    <mah:MetroWindow.Resources>
+
+    </mah:MetroWindow.Resources>
+    <mah:MetroWindow.InputBindings>
+        <KeyBinding Command="{Binding AddCommand}" Gesture="Ctrl+T" />
+        <KeyBinding Command="{Binding TabCloseCommand}" Gesture="Ctrl+W" />
+        <KeyBinding Command="{Binding RenameCommand}" Gesture="F2"  CommandParameter="{Binding Handle, RelativeSource={RelativeSource AncestorType=Window}}" />
+        <KeyBinding Command="{Binding CopyCommand}" Gesture="Ctrl+C" />
+        <KeyBinding Command="{Binding CutCommand}" Gesture="Ctrl+X" />
+        <KeyBinding Command="{Binding PasteCommand}" Gesture="Ctrl+V" CommandParameter="{Binding Handle, RelativeSource={RelativeSource AncestorType=Window}}" />
+        <KeyBinding Command="{Binding CreateFolderCommand}" Gesture="Ctrl+Shift+N" />
+        <KeyBinding Command="{Binding ReloadCommand}" Gesture="F5" />
+        <KeyBinding Command="{Binding UpFolderCommand}" Gesture="Alt+Up" />
+    </mah:MetroWindow.InputBindings>
+    <mah:MetroWindow.LeftWindowCommands>
+        <mah:WindowCommands>
+            <Image Source="/icon.ico" Width="20" Height="20" Margin="4 0" />
+            <Menu Style="{DynamicResource MaterialDesignMenu}">
+                <MenuItem 
+                    Height="30"
+                    Style="{DynamicResource MaterialDesignMenuItem}" >
+                    <MenuItem.Header>
+                        <TextBlock Foreground="White" Text="File" FontSize="12" />
+                    </MenuItem.Header>
+
+                    <MenuItem 
+                        Header="Open SideFiler File...(beta)" 
+                        FontSize="12"
+                        Command="{Binding OpenFileMenuCommand}"
+                        Style="{DynamicResource MaterialDesignMenuItem}" />
+                    <MenuItem 
+                        Header="Save SideFiler File...(beta)"  
+                        FontSize="12" 
+                        Command="{Binding SaveFileMenuCommand}"
+                        Style="{DynamicResource MaterialDesignMenuItem}" />
+                    <Separator/>
+                    <MenuItem 
+                        Header="Recently Closed Folders...(stay tuned)" 
+                        FontSize="12" 
+                        Style="{DynamicResource MaterialDesignMenuItem}" />
+                    <Separator/>
+                    <MenuItem 
+                        Header="Settings(stay tuned)"  
+                        FontSize="12" 
+                        Style="{DynamicResource MaterialDesignMenuItem}" />
+                    <Separator/>
+                    <MenuItem 
+                        Header="Close"  
+                        Command="{Binding CloseCommand}"
+                        FontSize="12" 
+                        Style="{DynamicResource MaterialDesignMenuItem}" />
+                </MenuItem>
+            </Menu>
+            <DockPanel VerticalAlignment="Stretch">
+                <Button
+                    VerticalAlignment="Center"
+                    Cursor="Arrow"
+                    FontFamily="Segoe MDL2 Assets"
+                    Content="&#xE8AC;"
+                    Command="{Binding RenameCommand}"
+                    CommandParameter="{Binding Handle, RelativeSource={RelativeSource AncestorType=Window}}"
+                    ToolTip="Rename File"/>
+                <Button
+                    VerticalAlignment="Center"           
+                    Cursor="Arrow"
+                    FontFamily="Segoe MDL2 Assets"
+                    Content="&#xE8F4;"
+                     Command="{Binding CreateFolderCommand}"
+                    ToolTip="Create Folder"/>
+                <Button
+                    VerticalAlignment="Center"           
+                    Cursor="Arrow"
+                    FontFamily="Segoe MDL2 Assets"
+                    Content="&#xE8C8;"
+                    Command="{Binding CopyCommand}"
+                    ToolTip="Copy"/>
+                <Button
+                    VerticalAlignment="Center"           
+                    Cursor="Arrow"
+                    FontFamily="Segoe MDL2 Assets"
+                    Content="&#xE8C6;"
+                    Command="{Binding CutCommand}"
+                    ToolTip="Cut"/>
+                <Button
+                    VerticalAlignment="Center"           
+                    Cursor="Arrow"
+                    FontFamily="Segoe MDL2 Assets"
+                    Content="&#xE77F;"
+                    Command="{Binding PasteCommand}"
+                    CommandParameter="{Binding Handle, RelativeSource={RelativeSource AncestorType=Window}}"
+                    ToolTip="Paste"/>
+            </DockPanel>
+
+        </mah:WindowCommands>
+    </mah:MetroWindow.LeftWindowCommands>
+    <mah:MetroWindow.RightWindowCommands>
+        <mah:WindowCommands>
+            <DockPanel>
+                
+    
+            <DockPanel
+                Width="180" Height="22"               
+                Margin="4" VerticalAlignment="Bottom"
+                Background="#4Dffffff">
+                <TextBox
+                Text="{Binding MainFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                Name="MainFilter"
+                BorderThickness="0 0 0 0"
+                VerticalAlignment="Center"
+                
+                Background="Transparent" >
+                    <TextBox.InputBindings>
+                        <KeyBinding Gesture="Enter" Command="{Binding MainFilterCommand}" />
+                    </TextBox.InputBindings>
+                </TextBox>
+            </DockPanel>
+            <Button
+                VerticalAlignment="Center"           
+                    Cursor="Arrow"
+                    FontFamily="Segoe MDL2 Assets"
+                    Content="&#xE845;"
+                    Command="{Binding MainFilterReleaseCommand}"
+                    ToolTip="Clear Filter"/>
+            </DockPanel>
+        </mah:WindowCommands>
+    </mah:MetroWindow.RightWindowCommands>
+
+        <Grid
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40" />
+            <RowDefinition Height="25" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="50" />
+                <ColumnDefinition Width="50" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="50" />
+                <ColumnDefinition Width="50" />
+            </Grid.ColumnDefinitions>
+                <Button
+                    Grid.Column="0"
+                    Style="{DynamicResource MaterialDesignFlatButton}" 
+                    Cursor="Arrow"
+                    FontFamily="Segoe MDL2 Assets"
+                    Content="&#xE74A;"
+                    ToolTip="Move Upper Folder"
+                    Command="{Binding UpFolderCommand}"
+                    Name="Up" />
+                <Button
+                    Grid.Column="1"
+                    Style="{DynamicResource MaterialDesignFlatButton}" Cursor="Arrow"
+                    FontFamily="Segoe MDL2 Assets"
+                    Content="&#xE72C;"
+                    ToolTip="Update"
+                    Command="{Binding ReloadCommand}"
+                    Name="Update" />
+            <TextBox
+                    Grid.Column="2"
+                    Style="{DynamicResource MaterialDesignTextBox}" 
+                    Height="30"
+                    Name="FullPath"
+                    Text="{Binding FullPath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                    HorizontalContentAlignment="Stretch"
+                    Background="Transparent"
+                    >
+                <TextBox.InputBindings>
+                    <KeyBinding Gesture="Enter" Command="{Binding PathEnterCommand}" />
+                </TextBox.InputBindings>
+            </TextBox>
+                <Button
+                    Grid.Column="3"
+                    Style="{DynamicResource MaterialDesignFlatButton}" Cursor="Arrow"
+                    FontFamily="Segoe MDL2 Assets"
+                    Content="&#xE8A7;"
+                    ToolTip="Open By Explorer"
+                    Command="{Binding OpenExplorerCommand}"
+                    Name="OpenExplorer" />
+                <Button
+                    Grid.Column="4"
+                    Style="{DynamicResource MaterialDesignFlatButton}" Cursor="Arrow"
+                    FontFamily="Segoe MDL2 Assets"
+                    Content="&#xE711;"
+                    ToolTip="Close Tab"
+                    Command="{Binding TabCloseCommand}"
+                    Name="TabClose" />
+        </Grid>
+        <StackPanel Grid.Row="1" HorizontalAlignment="Left">
+         
+           
+        </StackPanel>
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="200" MinWidth="100" MaxWidth="400"/>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" MinWidth="100" />
+            </Grid.ColumnDefinitions>
+
+            <Grid Grid.Column="0" >
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="40" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="50" />
+                        <ColumnDefinition Width="*"  />
+                        <ColumnDefinition Width="30"  />
+                    </Grid.ColumnDefinitions>
+                    <Button
+                        Grid.Column="0"
+                        Style="{DynamicResource MaterialDesignFlatButton}" Cursor="Arrow"
+                        FontFamily="Segoe MDL2 Assets"
+                        Content="&#xE948;"
+                        Name="Add"
+                        ToolTip="Add New Tab (Ctrl+T)"
+                        Command="{Binding AddCommand}"/>
+                    <TextBox
+                        Grid.Column="1"
+                        Name="SideFilter"
+                        Text="{Binding SideFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        Style="{DynamicResource MaterialDesignTextBox}" 
+                        HorizontalContentAlignment="Stretch"
+                        Margin="0 4 0 4"
+                        Background="Transparent">
+                        <TextBox.InputBindings>
+                            <KeyBinding Gesture="Enter" Command="{Binding SideFilterCommand}" />
+                        </TextBox.InputBindings>
+                    </TextBox>
+                    <Button
+                        Grid.Column="2"
+                        VerticalAlignment="Center"           
+                        Style="{DynamicResource MahApps.Styles.Button.Chromeless}" Cursor="Arrow"
+                        FontFamily="Segoe MDL2 Assets"
+                        Content="&#xE845;"
+                        Command="{Binding SideFilterReleaseCommand}"
+                        ToolTip="Clear Filter Side"/>
+                </Grid>
+            
+                <ListBox 
+                    Name="ListSide" 
+                    Grid.Row="1"
+                    SelectionMode="Single"
+                    Style="{DynamicResource MaterialDesignNavigationAccentListBox}"
+                    ItemsSource="{Binding SideItems, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                    SelectedItem="{Binding SideItem, Mode=OneWayToSource}"
+                    SelectedIndex="{Binding SideIndex, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                    HorizontalContentAlignment="Stretch">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Margin="-3">
+                                <DockPanel>
+                                    <TextBlock DockPanel.Dock="Left" FontWeight="Bold" Text="{Binding Label, Mode=OneWay}" />
+                                    <Button DockPanel.Dock="Right"
+                                        Style="{DynamicResource MaterialDesignFlatButton}" Cursor="Arrow"
+                                        FontFamily="Segoe MDL2 Assets"
+                                        Content="&#xE711;"
+                                        ToolTip="Tab Close"
+                                        HorizontalAlignment="Right" VerticalAlignment="Center"
+                                        Margin="0 0 0 0"
+                                        Height="20"
+                                        Command="{Binding DataContext.TabCloseCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                        CommandParameter="{Binding DataContext,
+                                            RelativeSource={RelativeSource
+                                            Mode=FindAncestor,
+                                            AncestorType=FrameworkElement,
+                                            AncestorLevel=1}}"
+                                        FontSize="8" />
+                                </DockPanel>
+                                <DockPanel>
+                                    <TextBlock Text="{Binding File.FullName, Mode=OneWay}" FontWeight="Normal" Opacity="0.6" FontSize="11"/>
+                                </DockPanel>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Grid>
+            <GridSplitter Grid.Column="1" Width="2" HorizontalAlignment="Stretch" />
+            <ListView
+                Name="ListMain"
+                Grid.Column="2" 
+                SelectionMode="Extended"
+                ItemsSource="{Binding FileItems, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                SelectedItem="{Binding SelectedFile, Mode=OneWayToSource}" 
+                VirtualizingPanel.IsVirtualizing="True"
+                VirtualizingPanel.VirtualizationMode="Recycling"
+                ScrollViewer.CanContentScroll="True"
+                ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                ScrollViewer.IsDeferredScrollingEnabled="True"
+                ScrollViewer.PanningMode="VerticalOnly"
+                ScrollViewer.VerticalScrollBarVisibility="Visible"
+                HorizontalContentAlignment="Stretch">
+                <i:Interaction.Behaviors>
+                    <views:SelectedItemsBehavior SelectedItems="{Binding SelectedFiles, Mode=OneWayToSource}" />
+                </i:Interaction.Behaviors>
+                <ListView.View>
+                    <GridView >
+                        <GridViewColumn Width="400">
+                            <GridViewColumnHeader Content="Name" mah:ControlsHelper.ContentCharacterCasing="Normal"/>
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <VirtualizingStackPanel Orientation="Horizontal">
+                                        <Image Source="{Binding Icon}" Width="16" Margin="0 0 5 0" CacheMode="BitmapCache" />
+                                        <TextBlock Text="{Binding Name}" />
+                                    </VirtualizingStackPanel>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Width="140">
+                            <GridViewColumnHeader Content="Date" mah:ControlsHelper.ContentCharacterCasing="Normal"/>
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <VirtualizingStackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding LastWriteTimeSt}" />
+                                    </VirtualizingStackPanel>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Width="200" >
+                            <GridViewColumnHeader Content="Type" mah:ControlsHelper.ContentCharacterCasing="Normal"/>
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <VirtualizingStackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding TypeName}" />
+                                    </VirtualizingStackPanel>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Width="150">
+                            <GridViewColumnHeader Content="Size" mah:ControlsHelper.ContentCharacterCasing="Normal"/>
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <VirtualizingStackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                        <TextBlock Text="{Binding Size}" />
+                                    </VirtualizingStackPanel>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </Grid>
+    </Grid>
+</mah:MetroWindow>
