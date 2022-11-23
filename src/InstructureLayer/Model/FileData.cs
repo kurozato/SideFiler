@@ -73,7 +73,7 @@ namespace BlackSugar.Model
             Name = fileInfo.szDisplayName;
             FullName = fullName;
             TypeName = fileInfo.szTypeName;
-            ExAttributes = server ? ExFileAttributes.Server : ExFileAttributes.None;
+            ExAttributes = FileUtil.GetExFileAttributes(fullName); //server ? ExFileAttributes.Server : ExFileAttributes.None;
         }
 
         internal FileData(DriveInfo drive)

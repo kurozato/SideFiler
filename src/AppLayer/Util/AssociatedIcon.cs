@@ -72,7 +72,7 @@ namespace BlackSugar.WinApi
         private static Dictionary<string, BitmapSource> _icons = new Dictionary<string, BitmapSource>();
         private static string[] _ignoreExt = new string[] { ".EXE", ".LNK" };
 
-        private const string KEY_FOLDER = "";
+        public const string KEY_FOLDER = "????";
 
         public static bool Contains(string extension, FileAttributes attributes)
         {

@@ -8,9 +8,17 @@ using System.Collections.Specialized;
 
 namespace BlackSugar.Views
 {
-    public class ClipboardHelper
+    public interface IClipboardHelper
     {
-        public static string[] GetFiles()
+        string[] GetFiles();
+        void SetFiles(IEnumerable<UIFileData> files, Effect effect);
+        Effect GetDropEffect();
+
+    }
+
+    public class ClipboardHelper : IClipboardHelper
+    {
+        public string[] GetFiles()
         {
             if (Clipboard.ContainsFileDropList())
             {
@@ -23,7 +31,7 @@ namespace BlackSugar.Views
             return null;
         }
 
-        public static void SetFiles(IEnumerable<IFileData> files, Effect effect)
+        public void SetFiles(IEnumerable<UIFileData> files, Effect effect)
         {
             var filePaths = new StringCollection();
             foreach (var f in files)
@@ -57,7 +65,7 @@ namespace BlackSugar.Views
             }
         }
 
-        public static Effect GetDropEffect()
+        public Effect GetDropEffect()
         {
             var data = Clipboard.GetDataObject();
             if (data != null)

@@ -257,6 +257,8 @@ namespace BlackSugar.WinApi
 
             if (result == (int)IntPtr.Zero) return null;
 
+            
+
             return new FileData(path, info, server);
         }
 
@@ -265,6 +267,31 @@ namespace BlackSugar.WinApi
             string downloads;
             NativeMethods.SHGetKnownFolderPath(NativeMethods.KnownFolder.Downloads, 0, IntPtr.Zero, out downloads);
             return downloads;
+        }
+
+        public static ExFileAttributes GetExFileAttributes(string? path, bool server = false)
+        {
+            if (path == null) return ExFileAttributes.Undefined;
+
+            if (server) return ExFileAttributes.Server;
+
+            if (IsSystemFolder(path)) return ExFileAttributes.SpecsialFolder;
+
+            return ExFileAttributes.None;
+
+        }
+
+        internal static bool IsSystemFolder(string path)
+        {
+            foreach (Environment.SpecialFolder spFolder in Enum.GetValues(typeof(Environment.SpecialFolder)))
+            {
+                if(Environment.GetFolderPath(spFolder) == path)
+                    return true;
+            }
+            if (GetDownloadsFolderPath() == path)
+                return true;
+
+            return false;
         }
     }
 }

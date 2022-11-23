@@ -12,7 +12,7 @@ namespace BlackSugar.Service
 {
     public interface ISideFilerService
     {
-        IFileData Substantialize(string path);
+        IFileData? GetFileData(string path);
         UISettingsModel? GetUISettings();
 
         bool Open(FileResultModel model);
@@ -40,8 +40,6 @@ namespace BlackSugar.Service
         void Rename(IFileData file, string name, FileResultModel model, IntPtr handle);
 
         void Execute(string application, string arguments);
-
-        bool IsStartupRoot(IFileData file);
     }
 
     public class SideFilerService : ISideFilerService
@@ -59,7 +57,7 @@ namespace BlackSugar.Service
             _operator = @operator ?? throw new ArgumentNullException(nameof(@operator));
         }
 
-        public IFileData Substantialize(string path) 
+        public IFileData? GetFileData(string path) 
             => _factory.CreateInstance(path).ToFileData();
         public UISettingsModel? GetUISettings()
             => _adpter.Get<UISettingsModel>(_adpter.ConvertFullPath(Literal.File_Json_UISettings, true), false);
@@ -127,49 +125,6 @@ namespace BlackSugar.Service
 
         }
 
-        public bool IsStartupRoot(IFileData? file)
-        {
-            if(file == null) return true;
-
-            if (_factory.BaseInstance(file.FullName).IsNetworkRoot) return true;
-
-            return false;
-        }
-
-        public void RegistRec(FileResultModel model)
-        {
-            var file = model?.File;
-
-            if (file == null) return;
-
-            string qry;
-            string connect = _commander.ConnectionString(Literal.File_DB_CloseRec);
-            qry = "SELECT recNo FROM SFCloseRec WHERE path = '@Path; ";
-            var tmp = _commander.Get<dynamic>(qry, new { Path = file.FullName }, connect)?.FirstOrDefault();
-            int recNo = tmp != null ? tmp.recNo : 0;
-            qry = "";
-            qry += "DELETE FROM SFCloseRec WHERE path = @Path; ";
-            qry += "INSERT INTO SFCloseRec(recNo, name, path)VALUES(1, @Name, @Path); ";
-            qry += "UPDATE SFCloseRec SET recNo = recNo + 1 WHERE recNo < @RecNo Or @RecNo = 0; ";
-            _commander.Execute(qry, new { Name = file.Name, Path = file.FullName, RecNo = recNo }, connect);
-
-        }
-
-        public void InitilizeRec()
-        {
-            string qry;
-            string connect = _commander.ConnectionString(Literal.File_DB_CloseRec);
-            qry = "";
-            qry += "CREATE TABLE IF NOT EXISTS ";
-            qry += "SFCloseRec( ";
-            qry += " name TEXT NOT NULL,";
-            qry += " path TEXT NOT NULL";
-            qry += " recNo INTEGER NOT NULL";
-            qry += ") ";
-
-            _commander.Execute(qry, null, connect);
-        }
-
         public void OpenExplorer(IFileData file)
         {
             if (file == null) return;
@@ -182,15 +137,24 @@ namespace BlackSugar.Service
 
         public IEnumerable<FileResultModel>? GetData(string fileName)
         {
-            var data = _adpter.Get(fileName)?.AsArray();
+            return _adpter.Get<List<BookmarkModel>>(fileName, false)?
+                     .Where(json => json?.Path != null)
+                        .Select(json
+                            => new FileResultModel()
+                            {
+                                File = _factory.CreateInstance(json.Path).ToFileData(),
+                                Label = json.Name
+                            });
 
-            return data?.Select(node => new { name = node?["name"]?.ToString(), path = node?["path"]?.ToString() })
-                    .Where(json => json?.path != null)
-                    .Select(json 
-                        => new FileResultModel(){
-                            File = _factory.CreateInstance(json.path).ToFileData(),
-                            Label = json.name
-                        });       
+            //var data = _adpter.Get(fileName)?.AsArray();
+
+            //return data?.Select(node => new { name = node?["name"]?.ToString(), path = node?["path"]?.ToString() })
+            //        .Where(json => json?.path != null)
+            //        .Select(json 
+            //            => new FileResultModel(){
+            //                File = _factory.CreateInstance(json.path).ToFileData(),
+            //                Label = json.name
+            //            });       
         }
 
         public async Task<bool> OpenAsynic(FileResultModel model, CancellationToken token)
@@ -232,5 +196,39 @@ namespace BlackSugar.Service
             return result;
         }
 
+        /***********************/
+        public void RegistRec(FileResultModel model)
+        {
+            var file = model?.File;
+
+            if (file == null) return;
+
+            string qry;
+            string connect = _commander.ConnectionString(Literal.File_DB_CloseRec);
+            qry = "SELECT recNo FROM SFCloseRec WHERE path = '@Path; ";
+            var tmp = _commander.Get<dynamic>(qry, new { Path = file.FullName }, connect)?.FirstOrDefault();
+            int recNo = tmp != null ? tmp.recNo : 0;
+            qry = "";
+            qry += "DELETE FROM SFCloseRec WHERE path = @Path; ";
+            qry += "INSERT INTO SFCloseRec(recNo, name, path)VALUES(1, @Name, @Path); ";
+            qry += "UPDATE SFCloseRec SET recNo = recNo + 1 WHERE recNo < @RecNo Or @RecNo = 0; ";
+            _commander.Execute(qry, new { Name = file.Name, Path = file.FullName, RecNo = recNo }, connect);
+
+        }
+
+        public void InitilizeRec()
+        {
+            string qry;
+            string connect = _commander.ConnectionString(Literal.File_DB_CloseRec);
+            qry = "";
+            qry += "CREATE TABLE IF NOT EXISTS ";
+            qry += "SFCloseRec( ";
+            qry += " name TEXT NOT NULL,";
+            qry += " path TEXT NOT NULL";
+            qry += " recNo INTEGER NOT NULL";
+            qry += ") ";
+
+            _commander.Execute(qry, null, connect);
+        }
     }
 }

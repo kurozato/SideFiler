@@ -199,10 +199,10 @@
                     Grid.Column="4"
                     Style="{DynamicResource MaterialDesignFlatButton}" Cursor="Arrow"
                     FontFamily="Segoe MDL2 Assets"
-                    Content="&#xE711;"
-                    ToolTip="Close Tab"
-                    Command="{Binding TabCloseCommand}"
-                    Name="TabClose" />
+                    Content="&#xE734;"
+                    ToolTip="Add Bookmarks (stay tuned)"
+                    Command=""
+                    Name="AddBookmarks" />
         </Grid>
         <StackPanel Grid.Row="1" HorizontalAlignment="Left">
          
@@ -307,6 +307,7 @@
                 ScrollViewer.HorizontalScrollBarVisibility="Auto"
                 ScrollViewer.IsDeferredScrollingEnabled="True"
                 ScrollViewer.PanningMode="VerticalOnly"
+ 
                 ScrollViewer.VerticalScrollBarVisibility="Visible"
                 HorizontalContentAlignment="Stretch">
                 <i:Interaction.Behaviors>

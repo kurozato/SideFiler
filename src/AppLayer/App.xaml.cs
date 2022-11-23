@@ -46,8 +46,10 @@ namespace SideFiler
                 services.AddSingleton<ILogger>(LogManager.GetCurrentClassLogger());
                 services.AddSingleton<ISideFilerService, SideFilerService>();
 
+                services.AddSingleton<IClipboardHelper, ClipboardHelper>();
+
                 //validator
-                
+
                 //presenter
                 services.AddSingleton<IPresenter<IMainViewModel>, MainPresenter>();
                 services.AddSingleton<IPresenter<InputNameViewModel>, InputNamePresenter>();
@@ -70,7 +72,7 @@ namespace SideFiler
             if(e.Args.Length == 0)
                 view?.ViewModel?.AddCommand?.Execute(view?.ViewModel);
             else
-                view?.ViewModel?.AddCommand?.Execute(view?.ViewModel);
+                view?.ViewModel?.ExpandCommand?.Execute(e.Args[0]);
 
             view?.Show();
             
@@ -118,7 +120,7 @@ namespace SideFiler
                 ); ;
 
             //set folder icon
-            AssociatedIcon.SetCacheSource("", AssociatedIcon.GetFolderSource(themeHelper.FolderIcon));
+            AssociatedIcon.SetCacheSource(AssociatedIcon.KEY_FOLDER, AssociatedIcon.GetFolderSource(themeHelper.FolderIcon));
 
             themeHelper = null;
         }

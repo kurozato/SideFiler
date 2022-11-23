@@ -45,7 +45,7 @@ namespace BlackSugar.Presenters
                     if (ViewModel.Name == null || ViewModel.Name.Trim().Length == 0)
                         return;
 
-                    var file = _service.Substantialize(uiModel?.File?.FullName);
+                    var file = _service.GetFileData(uiModel?.File?.FullName);
                     var model = new FileResultModel()
                     {
                         File = file,
@@ -80,7 +80,7 @@ namespace BlackSugar.Presenters
                     if (file.Name == ViewModel.Name || ViewModel.Name == null || ViewModel.Name.Trim().Length == 0)
                         return;
 
-                    var uiFile = _service.Substantialize(uiModel?.File?.FullName);
+                    var uiFile = _service.GetFileData(uiModel?.File?.FullName);
                     var model = new FileResultModel()
                     {
                         File = uiFile,

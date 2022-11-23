@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BlackSugar.Model;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -38,7 +39,7 @@ namespace BlackSugar.Views
         {
             if (clear) target?.Clear();
 
-            foreach(T item in source)
+            foreach(T item in source ?? Enumerable.Empty<T>())
                 target?.Add(item);
         }
     }

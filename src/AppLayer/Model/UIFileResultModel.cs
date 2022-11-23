@@ -3,6 +3,7 @@ using BlackSugar.WinApi;
 using ControlzEx.Standard;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -18,7 +19,7 @@ namespace BlackSugar.Model
         public long? ID { get; set; }
         public string? Label { get; set; }
         public UIFileData? File { get; set; }
-        public IEnumerable<UIFileData>? Results { get; set; }
+        public ObservableCollection<UIFileData>? Results { get; set; }
        
         public UIFileResultModel()
         {
@@ -42,7 +43,7 @@ namespace BlackSugar.Model
             BitmapSource source;
 
             //to Entity
-            foreach (var file in results)
+            foreach (var file in results ?? Enumerable.Empty<IFileData>())
             {
                 ext = Path.GetExtension(file.FullName);
 
@@ -56,12 +57,15 @@ namespace BlackSugar.Model
                 impl.Add(UIFileData.Create(file, source));
             }
 
-            Results = impl;
+            Results = new ObservableCollection<UIFileData>(impl);
         }
 
         public async Task SetResultsToEntityAsync(IEnumerable<IFileData>? results)
         {
             await Task.Run(() => SetResultsToEntity(results));
         }
+
+        public static ObservableCollection<UIFileData>?  EmptyResult => new ObservableCollection<UIFileData>(); 
+
     }
 }

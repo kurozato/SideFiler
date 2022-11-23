@@ -11,17 +11,22 @@
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>icon.ico</ApplicationIcon>
+    <AssemblyTitle></AssemblyTitle>
     <AssemblyName>SideFiler</AssemblyName>
     <VersionPrefix>0.1.0</VersionPrefix>
     <VersionSuffix>alpha</VersionSuffix>
     <Authors>kurozato</Authors>
+    <Copyright>Copyright 2022 Tetsuya Sato</Copyright>
+    <Description>switch folders with side tabs</Description>
+    <Title></Title>
+    <FileVersion>$(Version)</FileVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DebugType>embedded</DebugType>
+    <DebugType>none</DebugType>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DebugType>embedded</DebugType>
+    <DebugType>none</DebugType>
   </PropertyGroup>
 
   <ItemGroup>
