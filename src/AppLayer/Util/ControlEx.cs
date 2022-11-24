@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
@@ -77,49 +78,21 @@ namespace BlackSugar.Views.Extension
             return null != item.InputHitTest(e.GetPosition(item));
         }
 
-        public static void NonImeTextChanged(this TextBox textBox, Action action)
+        /// <summary>
+        /// SelectAll when TextBox Focused 
+        /// </summary>
+        /// <param name="textBox"></param>
+        public static void SetFocusSelectAll(this TextBox textBox)
         {
-            textBox.Tag = 0;
-
-            TextCompositionManager.AddPreviewTextInputHandler(textBox, (s, e) => textBox.Tag = 0);
-            TextCompositionManager.AddPreviewTextInputStartHandler(textBox, (s, e) => textBox.Tag = 1);
-            TextCompositionManager.AddPreviewTextInputUpdateHandler(textBox, (s, e) =>
+            textBox.GotFocus += (s, e) => textBox.SelectAll();
+            textBox.PreviewMouseLeftButtonDown += (s, e) =>
             {
-                if (e.TextComposition.CompositionText.Length == 0) textBox.Tag = 0;
-            });
+                if (textBox.IsFocused) return;
 
-            textBox.TextChanged += (s, e) =>
-            {
-                if (textBox.Tag.Equals(1)) return;
-
-                action?.Invoke();
-            };
-      
-        }
-
-    }
-
-    public class NonImeTextChanged
-    {
-        bool ime = false;
-        TextBox textBox;
-        public NonImeTextChanged(TextBox textBox, Action action)
-        {
-            this.textBox = textBox;
-            TextCompositionManager.AddPreviewTextInputHandler(textBox, (s, e) => ime = false);
-            TextCompositionManager.AddPreviewTextInputStartHandler(textBox, (s, e) => ime = true);
-            TextCompositionManager.AddPreviewTextInputUpdateHandler(textBox, (s, e) =>
-            {
-                if (e.TextComposition.CompositionText.Length == 0) 
-                    ime = false;
-            });
-
-            textBox.TextChanged += (s, e) =>
-            {
-                if (ime) return;
-
-                action?.Invoke();
+                e.Handled = true;
+                textBox.Focus();
             };
         }
+
     }
 }

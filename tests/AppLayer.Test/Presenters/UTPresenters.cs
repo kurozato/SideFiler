@@ -62,7 +62,7 @@ namespace BlackSugar.Presenters.Tests
 
             Router.Configure(resolver);
 
-            AssociatedIcon.SetCacheSource(AssociatedIcon.KEY_FOLDER, null);
+            FileIcon.SetCacheSource(FileIcon.KEY_FOLDER, null);
 
             Router.To<IMainViewModel>();
             Router.To<InputNameViewModel>();

@@ -1,4 +1,5 @@
 ﻿using BlackSugar.Service.Model;
+using BlackSugar.Views;
 using BlackSugar.WinApi;
 using ControlzEx.Standard;
 using System;
@@ -36,7 +37,6 @@ namespace BlackSugar.Model
 
         public void SetResultsToEntity(IEnumerable<IFileData>? results)
         {
-            IntPtr hInst = Marshal.GetHINSTANCE(Assembly.GetExecutingAssembly().GetModules()[0]);
             var impl = new List<UIFileData?>();
 
             string ext;
@@ -47,12 +47,12 @@ namespace BlackSugar.Model
             {
                 ext = Path.GetExtension(file.FullName);
 
-                if (AssociatedIcon.Contains(ext, file.Attributes))
-                    source = AssociatedIcon.GetCacheSource(ext, file.Attributes);
+                if (FileIcon.Contains(ext, file.Attributes))
+                    source = FileIcon.GetCacheSource(ext, file.Attributes);
                 else
                 {
-                    source = AssociatedIcon.Create(file.FullName, hInst);
-                    AssociatedIcon.SetCacheSource(ext, source);
+                    source = FileIcon.Create(file.FullName);
+                    FileIcon.SetCacheSource(ext, source);
                 }
                 impl.Add(UIFileData.Create(file, source));
             }

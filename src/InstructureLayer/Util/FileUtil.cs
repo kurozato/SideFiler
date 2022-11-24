@@ -189,6 +189,9 @@ namespace BlackSugar.WinApi
 
             [DllImport("Shell32.dll", CharSet = CharSet.Unicode)]
             internal static extern int SHGetKnownFolderPath([MarshalAs(UnmanagedType.LPStruct)] Guid rfid, uint dwFlags, IntPtr hToken, out string pszPath);
+
+            [DllImport("user32.dll")]
+            internal static extern long DestroyIcon(IntPtr hIcon);
         }
 
         private const string NullZero = "\0";
@@ -292,6 +295,22 @@ namespace BlackSugar.WinApi
                 return true;
 
             return false;
+        }
+
+        public static IntPtr GetSHSmallIconHandle(string path)
+        {
+            var info = new NativeMethods.SHFILEINFO();
+            int cbFileInfo = Marshal.SizeOf(info);
+            var result = NativeMethods.SHGetFileInfo(path, 0, out info, (uint)cbFileInfo, NativeMethods.SHGFI.Icon | NativeMethods.SHGFI.SmallIcon);
+
+            if (result == (int)IntPtr.Zero) return IntPtr.Zero;
+
+            return info.hIcon;
+        }
+
+        public static void DestroyIcon(IntPtr hIcon)
+        {
+            NativeMethods.DestroyIcon(hIcon);
         }
     }
 }

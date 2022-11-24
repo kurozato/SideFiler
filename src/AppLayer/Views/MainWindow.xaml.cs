@@ -40,7 +40,9 @@ namespace SideFiler
             //ListMain.MouseBind(MouseButton.Middle, () => UIHelper.Executor(ViewModel?.OpenNewTabCommand));
             ListMain.BlankAreaClick(() => ListMain.UnselectAll());
 
+            FullPath.SetFocusSelectAll();
+
         }
-        
+
     }  
 }

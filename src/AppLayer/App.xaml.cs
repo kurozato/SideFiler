@@ -120,7 +120,7 @@ namespace SideFiler
                 ); ;
 
             //set folder icon
-            AssociatedIcon.SetCacheSource(AssociatedIcon.KEY_FOLDER, AssociatedIcon.GetFolderSource(themeHelper.FolderIcon));
+            FileIcon.SetCacheSource(FileIcon.KEY_FOLDER, FileIcon.GetFolderSource(themeHelper.FolderIcon));
 
             themeHelper = null;
         }

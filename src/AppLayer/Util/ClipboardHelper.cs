@@ -18,6 +18,8 @@ namespace BlackSugar.Views
 
     public class ClipboardHelper : IClipboardHelper
     {
+        private const string PreferredDropEffect = "Preferred DropEffect";
+
         public string[] GetFiles()
         {
             if (Clipboard.ContainsFileDropList())
@@ -39,19 +41,22 @@ namespace BlackSugar.Views
 
             if (filePaths.Count == 0) return;
 
-            if (effect == Effect.Copy)
-                Clipboard.SetFileDropList(filePaths);
-
-            if (effect == Effect.Move)
+            if (effect == Effect.Move || effect == Effect.Copy)
             {
                 var aryFile = new string[filePaths.Count];
                 filePaths.CopyTo(aryFile, 0);
                 IDataObject data = new DataObject(DataFormats.FileDrop, aryFile);
-                byte[] bs = new byte[] { (byte)DragDropEffects.Move, 0, 0, 0 };
+
+                byte[] bs;
+                if(effect == Effect.Move)
+                    bs = new byte[] { (byte)DragDropEffects.Move, 0, 0, 0 };
+                else
+                    bs = new byte[] { (byte)(DragDropEffects.Copy | DragDropEffects.Link), 0, 0, 0 };
+
                 var ms = new MemoryStream(bs);
                 try
                 {
-                    data.SetData("Preferred DropEffect", ms);
+                    data.SetData(PreferredDropEffect, ms);
                     Clipboard.SetDataObject(data, true);
                 }
                 catch (Exception)
@@ -70,7 +75,7 @@ namespace BlackSugar.Views
             var data = Clipboard.GetDataObject();
             if (data != null)
             {
-                var ms = data.GetData("Preferred DropEffect") as MemoryStream;
+                var ms = data.GetData(PreferredDropEffect) as MemoryStream;
                 try
                 {
                     if (ms != null)
@@ -85,6 +90,11 @@ namespace BlackSugar.Views
                         {
                             return Effect.Move;
                         }
+                    }
+                    else
+                    {
+                        if (Clipboard.ContainsFileDropList())
+                            return Effect.Copy;
                     }
                 }
                 catch (Exception)

@@ -12,6 +12,7 @@
         MinHeight="500" MinWidth="800"
         Title="SideFiler"
         TitleCharacterCasing="Normal"
+        NonActiveWindowTitleBrush="{DynamicResource MahApps.Brushes.Accent2}"
         TitleForeground ="Transparent"
         ResizeMode="CanResizeWithGrip">
     <mah:MetroWindow.Resources>
@@ -148,6 +149,7 @@
             <RowDefinition Height="40" />
             <RowDefinition Height="25" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="16" />
         </Grid.RowDefinitions>
         <Grid Grid.Row="0" >
             <Grid.ColumnDefinitions>
@@ -360,5 +362,9 @@
                 </ListView.View>
             </ListView>
         </Grid>
+        <DockPanel Grid.Row="3" Background="{DynamicResource MahApps.Brushes.Accent2}"
+                   
+                   >
+        </DockPanel>
     </Grid>
 </mah:MetroWindow>
