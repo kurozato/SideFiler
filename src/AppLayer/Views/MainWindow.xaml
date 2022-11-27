@@ -147,7 +147,8 @@
             VerticalAlignment="Stretch">
         <Grid.RowDefinitions>
             <RowDefinition Height="40" />
-            <RowDefinition Height="25" />
+            <RowDefinition Height="35" />
+            <RowDefinition Height="2" />
             <RowDefinition Height="*" />
             <RowDefinition Height="16" />
         </Grid.RowDefinitions>
@@ -159,58 +160,80 @@
                 <ColumnDefinition Width="50" />
                 <ColumnDefinition Width="50" />
             </Grid.ColumnDefinitions>
-                <Button
-                    Grid.Column="0"
-                    Style="{DynamicResource MaterialDesignFlatButton}" 
-                    Cursor="Arrow"
-                    FontFamily="Segoe MDL2 Assets"
-                    Content="&#xE74A;"
-                    ToolTip="Move Upper Folder"
-                    Command="{Binding UpFolderCommand}"
-                    Name="Up" />
-                <Button
-                    Grid.Column="1"
-                    Style="{DynamicResource MaterialDesignFlatButton}" Cursor="Arrow"
-                    FontFamily="Segoe MDL2 Assets"
-                    Content="&#xE72C;"
-                    ToolTip="Update"
-                    Command="{Binding ReloadCommand}"
-                    Name="Update" />
+            <Button
+                Grid.Column="0"
+                Style="{DynamicResource MaterialDesignFlatButton}" 
+                Cursor="Arrow"
+                FontFamily="Segoe MDL2 Assets"
+                Content="&#xE74A;"
+                ToolTip="Move Upper Folder"
+                Command="{Binding UpFolderCommand}"
+                Name="Up" />
+            <Button
+                Grid.Column="1"
+                Style="{DynamicResource MaterialDesignFlatButton}" Cursor="Arrow"
+                FontFamily="Segoe MDL2 Assets"
+                Content="&#xE72C;"
+                ToolTip="Update"
+                Command="{Binding ReloadCommand}"
+                Name="Update" />
             <TextBox
                     Grid.Column="2"
                     Style="{DynamicResource MaterialDesignTextBox}" 
-                    Height="30"
                     Name="FullPath"
                     Text="{Binding FullPath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                     HorizontalContentAlignment="Stretch"
-                    Background="Transparent"
-                    >
+                    VerticalAlignment="Center"
+                    Background="Transparent" >
                 <TextBox.InputBindings>
                     <KeyBinding Gesture="Enter" Command="{Binding PathEnterCommand}" />
                 </TextBox.InputBindings>
             </TextBox>
-                <Button
+            <Button
                     Grid.Column="3"
-                    Style="{DynamicResource MaterialDesignFlatButton}" Cursor="Arrow"
-                    FontFamily="Segoe MDL2 Assets"
-                    Content="&#xE8A7;"
-                    ToolTip="Open By Explorer"
-                    Command="{Binding OpenExplorerCommand}"
-                    Name="OpenExplorer" />
-                <Button
-                    Grid.Column="4"
                     Style="{DynamicResource MaterialDesignFlatButton}" Cursor="Arrow"
                     FontFamily="Segoe MDL2 Assets"
                     Content="&#xE734;"
                     ToolTip="Add Bookmarks (stay tuned)"
                     Command=""
                     Name="AddBookmarks" />
+            <Button
+                    Grid.Column="4"
+                    Style="{DynamicResource MaterialDesignFlatButton}" Cursor="Arrow"
+                    FontFamily="Segoe MDL2 Assets"
+                    Content="&#xE8A7;"
+                    ToolTip="Open By Explorer"
+                    Command="{Binding OpenExplorerCommand}"
+                    Name="OpenExplorer" />
         </Grid>
-        <StackPanel Grid.Row="1" HorizontalAlignment="Left">
-         
-           
+        <StackPanel Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Stretch">
+            <ItemsControl ItemsSource="{Binding Bookmarks}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Button
+                            Style="{DynamicResource MaterialDesignFlatButton}" Cursor="Arrow"
+                            Command="{Binding DataContext.SelectBookmarkCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                            CommandParameter="{Binding DataContext,
+                                RelativeSource={RelativeSource
+                                Mode=FindAncestor,
+                                AncestorType=FrameworkElement,
+                                AncestorLevel=1}}"
+                            >
+                            <StackPanel Orientation="Horizontal" Margin="0" >
+                                <Image Source="{Binding Icon}" Width="16"  Margin="0 0 5 0" CacheMode="BitmapCache" />
+                                <TextBlock FontSize="12" Text="{Binding Name}" FontWeight="Normal" Foreground="{DynamicResource MaterialDesignLightForeground}" />
+                            </StackPanel>
+                        </Button>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
         </StackPanel>
-        <Grid Grid.Row="2">
+        <Grid Grid.Row="3">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="200" MinWidth="100" MaxWidth="400"/>
                 <ColumnDefinition Width="Auto" />
@@ -303,6 +326,7 @@
                 SelectionMode="Extended"
                 ItemsSource="{Binding FileItems, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                 SelectedItem="{Binding SelectedFile, Mode=OneWayToSource}" 
+                AllowDrop="True"
                 VirtualizingPanel.IsVirtualizing="True"
                 VirtualizingPanel.VirtualizationMode="Recycling"
                 ScrollViewer.CanContentScroll="True"
@@ -362,9 +386,7 @@
                 </ListView.View>
             </ListView>
         </Grid>
-        <DockPanel Grid.Row="3" Background="{DynamicResource MahApps.Brushes.Accent2}"
-                   
-                   >
+        <DockPanel Grid.Row="4" Background="{DynamicResource MahApps.Brushes.Accent2}">
         </DockPanel>
     </Grid>
 </mah:MetroWindow>

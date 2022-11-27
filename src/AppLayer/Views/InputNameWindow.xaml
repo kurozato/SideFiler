@@ -10,25 +10,17 @@
         mc:Ignorable="d"
         ResizeMode="CanResizeWithGrip"
         Title="{Binding Title, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" 
-        ShowInTaskbar="True"
-       
+        ShowInTaskbar="False"
+        WindowStartupLocation="CenterOwner"
         Icon="../icon.ico"
         Height="140" MinHeight="140" MaxHeight="140" Width="500" MinWidth="300">
-    <Window.Resources>
-        <ResourceDictionary>
-            <!--<ResourceDictionary.MergedDictionaries>
-                <ui:ThemeResources />
-                <ui:XamlControlsResources />
-            </ResourceDictionary.MergedDictionaries>-->               
-        </ResourceDictionary>
-     
-    </Window.Resources>
     <Grid Background="{DynamicResource FileDialogBackColor}">
     <ui:SimpleStackPanel Margin="12 5" Spacing="7"  >
 
         <Label FontSize="12" Content="{Binding Description, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
         <TextBox ui:ControlHelper.PlaceholderText="Input Name."  
                  Background="{DynamicResource FileDialogInputColor}"
+                 SelectionBrush="{DynamicResource MahApps.Brushes.AccentBase}"
                  Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontSize="12" />
 
         <ui:SimpleStackPanel Orientation="Horizontal" HorizontalAlignment="Right">

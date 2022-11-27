@@ -65,7 +65,7 @@ namespace BlackSugar.Model
             await Task.Run(() => SetResultsToEntity(results));
         }
 
-        public static ObservableCollection<UIFileData>?  EmptyResult => new ObservableCollection<UIFileData>(); 
+        public static ObservableCollection<UIFileData?>  EmptyResult => new ObservableCollection<UIFileData?>(); 
 
     }
 }

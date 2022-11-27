@@ -48,6 +48,8 @@ namespace SideFiler
 
                 services.AddSingleton<IClipboardHelper, ClipboardHelper>();
 
+                //
+                services.AddSingleton<IUIInitializer, UIInitializer>();
                 //validator
 
                 //presenter
@@ -66,7 +68,7 @@ namespace SideFiler
 
             Router.Configure(resolver);
 
-            SetUITheme(UISettingsModel.Default);
+            Router.Resolver?.Resolve<IUIInitializer>()?.Initialize();
 
             var view = Router.To<IMainViewModel>();
             if(e.Args.Length == 0)
@@ -96,33 +98,6 @@ namespace SideFiler
             conf.LoggingRules.Add(new LoggingRule("*", LogLevel.Trace, file));
 
             LogManager.Configuration = conf;
-        }
-
-        private void SetUITheme(UISettingsModel uiSettings)
-        { 
-            var themeHelper = new UIThemeHelper(uiSettings);
-
-            this.Resources.Clear();
-
-            //Material Design
-            this.Resources.MergedDictionaries.Add(themeHelper.GetMaterialDesignTheme());
-
-            this.Resources.MergedDictionaries.AddRangeSource(
-                //Material Design
-                "pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml",
-                //Material Design Theme: MahApps
-                "pack://application:,,,/MaterialDesignThemes.MahApps;component/Themes/MaterialDesignTheme.MahApps.Fonts.xaml",
-                "pack://application:,,,/MaterialDesignThemes.MahApps;component/Themes/MaterialDesignTheme.MahApps.Flyout.xaml",
-                //MahApps
-                "pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml",
-                "pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml",
-                themeHelper.GetMahAppsMetroThemeUri()
-                ); ;
-
-            //set folder icon
-            FileIcon.SetCacheSource(FileIcon.KEY_FOLDER, FileIcon.GetFolderSource(themeHelper.FolderIcon));
-
-            themeHelper = null;
         }
     }
 }

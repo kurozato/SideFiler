@@ -21,6 +21,7 @@ namespace BlackSugar.Presenters
     {
         ILogger _logger;
         ISideFilerService _service;
+        IUIInitializer _initializer;
 
         public InputNamePresenter(ISideFilerService service, ILogger logger)
         {
@@ -40,6 +41,8 @@ namespace BlackSugar.Presenters
                 ViewModel.Name = "Untitled";
 
                 var view = Router.To<InputNameViewModel>();
+                var owner = Router.To<IMainViewModel>();
+                UIHelper.SetOwner(view, owner);
                 if(view?.ShowDialog() == true)
                 {
                     if (ViewModel.Name == null || ViewModel.Name.Trim().Length == 0)
@@ -75,6 +78,8 @@ namespace BlackSugar.Presenters
                 ViewModel.Name = file.Name;
 
                 var view = Router.To<InputNameViewModel>();
+                var owner = Router.To<IMainViewModel>();
+                UIHelper.SetOwner(view, owner);
                 if (view?.ShowDialog() == true)
                 {
                     if (file.Name == ViewModel.Name || ViewModel.Name == null || ViewModel.Name.Trim().Length == 0)

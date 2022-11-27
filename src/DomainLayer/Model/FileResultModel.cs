@@ -13,6 +13,15 @@ namespace BlackSugar.Service.Model
         public string? Label { get; set; }
         public IFileData? File { get; set; }
         public IEnumerable<IFileData>? Results { get; set; }
+
+        public FileResultModel() { }
+
+        public FileResultModel(IFileData? file, long? id)
+        {
+            File = file;
+            ID = id;
+        }
+
     }
 
     public enum Effect

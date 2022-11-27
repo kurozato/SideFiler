@@ -1,5 +1,6 @@
 ﻿using BlackSugar.Model;
 using BlackSugar.WinApi;
+using System.Linq;
 
 namespace BlackSugar.Repository
 {
@@ -9,12 +10,13 @@ namespace BlackSugar.Repository
         public StorageItemStartup() : base(string.Empty) { }
         public IEnumerable<IFileData> GetDatas()
         {
-            return DirectoryUtil.EnumerateDriveData()
+            return Enumerable.Empty<IFileData>()
+                .Concat(DirectoryUtil.EnumerateDriveData())
                 .Concat(DirectoryUtil.EnumerateSpecsialFolderData());
         }
 
         public IEnumerable<IFileData> SortDatas(IEnumerable<IFileData> fileDatas)
-            => fileDatas.OrderByDescending(f => f.IsDrive).NaturallyThenBy(f => f.Name);
+            => fileDatas.OrderByDescending(f => f.ExAttributes).NaturallyThenBy(f => f.Name);
 
         public IStorageItem? UpperLayer() => null;
 

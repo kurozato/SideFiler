@@ -30,6 +30,7 @@ namespace BlackSugar.Views
 
                 return ary;
             }
+
             return null;
         }
 

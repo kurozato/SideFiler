@@ -21,7 +21,7 @@ namespace BlackSugar.Views
         //Service.Model.FileResultModel? SideItem { get; set; }
         //List<Service.Model.FileResultModel> SideItemsMirror { get; }
         //ObservableCollection<Service.Model.FileResultModel> SideItems { get; set; }
-
+        ObservableCollection<UIFileData?> Bookmarks { get; set; }
         //IEnumerable<UIFileData?>? FileItems { get; set; }
         ObservableCollection<UIFileData?> FileItems { get; set; }
         List<UIFileResultModel> SideItemsMirror { get; }
@@ -58,6 +58,7 @@ namespace BlackSugar.Views
         DelegateCommand SideFilterCommand { get; }
         DelegateCommand SideFilterReleaseCommand { get; }
         DelegateCommand<string> ExpandCommand { get; }
+        DelegateCommand<Tuple<string[], IntPtr>> DropFileCommand { get; }
     }
 
     public class MainViewModel : BindableBase, IMainViewModel
@@ -78,6 +79,8 @@ namespace BlackSugar.Views
             set => SetProperty(ref fileItems, value);
         }
         //public ObservableCollection<UIFileData?> FileItems { get; set; }
+
+        public ObservableCollection<UIFileData?> Bookmarks { get; set; }
 
         //public Service.Model.FileResultModel? SideItem { get; set; }
         //public List<Service.Model.FileResultModel> SideItemsMirror { get; }
@@ -164,6 +167,8 @@ namespace BlackSugar.Views
         public DelegateCommand SideFilterCommand { get; }
         public DelegateCommand SideFilterReleaseCommand { get; }
         public DelegateCommand<string> ExpandCommand { get; }
+        public DelegateCommand<UIFileData> SelectBookmarkCommand { get; }
+        public DelegateCommand<Tuple<string[], IntPtr>> DropFileCommand { get; }
 
         public Action<UIFileResultModel?>? TabCloseAction { get; set; }
       
@@ -178,6 +183,7 @@ namespace BlackSugar.Views
         public Action? MainFilterReleaseAction { get; set; }
         public Action? SideFilterAction { get; set; }
         public Action? SideFilterReleaseAction { get; set; }
+        public Action<Tuple<string[], IntPtr>> DropFileAction { get; set; }
 
         //public Action? AddAction { get; set; }
         //public Action? ReloadAction { get; set; }
@@ -194,6 +200,8 @@ namespace BlackSugar.Views
         public Func<Task>? OpenNewTabAction { get; set; }
         public Func<Task>? SelectMainAction { get; set; }
         public Func<string, Task>? ExpandAction { get; set; }
+        public Func<UIFileData, Task>? SelectBookmarkAction { get; set; }
+
 
         public MainViewModel()
         {
@@ -201,6 +209,7 @@ namespace BlackSugar.Views
             SideItems = new ObservableCollection<UIFileResultModel>();
             SideItemsMirror = new List<UIFileResultModel>();
             FileItems = new ObservableCollection<UIFileData?>();
+            Bookmarks = new ObservableCollection<UIFileData?>();
 
             CloseCommand = new DelegateCommand(() => Application.Current.Shutdown());
           
@@ -235,8 +244,9 @@ namespace BlackSugar.Views
             OpenNewTabCommand = new DelegateCommand(async () => await OpenNewTabAction?.Invoke());
             SelectMainCommand = new DelegateCommand(async () => await SelectMainAction?.Invoke());
             ExpandCommand = new DelegateCommand<string>(async (path) => await ExpandAction?.Invoke(path));
+            SelectBookmarkCommand = new DelegateCommand<UIFileData>(async (file) => await SelectBookmarkAction?.Invoke(file));
 
-
+            DropFileCommand = new DelegateCommand<Tuple<string[], IntPtr>>((item) => DropFileAction?.Invoke(item));
         }
     }
 }

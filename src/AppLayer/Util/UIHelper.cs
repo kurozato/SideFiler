@@ -42,5 +42,13 @@ namespace BlackSugar.Views
             foreach(T item in source ?? Enumerable.Empty<T>())
                 target?.Add(item);
         }
+
+        public static void SetOwner(object view,  object owner)
+        {
+            var win = view as Window;
+            var dependency = owner as DependencyObject;
+
+            win.Owner = Window.GetWindow(dependency);
+        }
     }
 }

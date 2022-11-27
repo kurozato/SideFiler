@@ -28,15 +28,17 @@ namespace SideFiler
 
         public IntPtr Handle => new System.Windows.Interop.WindowInteropHelper(this).Handle;
 
-        public MainWindow()
+        public MainWindow(IUIInitializer uiInitializer)
         {
             InitializeComponent();
-            
+
+            uiInitializer.InitializeMain(this.Resources);
+
             ListMain.ItemDoubleClick(() => UIHelper.Executor(ViewModel?.SelectMainCommand));
             ListMain.KeyBind(Key.Enter, () => UIHelper.Executor(ViewModel?.SelectMainCommand));
             ListMain.MouseBind(MouseButton.XButton1, () => UIHelper.Executor(ViewModel?.UpFolderCommand));
-            //MainFilter.NonImeTextChanged(() => UIHelper.Executor(ViewModel?.MainFilterCommand));
-  
+            ListMain.DragDropFile((data) => UIHelper.Executor(ViewModel?.DropFileCommand, new Tuple<string[], IntPtr>(data, Handle)));
+ 
             //ListMain.MouseBind(MouseButton.Middle, () => UIHelper.Executor(ViewModel?.OpenNewTabCommand));
             ListMain.BlankAreaClick(() => ListMain.UnselectAll());
 

@@ -45,7 +45,7 @@ namespace BlackSugar.WinApi
             }
         }
 
-        public static IEnumerable<IFileData?> EnumerateSpecsialFolderData()
+        public static IEnumerable<IFileData> EnumerateSpecsialFolderData()
         {
 
             yield return GetSpecialFolder(Environment.SpecialFolder.Desktop);

@@ -29,20 +29,11 @@ namespace BlackSugar.Views
 
         public InputNameViewModel? ViewModel => DataContext as InputNameViewModel;
 
-        public InputNameWindow()
+        public InputNameWindow(IUIInitializer uiInitializer)
         {
             InitializeComponent();
 
-            //get windows theme
-            var theme = new BlackSugar.WindowsColor.Preferences().GetTheme();
-
-            this.Resources.MergedDictionaries.AddRangeSource(
-            //"pack://application:,,,/ModernWpf;component/ThemeResources/Dark.xaml",
-            //"pack://application:,,,/ModernWpf;component/ThemeResources/Light.xaml",
-            "pack://application:,,,../Resource/" + theme + "Adjust.xaml",
-            "pack://application:,,,/ModernWpf;component/ThemeResources/" + theme + ".xaml",
-            "pack://application:,,,/ModernWpf;component/ControlsResources.xaml"
-            );
+            uiInitializer.InitializeSub(this.Resources);
 
             btnOK.Click += (s, e) => { DialogResult = true; };
             btnCancel.Click += (s, e) => { DialogResult = false; };

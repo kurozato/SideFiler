@@ -78,6 +78,26 @@ namespace BlackSugar.Views.Extension
             return null != item.InputHitTest(e.GetPosition(item));
         }
 
+        public static void DragDropFile(this ListView listView, Action<string[]> action)
+        {
+            listView.DragOver += (s, e) =>
+            {
+                if (e.Data.GetDataPresent(DataFormats.FileDrop))
+                    e.Effects = DragDropEffects.All;
+                else
+                    e.Effects = DragDropEffects.None;
+
+                e.Handled = true;
+
+            };
+
+            listView.Drop += (s, e) =>
+            {
+                var files = e.Data.GetData(DataFormats.FileDrop) as string[];
+                if (files != null) action(files);
+            };
+        }
+
         /// <summary>
         /// SelectAll when TextBox Focused 
         /// </summary>

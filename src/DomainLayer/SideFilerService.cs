@@ -12,7 +12,7 @@ namespace BlackSugar.Service
 {
     public interface ISideFilerService
     {
-        IFileData? GetFileData(string path);
+        IFileData? GetFileData(string? path);
         UISettingsModel? GetUISettings();
 
         bool Open(FileResultModel model);
@@ -30,6 +30,8 @@ namespace BlackSugar.Service
         void SaveJsonFile(object content, string fileName);
 
         IEnumerable<FileResultModel>? GetData(string fileName);
+
+        IEnumerable<IFileData?>? GetBookmarksData(string fileName);
 
         void CopyOrMove(FileResultModel model, IntPtr handle, string[] data, Effect effect);
 
@@ -57,8 +59,16 @@ namespace BlackSugar.Service
             _operator = @operator ?? throw new ArgumentNullException(nameof(@operator));
         }
 
-        public IFileData? GetFileData(string path) 
-            => _factory.CreateInstance(path).ToFileData();
+        public IFileData? GetFileData(string? path)
+        {
+            var file = _factory.CreateInstance(path).ToFileData();
+            if(file == null)
+                throw new DirectoryNotFoundException("path:'" + path + "' is not found.");
+
+            return file;
+        }
+
+
         public UISettingsModel? GetUISettings()
             => _adpter.Get<UISettingsModel>(_adpter.ConvertFullPath(Literal.File_Json_UISettings, true), false);
         public void Execute(string application, string arguments)
@@ -101,6 +111,7 @@ namespace BlackSugar.Service
             {
                 var item = _factory.CreateInstance(file.FullName);
                 model.Results = item.SortDatas(item.GetDatas());
+                model.File = file;
                 result = true;
             }
 
@@ -155,6 +166,13 @@ namespace BlackSugar.Service
             //                File = _factory.CreateInstance(json.path).ToFileData(),
             //                Label = json.name
             //            });       
+        }
+
+        public IEnumerable<IFileData?>? GetBookmarksData(string fileName)
+        {
+            return _adpter.Get<List<BookmarkModel>>(_adpter.ConvertFullPath(fileName, true), false)?
+                      .Where(json => json?.Path != null)
+                      .Select(json => _factory.CreateInstance(json.Path).ToFileData());
         }
 
         public async Task<bool> OpenAsynic(FileResultModel model, CancellationToken token)
