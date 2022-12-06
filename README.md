@@ -2,6 +2,27 @@
  
 this app can switch folders with side tabs.   
 
+## Use Library
+using the following libraries:
+
+### [MahApps.Metro](https://github.com/MahApps/MahApps.Metro)
+MIT License
+### [Material Design In XAML Toolkit](https://github.com/MaterialDesignInXAML/MaterialDesignInXamlToolkit)
+MIT License
+### [ModernWPF UI Library](https://github.com/Kinnara/ModernWpf)
+MIT License
+### [NLog](https://nlog-project.org/)
+BSD license
+### [Microsoft.Extensions.DependencyInjection](https://dotnet.microsoft.com/)
+MIT License
+
+
+### [Dapper](https://github.com/DapperLib/Dapper)
+Apache-2.0
+
+### [SQLite](https://system.data.sqlite.org/)
+[License](https://www.sqlite.org/copyright.html)
+
 ## Future
 - Bookmarks
 - Color Settings
