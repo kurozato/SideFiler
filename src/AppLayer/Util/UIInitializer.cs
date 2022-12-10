@@ -10,6 +10,7 @@ using BlackSugar.Service;
 using BlackSugar.Wpf;
 using BlackSugar.Service.Model;
 
+
 namespace BlackSugar.Views
 {
     public interface IUIInitializer
@@ -31,6 +32,7 @@ namespace BlackSugar.Views
 
         public void Initialize()
         {
+
             UISettingsModel = _adpter.Get<UISettingsModel>(_adpter.ConvertFullPath(Literal.File_Json_UISettings, true), false) ?? UISettingsModel.Default;
             var themeHelper = new UIThemeHelper(UISettingsModel);
             //set folder icon
@@ -41,7 +43,7 @@ namespace BlackSugar.Views
         {
             var themeHelper = new UIThemeHelper(UISettingsModel);
 
-            resource.Clear();
+            resource.MergedDictionaries.Clear();
 
             //Material Design
             resource.MergedDictionaries.Add(themeHelper.GetMaterialDesignTheme());
@@ -63,6 +65,8 @@ namespace BlackSugar.Views
         {
             //get windows theme
             var theme = new WindowsColor.Preferences().GetTheme();
+
+            resource.Clear();
 
             resource.MergedDictionaries.AddRangeSource(
                 //"pack://application:,,,/ModernWpf;component/ThemeResources/Dark.xaml",

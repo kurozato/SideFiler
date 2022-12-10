@@ -16,6 +16,13 @@ namespace BlackSugar.Views
             set => SetProperty(ref name, value);
         }
 
+        private string extention;
+        public string Extention
+        {
+            get => extention;
+            set => SetProperty(ref extention, value);
+        }
+
         private string description;
         public string Description
         {
@@ -28,6 +35,13 @@ namespace BlackSugar.Views
         {
             get => title;
             set => SetProperty(ref title, value);
+        }
+
+        private bool visible = true;
+        public bool IsExtentionVisible
+        {
+            get => visible;
+            set => SetProperty(ref visible, value);
         }
     }
 }

@@ -90,12 +90,12 @@ namespace BlackSugar.Presenters.Tests
 
 
             vm.SideItems.Count.Is(0);
-            vm.SideItemsMirror.Count.Is(0);
+            //vm.SideItemsMirror.Count.Is(0);
 
             await mainPresenter.AddResult();
 
             vm.SideItems.Count.Is(1);
-            vm.SideItemsMirror.Count.Is(1);
+            //vm.SideItemsMirror.Count.Is(1);
         }
 
         [TestMethod]
@@ -116,12 +116,12 @@ namespace BlackSugar.Presenters.Tests
             vm.SelectedFile = new UIFileData(file);
 
             vm.SideItems.Count.Is(0);
-            vm.SideItemsMirror.Count.Is(0);
+            //vm.SideItemsMirror.Count.Is(0);
 
             await mainPresenter.OpenNewTabResult();
 
             vm.SideItems.Count.Is(1);
-            vm.SideItemsMirror.Count.Is(1);
+            //vm.SideItemsMirror.Count.Is(1);
 
         }
 
@@ -135,16 +135,16 @@ namespace BlackSugar.Presenters.Tests
             vm.SideItems.Add(item);
             vm.SideItems.Add(new UIFileResultModel());
 
-            vm.SideItemsMirror.Add(new UIFileResultModel());
-            vm.SideItemsMirror.Add(item);
-            vm.SideItemsMirror.Add(new UIFileResultModel());
+            //vm.SideItemsMirror.Add(new UIFileResultModel());
+            //vm.SideItemsMirror.Add(item);
+            //vm.SideItemsMirror.Add(new UIFileResultModel());
 
             mainPresenter.TabCloseResult(item);
 
             vm.SideItems.Count.Is(2);
-            vm.SideItemsMirror.Count.Is(2);
+            //vm.SideItemsMirror.Count.Is(2);
             vm.SideItems.Contains(item).Is(false);
-            vm.SideItemsMirror.Contains(item).Is(false);
+            //vm.SideItemsMirror.Contains(item).Is(false);
         }
 
         [TestMethod]
@@ -168,17 +168,17 @@ namespace BlackSugar.Presenters.Tests
 
             vm.SideItems.Add(new UIFileResultModel());
             vm.SideItems.Add(new UIFileResultModel());
-            vm.SideItemsMirror.Add(new UIFileResultModel());
-            vm.SideItemsMirror.Add(new UIFileResultModel());
+            //vm.SideItemsMirror.Add(new UIFileResultModel());
+            //vm.SideItemsMirror.Add(new UIFileResultModel());
             vm.SideIndex = 0;
 
             vm.SideItems.Count.Is(2);
-            vm.SideItemsMirror.Count.Is(2);
+            //vm.SideItemsMirror.Count.Is(2);
 
             await mainPresenter.SelectMainResult();
 
             vm.SideItems.Count.Is(2);
-            vm.SideItemsMirror.Count.Is(2);
+            //vm.SideItemsMirror.Count.Is(2);
             vm.FileItems.Count.Is(10);
 
         }
@@ -206,17 +206,17 @@ namespace BlackSugar.Presenters.Tests
 
             vm.SideItems.Add(new UIFileResultModel());
             vm.SideItems.Add(new UIFileResultModel());
-            vm.SideItemsMirror.Add(new UIFileResultModel());
-            vm.SideItemsMirror.Add(new UIFileResultModel());
+            //vm.SideItemsMirror.Add(new UIFileResultModel());
+            //vm.SideItemsMirror.Add(new UIFileResultModel());
             vm.SideIndex = 0;
 
             vm.SideItems.Count.Is(2);
-            vm.SideItemsMirror.Count.Is(2);
+            //vm.SideItemsMirror.Count.Is(2);
 
             await mainPresenter.ReloadResult();
 
             vm.SideItems.Count.Is(2);
-            vm.SideItemsMirror.Count.Is(2);
+            //vm.SideItemsMirror.Count.Is(2);
             vm.FileItems.Count.Is(10);
 
         }
@@ -242,17 +242,17 @@ namespace BlackSugar.Presenters.Tests
 
             vm.SideItems.Add(new UIFileResultModel());
             vm.SideItems.Add(new UIFileResultModel());
-            vm.SideItemsMirror.Add(new UIFileResultModel());
-            vm.SideItemsMirror.Add(new UIFileResultModel());
+            //vm.SideItemsMirror.Add(new UIFileResultModel());
+            //vm.SideItemsMirror.Add(new UIFileResultModel());
             vm.SideIndex = 0;
 
             vm.SideItems.Count.Is(2);
-            vm.SideItemsMirror.Count.Is(2);
+            //vm.SideItemsMirror.Count.Is(2);
 
             await mainPresenter.UpFolderResult();
 
             vm.SideItems.Count.Is(2);
-            vm.SideItemsMirror.Count.Is(2);
+            //vm.SideItemsMirror.Count.Is(2);
             vm.FileItems.Count.Is(10);
 
         }
@@ -262,7 +262,7 @@ namespace BlackSugar.Presenters.Tests
         {
             mainPresenter.OpenExplorerResult();
 
-            _serviceMock.Verify(s => s.OpenExplorer(It.IsAny<IFileData>()), Times.Once);
+            _serviceMock.Verify(s => s.OpenExplorer(It.IsAny<IFileData>(), false), Times.Once);
         }
 
         [TestMethod()]
@@ -286,17 +286,17 @@ namespace BlackSugar.Presenters.Tests
 
             vm.SideItems.Add(new UIFileResultModel());
             vm.SideItems.Add(new UIFileResultModel());
-            vm.SideItemsMirror.Add(new UIFileResultModel());
-            vm.SideItemsMirror.Add(new UIFileResultModel());
+            //vm.SideItemsMirror.Add(new UIFileResultModel());
+            //vm.SideItemsMirror.Add(new UIFileResultModel());
             vm.SideIndex = 0;
 
             vm.SideItems.Count.Is(2);
-            vm.SideItemsMirror.Count.Is(2);
+            //vm.SideItemsMirror.Count.Is(2);
 
             await mainPresenter.PathEnterResult();
 
             vm.SideItems.Count.Is(2);
-            vm.SideItemsMirror.Count.Is(2);
+            //vm.SideItemsMirror.Count.Is(2);
             vm.FileItems.Count.Is(10);
         }
 
@@ -315,7 +315,7 @@ namespace BlackSugar.Presenters.Tests
                 .Callback(() => { inputNamePresenter.ViewModel.Name = "TEST"; })
                 .Returns(true);
 
-            mainPresenter.RenameResult(IntPtr.Zero);
+            mainPresenter.RenameResult();
 
             _serviceMock.Verify(s => s.Rename(file, "TEST", It.IsAny<FileResultModel>(), IntPtr.Zero), Times.Once);
         }
@@ -394,12 +394,12 @@ namespace BlackSugar.Presenters.Tests
             foreach (var item in model.Results.Select(f => new UIFileResultModel() { File = new UIFileData(new FakeFileData() { FullName = @"D:\Work\Test" }) }))
             {
                 vm.SideItems.Add(item);
-                vm.SideItemsMirror.Add(item);
+                //vm.SideItemsMirror.Add(item);
             }
             foreach (var item in model.Results.Select(f => new UIFileResultModel() { File = new UIFileData(new FakeFileData() { FullName = @"D:\Work\1" }) }))
             {
                 vm.SideItems.Add(item);
-                vm.SideItemsMirror.Add(item);
+                //vm.SideItemsMirror.Add(item);
             }
 
             mainPresenter.SideFilterResult();
@@ -419,12 +419,12 @@ namespace BlackSugar.Presenters.Tests
             foreach (var item in model.Results.Select(f => new UIFileResultModel() { File = new UIFileData(new FakeFileData() { FullName = @"D:\Work\Test" }) }))
             {
                 vm.SideItems.Add(item);
-                vm.SideItemsMirror.Add(item);
+                //vm.SideItemsMirror.Add(item);
             }
             foreach (var item in model.Results.Select(f => new UIFileResultModel() { File = new UIFileData(new FakeFileData() { FullName = @"D:\Work\1" }) }))
             {
                 vm.SideItems.Add(item);
-                vm.SideItemsMirror.Add(item);
+                //vm.SideItemsMirror.Add(item);
             }
 
             mainPresenter.SideFilterResult();
@@ -460,7 +460,7 @@ namespace BlackSugar.Presenters.Tests
             _clipboardMock.Setup(c => c.GetFiles()).Returns(data);
             _clipboardMock.Setup(c => c.GetDropEffect()).Returns(Effect.Copy);
 
-            mainPresenter.PasteResult(IntPtr.Zero);
+            mainPresenter.PasteResult();
 
             _serviceMock.Verify(s => s.CopyOrMove(It.IsAny<FileResultModel>(), IntPtr.Zero, data, Effect.Copy), Times.Once);
         }
@@ -479,7 +479,7 @@ namespace BlackSugar.Presenters.Tests
             await mainPresenter.ExpandResult(path);
 
             vm.SideItems.Count.Is(4);
-            vm.SideItemsMirror.Count.Is(4);
+            //vm.SideItemsMirror.Count.Is(4);
         }
     }
 }

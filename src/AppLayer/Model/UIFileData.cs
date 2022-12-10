@@ -53,6 +53,8 @@ namespace BlackSugar.Model
 
             //Length = file.Length;
             //ExAttributes = file.ExAttributes;
+            if(file.Attributes.HasFlag(FileAttributes.Directory))
+                ExAttributes |= ExFileAttributes.Folder;
         }
 
         public static UIFileData? Create(IFileData? file)
@@ -83,6 +85,9 @@ namespace BlackSugar.Model
             //TypeName = file.TypeName;
             //Length = file.Length;
             //ExAttributes = file.ExAttributes;
+
+            if (file.Attributes.HasFlag(FileAttributes.Directory))
+                ExAttributes |= ExFileAttributes.Folder;
         }
 
         public static UIFileData? Create(IFileData? file, BitmapSource icon)

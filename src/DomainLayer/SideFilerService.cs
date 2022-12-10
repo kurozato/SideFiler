@@ -1,11 +1,11 @@
-﻿using BlackSugar.Model;
+﻿using BlackSugar.Extension;
+using BlackSugar.Model;
 using BlackSugar.Repository;
 using BlackSugar.Service.Model;
 using BlackSugar.WinApi;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.IO;
-using System.Net.Http.Headers;
-using System.Reflection.Emit;
 using System.Text.Json.Nodes;
 
 namespace BlackSugar.Service
@@ -13,7 +13,6 @@ namespace BlackSugar.Service
     public interface ISideFilerService
     {
         IFileData? GetFileData(string? path);
-        UISettingsModel? GetUISettings();
 
         bool Open(FileResultModel model);
 
@@ -21,11 +20,11 @@ namespace BlackSugar.Service
 
         void Startup(FileResultModel model);
 
-        void RegistRec(FileResultModel model);
+        void RegistRec(FileResultModel model, string dbfile);
 
-        void InitilizeRec();
+        void InitilizeRec(string dbfile);
 
-        void OpenExplorer(IFileData file);
+        void OpenExplorer(IFileData file, bool select);
 
         void SaveJsonFile(object content, string fileName);
 
@@ -33,15 +32,19 @@ namespace BlackSugar.Service
 
         IEnumerable<IFileData?>? GetBookmarksData(string fileName);
 
+        IEnumerable<ContextMenuModel?>? GetContextMenusData(string fileName);
+
         void CopyOrMove(FileResultModel model, IntPtr handle, string[] data, Effect effect);
 
-        void Delete(IEnumerable<IFileData> data, IntPtr handle);
+        void Delete(IEnumerable<string> data, IntPtr handle);
 
         void CreateFolder(FileResultModel model, string name);
 
         void Rename(IFileData file, string name, FileResultModel model, IntPtr handle);
 
         void Execute(string application, string arguments);
+
+        void DoContextMenu(ContextMenuModel menu, string[] items);
     }
 
     public class SideFilerService : ISideFilerService
@@ -69,13 +72,11 @@ namespace BlackSugar.Service
         }
 
 
-        public UISettingsModel? GetUISettings()
-            => _adpter.Get<UISettingsModel>(_adpter.ConvertFullPath(Literal.File_Json_UISettings, true), false);
         public void Execute(string application, string arguments)
             => _operator.Execute(application, arguments);
 
-        public void Delete(IEnumerable<IFileData> data, IntPtr handle)
-            => _operator.Delete(data.Select(f => f.FullName).ToList(), handle);
+        public void Delete(IEnumerable<string> data, IntPtr handle)
+            => _operator.Delete(data.ToList(), handle);
 
         public void CreateFolder(FileResultModel model, string name)
             => _operator.CreateFolder(Path.Combine(model.File.FullName, name));
@@ -136,11 +137,11 @@ namespace BlackSugar.Service
 
         }
 
-        public void OpenExplorer(IFileData file)
+        public void OpenExplorer(IFileData file, bool select)
         {
             if (file == null) return;
 
-            _operator.OpenExplorer(file);
+            _operator.OpenExplorer(file, select);
         }
 
         public void SaveJsonFile(object content, string fileName) 
@@ -170,9 +171,27 @@ namespace BlackSugar.Service
 
         public IEnumerable<IFileData?>? GetBookmarksData(string fileName)
         {
-            return _adpter.Get<List<BookmarkModel>>(_adpter.ConvertFullPath(fileName, true), false)?
+            return _adpter.Get<List<BookmarkModel>>(fileName, false)?
                       .Where(json => json?.Path != null)
                       .Select(json => _factory.CreateInstance(json.Path).ToFileData());
+        }
+
+        public IEnumerable<ContextMenuModel?>? GetContextMenusData(string fileName)
+        {
+            return _adpter.Get<List<ContextMenuModel>>(fileName, false);
+        }
+
+        public void DoContextMenu(ContextMenuModel menu, string[] items)
+        {
+            if(menu.Multiple.TryParse<Multiple>() == Multiple.Combine)
+            {
+                _operator.Execute(menu.App, menu.GetArguments(items));                 
+            }
+            if(menu.Multiple.TryParse<Multiple>() == Multiple.Roop)
+            {
+                foreach(var item in items)
+                    _operator.Execute(menu.App, menu.GetArguments(item));
+            }
         }
 
         public async Task<bool> OpenAsynic(FileResultModel model, CancellationToken token)
@@ -215,14 +234,14 @@ namespace BlackSugar.Service
         }
 
         /***********************/
-        public void RegistRec(FileResultModel model)
+        public void RegistRec(FileResultModel model, string dbfile)
         {
             var file = model?.File;
 
             if (file == null) return;
 
             string qry;
-            string connect = _commander.ConnectionString(Literal.File_DB_CloseRec);
+            string connect = _commander.ConnectionString(dbfile);
             qry = "SELECT recNo FROM SFCloseRec WHERE path = '@Path; ";
             var tmp = _commander.Get<dynamic>(qry, new { Path = file.FullName }, connect)?.FirstOrDefault();
             int recNo = tmp != null ? tmp.recNo : 0;
@@ -234,10 +253,10 @@ namespace BlackSugar.Service
 
         }
 
-        public void InitilizeRec()
+        public void InitilizeRec(string dbfile)
         {
             string qry;
-            string connect = _commander.ConnectionString(Literal.File_DB_CloseRec);
+            string connect = _commander.ConnectionString(dbfile);
             qry = "";
             qry += "CREATE TABLE IF NOT EXISTS ";
             qry += "SFCloseRec( ";

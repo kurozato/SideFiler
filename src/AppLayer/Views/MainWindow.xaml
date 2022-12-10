@@ -5,7 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SideFiler"
         xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro" 
-        xmlns:views="clr-namespace:BlackSugar.Views" xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+        xmlns:views="clr-namespace:BlackSugar.Views" 
+        xmlns:properties="clr-namespace:BlackSugar.Properties"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         d:DataContext="{d:DesignInstance Type=views:IMainViewModel}"
         mc:Ignorable="d"
         Height="680" Width="1110"
@@ -16,15 +18,15 @@
         TitleForeground ="Transparent"
         ResizeMode="CanResizeWithGrip">
     <mah:MetroWindow.Resources>
-
+        <views:ImageConverter x:Key="ImageConverter" />
     </mah:MetroWindow.Resources>
     <mah:MetroWindow.InputBindings>
         <KeyBinding Command="{Binding AddCommand}" Gesture="Ctrl+T" />
         <KeyBinding Command="{Binding TabCloseCommand}" Gesture="Ctrl+W" />
-        <KeyBinding Command="{Binding RenameCommand}" Gesture="F2"  CommandParameter="{Binding Handle, RelativeSource={RelativeSource AncestorType=Window}}" />
+        <KeyBinding Command="{Binding RenameCommand}" Gesture="F2" />
         <KeyBinding Command="{Binding CopyCommand}" Gesture="Ctrl+C" />
         <KeyBinding Command="{Binding CutCommand}" Gesture="Ctrl+X" />
-        <KeyBinding Command="{Binding PasteCommand}" Gesture="Ctrl+V" CommandParameter="{Binding Handle, RelativeSource={RelativeSource AncestorType=Window}}" />
+        <KeyBinding Command="{Binding PasteCommand}" Gesture="Ctrl+V" />
         <KeyBinding Command="{Binding CreateFolderCommand}" Gesture="Ctrl+Shift+N" />
         <KeyBinding Command="{Binding ReloadCommand}" Gesture="F5" />
         <KeyBinding Command="{Binding UpFolderCommand}" Gesture="Alt+Up" />
@@ -37,75 +39,65 @@
                     Height="30"
                     Style="{DynamicResource MaterialDesignMenuItem}" >
                     <MenuItem.Header>
-                        <TextBlock Foreground="White" Text="File" FontSize="12" />
+                        <TextBlock Foreground="White" Text="{Binding Source={x:Static views:ResourceService.Current}, Path=Resources.MenuFile, Mode=OneWay}" FontSize="12" />
                     </MenuItem.Header>
 
                     <MenuItem 
-                        Header="Open SideFiler File...(beta)" 
+                        Header="{Binding Source={x:Static views:ResourceService.Current}, Path=Resources.MenuOpen, Mode=OneWay}" 
                         FontSize="12"
                         Command="{Binding OpenFileMenuCommand}"
                         Style="{DynamicResource MaterialDesignMenuItem}" />
                     <MenuItem 
-                        Header="Save SideFiler File...(beta)"  
+                        Header="{Binding Source={x:Static views:ResourceService.Current}, Path=Resources.MenuSave, Mode=OneWay}"  
                         FontSize="12" 
                         Command="{Binding SaveFileMenuCommand}"
                         Style="{DynamicResource MaterialDesignMenuItem}" />
                     <Separator/>
                     <MenuItem 
-                        Header="Recently Closed Folders...(stay tuned)" 
+                        Header="{Binding Source={x:Static views:ResourceService.Current}, Path=Resources.RecentlyClosedFolders, Mode=OneWay}" 
                         FontSize="12" 
                         Style="{DynamicResource MaterialDesignMenuItem}" />
                     <Separator/>
                     <MenuItem 
-                        Header="Settings(stay tuned)"  
+                        Header="{Binding Source={x:Static views:ResourceService.Current}, Path=Resources.MenuSettings, Mode=OneWay}"  
                         FontSize="12" 
                         Style="{DynamicResource MaterialDesignMenuItem}" />
                     <Separator/>
                     <MenuItem 
-                        Header="Close"  
+                        Header="{Binding Source={x:Static views:ResourceService.Current}, Path=Resources.Close, Mode=OneWay}"  
                         Command="{Binding CloseCommand}"
                         FontSize="12" 
                         Style="{DynamicResource MaterialDesignMenuItem}" />
                 </MenuItem>
             </Menu>
             <DockPanel VerticalAlignment="Stretch">
+                <DockPanel.Resources>
+                    <Style TargetType="Button" BasedOn="{StaticResource MahApps.Styles.Button.WindowCommands}">
+                        <Setter Property="VerticalAlignment" Value="Center" />
+                        <Setter Property="Cursor" Value="Arrow" />
+                        <Setter Property="FontFamily" Value="Segoe MDL2 Assets" />
+                    </Style>
+                </DockPanel.Resources>
                 <Button
-                    VerticalAlignment="Center"
-                    Cursor="Arrow"
-                    FontFamily="Segoe MDL2 Assets"
                     Content="&#xE8AC;"
                     Command="{Binding RenameCommand}"
-                    CommandParameter="{Binding Handle, RelativeSource={RelativeSource AncestorType=Window}}"
-                    ToolTip="Rename File"/>
+                    ToolTip="{Binding Source={x:Static views:ResourceService.Current}, Path=Resources.RenameFile, Mode=OneWay}"/>
                 <Button
-                    VerticalAlignment="Center"           
-                    Cursor="Arrow"
-                    FontFamily="Segoe MDL2 Assets"
                     Content="&#xE8F4;"
-                     Command="{Binding CreateFolderCommand}"
-                    ToolTip="Create Folder"/>
+                    Command="{Binding CreateFolderCommand}"
+                    ToolTip="{Binding Source={x:Static views:ResourceService.Current}, Path=Resources.CreateFolder, Mode=OneWay}"/>
                 <Button
-                    VerticalAlignment="Center"           
-                    Cursor="Arrow"
-                    FontFamily="Segoe MDL2 Assets"
                     Content="&#xE8C8;"
                     Command="{Binding CopyCommand}"
-                    ToolTip="Copy"/>
+                    ToolTip="{Binding Source={x:Static views:ResourceService.Current}, Path=Resources.Copy, Mode=OneWay}"/>
                 <Button
-                    VerticalAlignment="Center"           
-                    Cursor="Arrow"
-                    FontFamily="Segoe MDL2 Assets"
                     Content="&#xE8C6;"
                     Command="{Binding CutCommand}"
-                    ToolTip="Cut"/>
+                    ToolTip="{Binding Source={x:Static views:ResourceService.Current}, Path=Resources.Cut, Mode=OneWay}"/>
                 <Button
-                    VerticalAlignment="Center"           
-                    Cursor="Arrow"
-                    FontFamily="Segoe MDL2 Assets"
                     Content="&#xE77F;"
                     Command="{Binding PasteCommand}"
-                    CommandParameter="{Binding Handle, RelativeSource={RelativeSource AncestorType=Window}}"
-                    ToolTip="Paste"/>
+                    ToolTip="{Binding Source={x:Static views:ResourceService.Current}, Path=Resources.Paste, Mode=OneWay}"/>
             </DockPanel>
 
         </mah:WindowCommands>
@@ -113,31 +105,28 @@
     <mah:MetroWindow.RightWindowCommands>
         <mah:WindowCommands>
             <DockPanel>
-                
-    
-            <DockPanel
-                Width="180" Height="22"               
-                Margin="4" VerticalAlignment="Bottom"
-                Background="#4Dffffff">
-                <TextBox
-                Text="{Binding MainFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                Name="MainFilter"
-                BorderThickness="0 0 0 0"
-                VerticalAlignment="Center"
-                
-                Background="Transparent" >
-                    <TextBox.InputBindings>
-                        <KeyBinding Gesture="Enter" Command="{Binding MainFilterCommand}" />
-                    </TextBox.InputBindings>
-                </TextBox>
-            </DockPanel>
-            <Button
-                VerticalAlignment="Center"           
+                <DockPanel
+                    Width="180" Height="22"               
+                    Margin="4" VerticalAlignment="Bottom"
+                    Background="#4Dffffff">
+                    <TextBox
+                    Text="{Binding MainFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                    Name="MainFilter"
+                    BorderThickness="0 0 0 0"
+                    VerticalAlignment="Center"            
+                    Background="Transparent" >
+                        <TextBox.InputBindings>
+                            <KeyBinding Gesture="Enter" Command="{Binding MainFilterCommand}" />
+                        </TextBox.InputBindings>
+                    </TextBox>
+                </DockPanel>
+                <Button
+                    VerticalAlignment="Center"           
                     Cursor="Arrow"
                     FontFamily="Segoe MDL2 Assets"
                     Content="&#xE845;"
                     Command="{Binding MainFilterReleaseCommand}"
-                    ToolTip="Clear Filter"/>
+                    ToolTip="{Binding Source={x:Static views:ResourceService.Current}, Path=Resources.ClearFilter, Mode=OneWay}"/>
             </DockPanel>
         </mah:WindowCommands>
     </mah:MetroWindow.RightWindowCommands>
@@ -160,23 +149,23 @@
                 <ColumnDefinition Width="50" />
                 <ColumnDefinition Width="50" />
             </Grid.ColumnDefinitions>
+            <Grid.Resources>
+                <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignFlatButton}">
+                    <Setter Property="VerticalAlignment" Value="Center" />
+                    <Setter Property="Cursor" Value="Arrow" />
+                    <Setter Property="FontFamily" Value="Segoe MDL2 Assets" />
+                </Style>
+            </Grid.Resources>
             <Button
                 Grid.Column="0"
-                Style="{DynamicResource MaterialDesignFlatButton}" 
-                Cursor="Arrow"
-                FontFamily="Segoe MDL2 Assets"
                 Content="&#xE74A;"
-                ToolTip="Move Upper Folder"
-                Command="{Binding UpFolderCommand}"
-                Name="Up" />
+                ToolTip="{Binding Source={x:Static views:ResourceService.Current}, Path=Resources.MoveUpFolder, Mode=OneWay}"
+                Command="{Binding UpFolderCommand}" />
             <Button
                 Grid.Column="1"
-                Style="{DynamicResource MaterialDesignFlatButton}" Cursor="Arrow"
-                FontFamily="Segoe MDL2 Assets"
                 Content="&#xE72C;"
-                ToolTip="Update"
-                Command="{Binding ReloadCommand}"
-                Name="Update" />
+                ToolTip="{Binding Source={x:Static views:ResourceService.Current}, Path=Resources.UpdateContent, Mode=OneWay}"
+                Command="{Binding ReloadCommand}" />
             <TextBox
                     Grid.Column="2"
                     Style="{DynamicResource MaterialDesignTextBox}" 
@@ -190,21 +179,15 @@
                 </TextBox.InputBindings>
             </TextBox>
             <Button
-                    Grid.Column="3"
-                    Style="{DynamicResource MaterialDesignFlatButton}" Cursor="Arrow"
-                    FontFamily="Segoe MDL2 Assets"
-                    Content="&#xE734;"
-                    ToolTip="Add Bookmarks (stay tuned)"
-                    Command=""
-                    Name="AddBookmarks" />
+                Grid.Column="3"
+                Content="&#xE734;"
+                ToolTip="{Binding Source={x:Static views:ResourceService.Current}, Path=Resources.AddBookmarks, Mode=OneWay}"
+                Command="" />
             <Button
-                    Grid.Column="4"
-                    Style="{DynamicResource MaterialDesignFlatButton}" Cursor="Arrow"
-                    FontFamily="Segoe MDL2 Assets"
-                    Content="&#xE8A7;"
-                    ToolTip="Open By Explorer"
-                    Command="{Binding OpenExplorerCommand}"
-                    Name="OpenExplorer" />
+                Grid.Column="4"
+                Content="&#xE72D;"
+                ToolTip="{Binding Source={x:Static views:ResourceService.Current}, Path=Resources.OpenByExplorer, Mode=OneWay}"
+                Command="{Binding OpenExplorerCommand}" Cursor="Arrow" />
         </Grid>
         <StackPanel Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Stretch">
             <ItemsControl ItemsSource="{Binding Bookmarks}">
@@ -223,7 +206,7 @@
                                 Mode=FindAncestor,
                                 AncestorType=FrameworkElement,
                                 AncestorLevel=1}}"
-                            >
+                            ToolTip="{Binding FullName}">
                             <StackPanel Orientation="Horizontal" Margin="0" >
                                 <Image Source="{Binding Icon}" Width="16"  Margin="0 0 5 0" CacheMode="BitmapCache" />
                                 <TextBlock FontSize="12" Text="{Binding Name}" FontWeight="Normal" Foreground="{DynamicResource MaterialDesignLightForeground}" />
@@ -257,7 +240,7 @@
                         FontFamily="Segoe MDL2 Assets"
                         Content="&#xE948;"
                         Name="Add"
-                        ToolTip="Add New Tab (Ctrl+T)"
+                        ToolTip="{Binding Source={x:Static views:ResourceService.Current}, Path=Resources.AddNewTab, Mode=OneWay}"
                         Command="{Binding AddCommand}"/>
                     <TextBox
                         Grid.Column="1"
@@ -278,7 +261,7 @@
                         FontFamily="Segoe MDL2 Assets"
                         Content="&#xE845;"
                         Command="{Binding SideFilterReleaseCommand}"
-                        ToolTip="Clear Filter Side"/>
+                        ToolTip="{Binding Source={x:Static views:ResourceService.Current}, Path=Resources.ClearFilter, Mode=OneWay}"/>
                 </Grid>
             
                 <ListBox 
@@ -290,16 +273,30 @@
                     SelectedItem="{Binding SideItem, Mode=OneWayToSource}"
                     SelectedIndex="{Binding SideIndex, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                     HorizontalContentAlignment="Stretch">
+                    <ListBox.ItemContainerStyle>
+                        <Style BasedOn="{StaticResource MaterialDesignNavigationAccentListBoxItem}" TargetType="ListBoxItem">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsVisible, Mode=OneWay}" Value="true">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding IsVisible, Mode=OneWay}" Value="false">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <StackPanel Margin="-3">
+                            <StackPanel Margin="-3" 
+                                        ToolTip="{Binding File.FullName, Mode=OneWay}"
+                                Tag="{Binding DataContext, RelativeSource={RelativeSource AncestorType=Window}}">
                                 <DockPanel>
                                     <TextBlock DockPanel.Dock="Left" FontWeight="Bold" Text="{Binding Label, Mode=OneWay}" />
                                     <Button DockPanel.Dock="Right"
                                         Style="{DynamicResource MaterialDesignFlatButton}" Cursor="Arrow"
                                         FontFamily="Segoe MDL2 Assets"
                                         Content="&#xE711;"
-                                        ToolTip="Tab Close"
+                                        ToolTip="{Binding Source={x:Static views:ResourceService.Current}, Path=Resources.TabClose, Mode=OneWay}"
                                         HorizontalAlignment="Right" VerticalAlignment="Center"
                                         Margin="0 0 0 0"
                                         Height="20"
@@ -314,6 +311,17 @@
                                 <DockPanel>
                                     <TextBlock Text="{Binding File.FullName, Mode=OneWay}" FontWeight="Normal" Opacity="0.6" FontSize="11"/>
                                 </DockPanel>
+                                <StackPanel.ContextMenu>
+                                    <ContextMenu 
+                                        FontSize="12" 
+                                        Style="{DynamicResource MahApps.Styles.ContextMenu}" 
+                                        BorderBrush="LightGray"
+                                        DataContext="{Binding Path=PlacementTarget.Tag, RelativeSource={RelativeSource Self}}">
+                                        <MenuItem 
+                                            Header="{Binding Source={x:Static views:ResourceService.Current}, Path=Resources.Close, Mode=OneWay}" 
+                                            Command="{Binding TabCloseCommand}"/>
+                                    </ContextMenu>
+                                </StackPanel.ContextMenu>
                             </StackPanel>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
@@ -342,7 +350,7 @@
                 <ListView.View>
                     <GridView >
                         <GridViewColumn Width="400">
-                            <GridViewColumnHeader Content="Name" mah:ControlsHelper.ContentCharacterCasing="Normal"/>
+                            <GridViewColumnHeader Content="{Binding Source={x:Static views:ResourceService.Current}, Path=Resources.ItemName, Mode=OneWay}" mah:ControlsHelper.ContentCharacterCasing="Normal"/>
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
                                     <VirtualizingStackPanel Orientation="Horizontal">
@@ -353,7 +361,7 @@
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
                         <GridViewColumn Width="140">
-                            <GridViewColumnHeader Content="Date" mah:ControlsHelper.ContentCharacterCasing="Normal"/>
+                            <GridViewColumnHeader Content="{Binding Source={x:Static views:ResourceService.Current}, Path=Resources.ItemDate, Mode=OneWay}" mah:ControlsHelper.ContentCharacterCasing="Normal"/>
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
                                     <VirtualizingStackPanel Orientation="Horizontal">
@@ -363,7 +371,7 @@
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
                         <GridViewColumn Width="200" >
-                            <GridViewColumnHeader Content="Type" mah:ControlsHelper.ContentCharacterCasing="Normal"/>
+                            <GridViewColumnHeader Content="{Binding Source={x:Static views:ResourceService.Current}, Path=Resources.ItemType, Mode=OneWay}" mah:ControlsHelper.ContentCharacterCasing="Normal"/>
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
                                     <VirtualizingStackPanel Orientation="Horizontal">
@@ -373,7 +381,7 @@
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
                         <GridViewColumn Width="150">
-                            <GridViewColumnHeader Content="Size" mah:ControlsHelper.ContentCharacterCasing="Normal"/>
+                            <GridViewColumnHeader Content="{Binding Source={x:Static views:ResourceService.Current}, Path=Resources.ItemSize, Mode=OneWay}" mah:ControlsHelper.ContentCharacterCasing="Normal"/>
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
                                     <VirtualizingStackPanel Orientation="Horizontal" HorizontalAlignment="Right">
@@ -384,9 +392,42 @@
                         </GridViewColumn>
                     </GridView>
                 </ListView.View>
+                <ListView.ContextMenu>
+                    <ContextMenu 
+                        Name="ListMainContextMenu"
+                        FontSize="12.3"
+                        ItemsSource="{Binding ContextMenus}"
+                        Style="{DynamicResource MahApps.Styles.ContextMenu}" 
+                        BorderBrush="LightGray">
+                        <ContextMenu.ItemContainerStyle>
+                            <Style TargetType="MenuItem" BasedOn="{StaticResource MahApps.Styles.MenuItem}">
+                                <Setter Property="Icon" Value="{Binding Icon, Converter={StaticResource ImageConverter}}"  />
+                                <Setter Property="Header" Value="{Binding Content}" />
+                                <Setter Property="Command" Value="{Binding DataContext.ContextMenuCommand, RelativeSource={RelativeSource AncestorType=Window}}" />
+                                <Setter Property="CommandParameter" Value="{Binding DataContext, RelativeSource={RelativeSource Mode=Self}}" />
+                                <Style.Triggers>
+                                    
+                                    <DataTrigger Binding="{Binding IsVisible, Mode=TwoWay}" Value="true">
+                                        <Setter Property="Visibility" Value="Visible" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding IsVisible, Mode=TwoWay}" Value="false">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ContextMenu.ItemContainerStyle>
+                    </ContextMenu>
+                </ListView.ContextMenu>
+                <ListView.InputBindings>
+                    <KeyBinding Gesture="Enter" Command="{Binding SelectMainCommand}" />
+                    <KeyBinding Gesture="Delete" Command="{Binding DeleteCommand}" />
+                </ListView.InputBindings>
             </ListView>
         </Grid>
         <DockPanel Grid.Row="4" Background="{DynamicResource MahApps.Brushes.Accent2}">
         </DockPanel>
     </Grid>
+    <i:Interaction.Behaviors>
+        <views:WindowHandleBehavior WindowHandle="{Binding Handle}" />
+    </i:Interaction.Behaviors>
 </mah:MetroWindow>

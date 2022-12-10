@@ -36,6 +36,7 @@ namespace SideFiler
             var resolver = new DependencyResolver();
             resolver.Set(services =>
             {
+
                 //repository
                 services.AddSingleton<IStorageItemFactory, StorageItemFactory>();
                 services.AddSingleton<IDbCommander, DbCommander>();
@@ -50,6 +51,8 @@ namespace SideFiler
 
                 //
                 services.AddSingleton<IUIInitializer, UIInitializer>();
+                services.AddSingleton<IExConfiguration, ExConfiguration>();
+
                 //validator
 
                 //presenter
@@ -67,6 +70,9 @@ namespace SideFiler
             });
 
             Router.Configure(resolver);
+
+            //TODO->settings
+            ResourceService.Current.ChangeCulture("en");
 
             Router.Resolver?.Resolve<IUIInitializer>()?.Initialize();
 

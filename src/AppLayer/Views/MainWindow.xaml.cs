@@ -16,6 +16,7 @@ using System.Windows.Shapes;
 using BlackSugar.Views.Extension;
 using BlackSugar.SimpleMvp;
 using BlackSugar.Views;
+using ModernWpf.Controls;
 
 namespace SideFiler
 {
@@ -30,12 +31,14 @@ namespace SideFiler
 
         public MainWindow(IUIInitializer uiInitializer)
         {
-            InitializeComponent();
 
             uiInitializer.InitializeMain(this.Resources);
 
+            InitializeComponent();
+
             ListMain.ItemDoubleClick(() => UIHelper.Executor(ViewModel?.SelectMainCommand));
-            ListMain.KeyBind(Key.Enter, () => UIHelper.Executor(ViewModel?.SelectMainCommand));
+            //ListMain.KeyBind(Key.Enter, () => UIHelper.Executor(ViewModel?.SelectMainCommand));
+            //ListMain.KeyBind(Key.Delete, () => UIHelper.Executor(ViewModel?.DeleteCommand));
             ListMain.MouseBind(MouseButton.XButton1, () => UIHelper.Executor(ViewModel?.UpFolderCommand));
             ListMain.DragDropFile((data) => UIHelper.Executor(ViewModel?.DropFileCommand, new Tuple<string[], IntPtr>(data, Handle)));
  
@@ -44,6 +47,9 @@ namespace SideFiler
 
             FullPath.SetFocusSelectAll();
 
+            ListMain.ContextMenuOpening += (s, e) => UIHelper.Executor(ViewModel?.AdjustMenuCommand);
+
+ 
         }
 
     }  

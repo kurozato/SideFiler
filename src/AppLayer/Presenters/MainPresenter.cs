@@ -4,17 +4,15 @@ using BlackSugar.SimpleMvp;
 using BlackSugar.Views;
 using BlackSugar.Model;
 using NLog;
-using SideFiler;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Reflection;
-using System.Windows.Media.Media3D;
-using System.Runtime.InteropServices;
 using System.Windows;
 using BlackSugar.Extension;
+using SideFiler;
+using System.Windows.Media.Imaging;
 
 namespace BlackSugar.Presenters
 {
@@ -23,17 +21,19 @@ namespace BlackSugar.Presenters
         ILogger _logger;
         ISideFilerService _service;
         IClipboardHelper _clipboard;
+        IExConfiguration _config;
 
-        public MainPresenter(ISideFilerService service, ILogger logger, IClipboardHelper clipboard)
+        public MainPresenter(ISideFilerService service, ILogger logger, IClipboardHelper clipboard, IExConfiguration config)
         {
             _service = service ?? throw new ArgumentNullException(nameof(service));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _clipboard = clipboard ?? throw new ArgumentNullException(nameof(clipboard));
+            _config = config ?? throw new ArgumentNullException(nameof(config));
         }
 
         protected override void InitializeView()
         {
-            var files = _service.GetBookmarksData(Literal.File_Json_Bookmarks);
+            var files = _service.GetBookmarksData(_config.GetFullPath(Literal.File_Json_Bookmarks));
 
             if(files != null)
             {
@@ -41,7 +41,32 @@ namespace BlackSugar.Presenters
                 foreach (var file in files)
                     ViewModel.Bookmarks.Add(new UIFileData(file, icon));
             }
+
+            ViewModel.ContextMenus.Add(new UIContextMenuModel(new ContextMenuModel() { Content = ResourceService.Current.GetResource("OpenNewTab"), Result= "OpenNewTab", Target="directory" }));
+
             
+            var contexts = _service.GetContextMenusData(_config.GetFullPath(Literal.File_Json_ContextMenu));
+            
+            if(contexts != null)
+            {
+                foreach(var context in contexts)
+                {
+                    BitmapSource source = null;
+                    if((context.IconPath != null))
+                    {
+                        source = FileIcon.GetBitmapSource(_config.GetFullPath(context.IconPath, false));
+                        source.Freeze();
+                    }
+
+                    ViewModel.ContextMenus.Add(new UIContextMenuModel(context, source));
+                }
+            }
+
+            //ViewModel.ContextMenus.Add(new ContextMenuModel() { Content = "Cut", Result = "OpenNewTab" });
+            //ViewModel.ContextMenus.Add(new ContextMenuModel() { Content = "Copy", Result = "OpenNewTab" });
+            //ViewModel.ContextMenus.Add(new ContextMenuModel() { Content = "Paste", Result = "OpenNewTab" });
+        
+
         }
 
         private async Task updateSideAsync(FileResultModel? model)
@@ -55,7 +80,7 @@ namespace BlackSugar.Presenters
             await item.SetResultsToEntityAsync(model.Results);
 
             ViewModel.SideItems[point] = item;
-            ViewModel.SideItemsMirror[point] = item;
+            //ViewModel.SideItemsMirror[point] = item;
              
             if (item?.ID == ViewModel.ID)
                 ViewModel.SideIndex = point;
@@ -72,9 +97,30 @@ namespace BlackSugar.Presenters
             await item.SetResultsToEntityAsync(model.Results);
 
             ViewModel.SideItems.Add(item);
-            ViewModel.SideItemsMirror.Add(item);
+            //ViewModel.SideItemsMirror.Add(item);
 
             ViewModel.SideIndex = ViewModel.SideItems.Count - 1;
+        }
+
+        public async Task ResultTemplateAsync(string? path, long? ID, Func<FileResultModel, bool> predicate)
+        {
+            try
+            {
+                var file = _service.GetFileData(path);
+                var model = new FileResultModel(file, ID);
+
+                if (predicate(model))
+                {
+                    model.Label = model.File?.Name;
+                    await updateSideAsync(model);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+                UIHelper.ShowErrorMessage(ex);
+            }
         }
 
         [ActionAutoLink]
@@ -86,7 +132,8 @@ namespace BlackSugar.Presenters
                 var model = new FileResultModel(null, ViewModel.MaxID);
              
                 _service.Startup(model);
-                model.Label = "New Tab";
+                model.Label = ResourceService.Current.GetResource("NewTab");
+                //model.Label = "New Tab";
 
                 await addSideAsync(model);
             }
@@ -129,11 +176,9 @@ namespace BlackSugar.Presenters
         {
             try
             {
-                //var index = item == null ? ViewModel.SideIndex : ViewModel.SideItems.IndexOf(item);
-                var index = ViewModel.SideItems.IndexOf(item);
-
+                var index = item == null ? ViewModel.SideIndex : ViewModel.SideItems.IndexOf(item);
+                
                 ViewModel.SideItems.RemoveAt(index);
-                ViewModel.SideItemsMirror.RemoveAt(index);
 
                 index -= ViewModel.SideItems.Count - 1 < index ? 1 : 0;
                 ViewModel.SideIndex = index;
@@ -156,14 +201,17 @@ namespace BlackSugar.Presenters
             {
                 var selected = ViewModel?.SelectedFile;
                 var item = ViewModel?.SideItem;
-                var file = _service.GetFileData(selected?.FullName);
-                var model = new FileResultModel(file, item?.ID);
 
-                if (_service.Open(model))
-                {
-                    model.Label = model.File?.Name;
-                    await updateSideAsync(model);
-                }
+                await ResultTemplateAsync(selected?.FullName, item?.ID, _service.Open);
+
+                //var file = _service.GetFileData(selected?.FullName);
+                //var model = new FileResultModel(file, item?.ID);
+
+                //if (_service.Open(model))
+                //{
+                //    model.Label = model.File?.Name;
+                //    await updateSideAsync(model);
+                //}
                     
             }
             catch (Exception ex)
@@ -179,12 +227,15 @@ namespace BlackSugar.Presenters
             try
             {
                 var item = ViewModel?.SideItem;
-                var file = _service.GetFileData(item?.File?.FullName);
-                var model = new FileResultModel(file, item?.ID);
 
-                _service.Open(model);
-                model.Label = model.File?.Name;
-                await updateSideAsync(model);
+                await ResultTemplateAsync(item?.File?.FullName, item?.ID, _service.Open);
+
+                //var file = _service.GetFileData(item?.File?.FullName);
+                //var model = new FileResultModel(file, item?.ID);
+
+                //_service.Open(model);
+                //model.Label = model.File?.Name;
+                //await updateSideAsync(model);
             }
             catch (Exception ex)
             {
@@ -199,14 +250,17 @@ namespace BlackSugar.Presenters
             try
             {
                 var item = ViewModel?.SideItem;
-                var file = _service.GetFileData(item?.File?.FullName);
-                var model = new FileResultModel(file, item?.ID);
 
-                if (_service.Up(model))
-                {
-                    model.Label = model?.File?.Name;
-                    await updateSideAsync(model);
-                }
+                await ResultTemplateAsync(item?.File?.FullName, item?.ID, _service.Up);
+
+                //var file = _service.GetFileData(item?.File?.FullName);
+                //var model = new FileResultModel(file, item?.ID);
+
+                //if (_service.Up(model))
+                //{
+                //    model.Label = model?.File?.Name;
+                //    await updateSideAsync(model);
+                //}
             }
             catch (Exception ex)
             {
@@ -220,9 +274,16 @@ namespace BlackSugar.Presenters
         {
             try
             {
+                var selected = ViewModel?.SelectedFile;
                 var item = ViewModel?.SideItem;
-                var file = _service.GetFileData(item?.File?.FullName);
-                _service.OpenExplorer(file);
+
+                var path = selected?.FullName ?? item?.File?.FullName;
+                var file = _service.GetFileData(path);
+
+                _service.OpenExplorer(file, selected != null);
+
+                //var file = _service.GetFileData(item?.File?.FullName);
+                //_service.OpenExplorer(file);
             }
             catch (Exception ex)
             {
@@ -237,15 +298,18 @@ namespace BlackSugar.Presenters
             try
             {
                 var item = ViewModel?.SideItem;
-                var file = _service.GetFileData(ViewModel?.FullPath);
 
-                var model = new FileResultModel(file, item?.ID);
+                await ResultTemplateAsync(ViewModel?.FullPath, item?.ID, _service.Open);
 
-                if (_service.Open(model))
-                {
-                    model.Label = model?.File?.Name;
-                    await updateSideAsync(model);
-                }
+                //var file = _service.GetFileData(ViewModel?.FullPath);
+
+                //var model = new FileResultModel(file, item?.ID);
+
+                //if (_service.Open(model))
+                //{
+                //    model.Label = model?.File?.Name;
+                //    await updateSideAsync(model);
+                //}
             }
             catch (Exception ex)
             {
@@ -253,6 +317,26 @@ namespace BlackSugar.Presenters
                 UIHelper.ShowErrorMessage(ex);
             }
         }
+
+        [ActionAutoLink]
+        public void DeleteResult()
+        {
+            try
+            {
+                var items = ViewModel?.SelectedFiles?.Cast<UIFileData>();
+                if (items == null) return;
+
+                _service.Delete(items.Select(f => f.FullName), ViewModel.Handle);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+                UIHelper.ShowErrorMessage(ex);
+            }
+        }
+
+        public void CopyResult() => CopyCutResult(Effect.Copy);
+        public void CutResult() => CopyCutResult(Effect.Move);
 
         [ActionAutoLink]
         public void CopyCutResult(Effect effect)
@@ -273,7 +357,7 @@ namespace BlackSugar.Presenters
         }
 
         [ActionAutoLink]
-        public void PasteResult(IntPtr handle)
+        public void PasteResult()
         {
             try
             {
@@ -285,7 +369,7 @@ namespace BlackSugar.Presenters
                 var file = _service.GetFileData(item?.File?.FullName);
                 var model = new FileResultModel(file, item?.ID);
 
-                _service.CopyOrMove(model, handle, data, _clipboard.GetDropEffect());
+                _service.CopyOrMove(model, ViewModel.Handle, data, _clipboard.GetDropEffect());
             }
             catch (Exception ex)
             {
@@ -295,7 +379,7 @@ namespace BlackSugar.Presenters
         }
 
         [ActionAutoLink]
-        public void RenameResult(IntPtr handle)
+        public void RenameResult()
         {
             try
             {
@@ -303,7 +387,7 @@ namespace BlackSugar.Presenters
 
                 var file = _service.GetFileData(ViewModel?.SelectedFile?.FullName);
 
-                Router.NavigateTo<InputNameViewModel>("RenameFile", file, ViewModel?.SideItem, handle);
+                Router.NavigateTo<InputNameViewModel>("RenameFile", file, ViewModel?.SideItem, ViewModel.Handle);
                 //await ReloadResult();
             }
             catch (Exception ex)
@@ -403,14 +487,17 @@ namespace BlackSugar.Presenters
             {
                 if (ViewModel?.SideFilter == null || ViewModel?.SideFilter?.Length == 0)
                     return;
-            
-                var filtering = ViewModel?.SideItemsMirror?.Where(r => r?.File?.FullName?.ToUpper()?.IndexOf(ViewModel?.SideFilter?.ToUpper()) >= 0);
 
-                UIHelper.Refill(ViewModel?.SideItems, filtering);
+                //var filtering = ViewModel?.SideItemsMirror?.Where(r => r?.File?.FullName?.ToUpper()?.IndexOf(ViewModel?.SideFilter?.ToUpper()) >= 0);
 
-                if (ViewModel?.SideItems?.Count > 0)
-                    ViewModel.SideIndex = 0;
+                //UIHelper.Refill(ViewModel?.SideItems, filtering);
 
+                //if (ViewModel?.SideItems?.Count > 0)
+                //    ViewModel.SideIndex = 0;
+             
+                var filtering = ViewModel?.SideItems?.Where(r => r?.File?.FullName?.ToUpper()?.IndexOf(ViewModel?.SideFilter?.ToUpper()) < 0);
+                foreach (var item in filtering)
+                    item.IsVisible = false;
             }
             catch (Exception ex)
             {
@@ -426,10 +513,14 @@ namespace BlackSugar.Presenters
             {
                 ViewModel.SideFilter = null;
 
-                UIHelper.Refill(ViewModel?.SideItems, ViewModel?.SideItemsMirror);
+                //UIHelper.Refill(ViewModel?.SideItems, ViewModel?.SideItemsMirror);
 
-                if (ViewModel.SideItems.Count > 0)
-                    ViewModel.SideIndex = 0;
+                //if (ViewModel.SideItems.Count > 0)
+                //    ViewModel.SideIndex = 0;
+
+                foreach (var item in ViewModel?.SideItems)
+                    item.IsVisible = true;
+
             }
             catch (Exception ex)
             {
@@ -462,15 +553,18 @@ namespace BlackSugar.Presenters
             try
             {
                 var item = ViewModel?.SideItem;
-                var file = _service.GetFileData(uiFile?.FullName);
 
-                var model = new FileResultModel(file, item?.ID);
+                await ResultTemplateAsync(uiFile?.FullName, item?.ID, _service.Open);
 
-                if (_service.Open(model))
-                {
-                    model.Label = model?.File?.Name;
-                    await updateSideAsync(model);
-                }
+                //var file = _service.GetFileData(uiFile?.FullName);
+
+                //var model = new FileResultModel(file, item?.ID);
+
+                //if (_service.Open(model))
+                //{
+                //    model.Label = model?.File?.Name;
+                //    await updateSideAsync(model);
+                //}
             }
             catch (Exception ex)
             {
@@ -480,20 +574,62 @@ namespace BlackSugar.Presenters
         }
 
         [ActionAutoLink]
-        public void DropFileResult(Tuple<string[], IntPtr> tuple)
+        public void DropFileResult(string[] data)
         {
             try
             {
-                string[] data = tuple.Item1;
-                IntPtr handle = tuple.Item2;
-               
                 if (data == null) return;
 
                 var item = ViewModel?.SideItem;
                 var file = _service.GetFileData(item?.File?.FullName);
                 var model = new FileResultModel(file, item?.ID);
 
-                _service.CopyOrMove(model, handle, data, Effect.Copy);
+                _service.CopyOrMove(model, ViewModel.Handle, data, Effect.Copy);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+                UIHelper.ShowErrorMessage(ex);
+            }
+        }
+
+        [ActionAutoLink]
+        public void ContextMenuResult(UIContextMenuModel menu)
+        {
+            try
+            {
+                var selects = ViewModel.SelectedFiles.Cast<UIFileData>();
+
+                if (menu.BaseModel.Result != null)
+                    Router.NavigateTo<IMainViewModel>(menu.BaseModel.Result);
+                else
+                    _service.DoContextMenu(menu.BaseModel, selects.Select(f => f.FullName).ToArray());
+
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+                UIHelper.ShowErrorMessage(ex);
+            }
+
+        }
+
+        [ActionAutoLink]
+        public void AdjustMenuResult()
+        {
+            try
+            {
+                var isFolder = ViewModel?.SelectedFile?.ExAttributes.HasFlag(ExFileAttributes.Folder);
+
+                foreach (var menu in ViewModel?.ContextMenus)
+                {
+                    if (menu.BaseModel.Target.ToLower() == "directory")
+                        menu.IsVisible = (isFolder == true);
+                    else
+                        menu.IsVisible = (isFolder != true);
+                    
+                }
+               
             }
             catch (Exception ex)
             {

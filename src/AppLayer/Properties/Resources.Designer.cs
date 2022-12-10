@@ -61,6 +61,69 @@ namespace BlackSugar.Properties {
         }
         
         /// <summary>
+        ///   Add Bookmarks (stay tuned) に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string AddBookmarks {
+            get {
+                return ResourceManager.GetString("AddBookmarks", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Add New Tab (Ctrl+T) に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string AddNewTab {
+            get {
+                return ResourceManager.GetString("AddNewTab", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Clear Filter に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string ClearFilter {
+            get {
+                return ResourceManager.GetString("ClearFilter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Close に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Close {
+            get {
+                return ResourceManager.GetString("Close", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Copy に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Copy {
+            get {
+                return ResourceManager.GetString("Copy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Create Folder に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string CreateFolder {
+            get {
+                return ResourceManager.GetString("CreateFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cut に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Cut {
+            get {
+                return ResourceManager.GetString("Cut", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
         /// </summary>
         public static System.Drawing.Bitmap folder_dark {
@@ -77,6 +140,195 @@ namespace BlackSugar.Properties {
             get {
                 object obj = ResourceManager.GetObject("folder.light", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Folder Name: に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string FolderName {
+            get {
+                return ResourceManager.GetString("FolderName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Date に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string ItemDate {
+            get {
+                return ResourceManager.GetString("ItemDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Name に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string ItemName {
+            get {
+                return ResourceManager.GetString("ItemName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Size に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string ItemSize {
+            get {
+                return ResourceManager.GetString("ItemSize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Type に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string ItemType {
+            get {
+                return ResourceManager.GetString("ItemType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   File に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string MenuFile {
+            get {
+                return ResourceManager.GetString("MenuFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Open SideFiler File...(beta) に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string MenuOpen {
+            get {
+                return ResourceManager.GetString("MenuOpen", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Save SideFiler File...(beta) に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string MenuSave {
+            get {
+                return ResourceManager.GetString("MenuSave", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Settings(stay tuned) に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string MenuSettings {
+            get {
+                return ResourceManager.GetString("MenuSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Move Upper Folder に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string MoveUpFolder {
+            get {
+                return ResourceManager.GetString("MoveUpFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   New Name: に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string NewName {
+            get {
+                return ResourceManager.GetString("NewName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   New Tab に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string NewTab {
+            get {
+                return ResourceManager.GetString("NewTab", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Open By Explorer に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string OpenByExplorer {
+            get {
+                return ResourceManager.GetString("OpenByExplorer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Open New Tab に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string OpenNewTab {
+            get {
+                return ResourceManager.GetString("OpenNewTab", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Paste に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Paste {
+            get {
+                return ResourceManager.GetString("Paste", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recently Closed Folders...(stay tuned) に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string RecentlyClosedFolders {
+            get {
+                return ResourceManager.GetString("RecentlyClosedFolders", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Rename Item に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string RenameFile {
+            get {
+                return ResourceManager.GetString("RenameFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Select Open File. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string SelectOpenFile {
+            get {
+                return ResourceManager.GetString("SelectOpenFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Select Save File. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string SelectSaveFile {
+            get {
+                return ResourceManager.GetString("SelectSaveFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Tab Close に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string TabClose {
+            get {
+                return ResourceManager.GetString("TabClose", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Update に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string UpdateContent {
+            get {
+                return ResourceManager.GetString("UpdateContent", resourceCulture);
             }
         }
     }

@@ -30,7 +30,7 @@ namespace BlackSugar.Views
             }
         }
 
-        private static BitmapSource GetBitmapSource(string path)
+        public static BitmapSource GetBitmapSource(string path)
         {
             using (var stream = File.OpenRead(path))
             {
@@ -74,6 +74,9 @@ namespace BlackSugar.Views
 
             return _icons[extension.ToUpper()];
         }
+
+
+        public static BitmapSource GetCacheSource(string extension) => _icons[extension.ToUpper()];
 
         public static void SetCacheSource(string extension, BitmapSource source)
         {

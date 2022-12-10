@@ -89,14 +89,16 @@ namespace BlackSugar.Model
         public override string ToString() => FullName;
     }
 
+    [Flags]
     public enum ExFileAttributes
     {
         Undefined = -1,
-        None = 1,
-        Drive,
-        SpecsialFolder,
-        NetShare,
-        Server
+        None = 0,
+        Drive = 1 << 0,
+        SpecsialFolder = 1 << 1,
+        NetShare = 1 << 2,
+        Server = 1 << 3,
+        Folder = 1 << 4,
     }
 
 }

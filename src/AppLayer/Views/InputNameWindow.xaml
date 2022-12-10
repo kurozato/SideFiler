@@ -14,16 +14,50 @@
         WindowStartupLocation="CenterOwner"
         Icon="../icon.ico"
         Height="140" MinHeight="140" MaxHeight="140" Width="500" MinWidth="300">
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibility" />
+    </Window.Resources>
     <Grid Background="{DynamicResource FileDialogBackColor}">
     <ui:SimpleStackPanel Margin="12 5" Spacing="7"  >
-
         <Label FontSize="12" Content="{Binding Description, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
-        <TextBox ui:ControlHelper.PlaceholderText="Input Name."  
-                 Background="{DynamicResource FileDialogInputColor}"
-                 SelectionBrush="{DynamicResource MahApps.Brushes.AccentBase}"
-                 Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontSize="12" />
-
-        <ui:SimpleStackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition>
+                        <ColumnDefinition.Style>
+                            <Style>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding DataContext.IsExtentionVisible, RelativeSource={RelativeSource AncestorType=Window}}" Value="true">
+                                        <Setter Property="ColumnDefinition.Width" Value="100" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding DataContext.IsExtentionVisible, RelativeSource={RelativeSource AncestorType=Window}}" Value="false">
+                                        <Setter Property="ColumnDefinition.Width" Value="0" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ColumnDefinition.Style>
+                    </ColumnDefinition>
+                    
+                </Grid.ColumnDefinitions>
+                <TextBox
+                    Name="TextName"
+                    Grid.Column="0"
+                    ui:ControlHelper.PlaceholderText="Input Name."  
+                    Background="{DynamicResource FileDialogInputColor}"
+                    SelectionBrush="LightSlateGray"
+                    Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                    FontSize="12"  />
+                <TextBox 
+                    Grid.Column="1"
+                    ui:ControlHelper.PlaceholderText="extenstion"  
+                    Background="{DynamicResource FileDialogInputColor}"
+                    SelectionBrush="LightSlateGray"
+                    FontSize="12" 
+                    Text="{Binding Extention, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                    Visibility="{Binding IsExtentionVisible, Converter={StaticResource BooleanToVisibility}}" />
+            </Grid>
+      
+            <ui:SimpleStackPanel Orientation="Horizontal" HorizontalAlignment="Right">
             <Button Name="btnOK" Content="OK" IsDefault="True" Margin="10 0" Width="80" FontSize="12"/>
             <Button Name="btnCancel" Content="Cancel" IsCancel="True" Margin="10 0" Width="80" FontSize="12" />
         </ui:SimpleStackPanel>

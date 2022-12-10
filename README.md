@@ -52,6 +52,35 @@ equal
  materialDesign:BundledTheme BaseTheme="Light" PrimaryColor="Grey" SecondaryColor="LightBlue"
 ```
 
+## BookMarks
+```json
+[
+    {"name":"DATA(D:)", "path":"D://"  }
+]
+```
+## ContextMenu
+```json
+[
+    {
+        "icon": null,
+        "content": "sakuraで開く",
+        "app": "C:\\Program Files (x86)\\sakura\\sakura.exe",
+        "commandline": "\"%1\"",
+        "multiple": "roop",
+        "delimiter": null,
+        "target": "file"
+    },
+    {
+        "icon": null,
+        "content": "codeで開く",
+        "app": "C:\\Users\\****\\AppData\\Local\\Programs\\Microsoft VS Code\\Code.exe",
+        "commandline": "%1",
+        "multiple": "combine",
+        "delimiter": " ",
+        "target": "file"
+    }
+]
+```
 ## Japanese
 Edge風にサイドでフォルダを切り替えできるようなファイラー。   
 ただし、できることが少ないので、ほぼ閲覧用。   

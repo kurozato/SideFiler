@@ -18,24 +18,21 @@ namespace BlackSugar.Views
 {
     public interface IMainViewModel
     {
-        //Service.Model.FileResultModel? SideItem { get; set; }
-        //List<Service.Model.FileResultModel> SideItemsMirror { get; }
-        //ObservableCollection<Service.Model.FileResultModel> SideItems { get; set; }
         ObservableCollection<UIFileData?> Bookmarks { get; set; }
-        //IEnumerable<UIFileData?>? FileItems { get; set; }
-        ObservableCollection<UIFileData?> FileItems { get; set; }
-        List<UIFileResultModel> SideItemsMirror { get; }
+        ObservableCollection<UIContextMenuModel> ContextMenus { get; set; }
+        ObservableCollection<UIFileData?>? FileItems { get; set; }
         ObservableCollection<UIFileResultModel> SideItems { get; set; }
         IEnumerable<object>? SelectedFiles { get; set; }
         UIFileData? SelectedFile { get; set; }
-  
+
         UIFileResultModel? SideItem { get; set; }
-        int SideIndex { get; set; }   
+        int SideIndex { get; set; }
         string? FullPath { get; set; }
         long MaxID { get; set; }
         long? ID { get; set; }
         string? MainFilter { get; set; }
         string? SideFilter { get; set; }
+        IntPtr Handle { get; set; }
 
         DelegateCommand CloseCommand { get; }
         DelegateCommand SelectMainCommand { get; }
@@ -45,11 +42,12 @@ namespace BlackSugar.Views
         DelegateCommand UpFolderCommand { get; }
         DelegateCommand OpenExplorerCommand { get; }
         DelegateCommand PathEnterCommand { get; }
-        DelegateCommand<IntPtr> RenameCommand { get; }
+        DelegateCommand DeleteCommand { get; }
+        DelegateCommand RenameCommand { get; }
         DelegateCommand CreateFolderCommand { get; }
         DelegateCommand CopyCommand { get; }
         DelegateCommand CutCommand { get; }
-        DelegateCommand<IntPtr> PasteCommand { get; }
+        DelegateCommand PasteCommand { get; }
         DelegateCommand SaveFileMenuCommand { get; }
         DelegateCommand OpenFileMenuCommand { get; }
         DelegateCommand OpenNewTabCommand { get; }
@@ -58,45 +56,24 @@ namespace BlackSugar.Views
         DelegateCommand SideFilterCommand { get; }
         DelegateCommand SideFilterReleaseCommand { get; }
         DelegateCommand<string> ExpandCommand { get; }
-        DelegateCommand<Tuple<string[], IntPtr>> DropFileCommand { get; }
+        DelegateCommand<string[]> DropFileCommand { get; }
+        DelegateCommand<UIContextMenuModel> ContextMenuCommand { get; }
+        DelegateCommand AdjustMenuCommand { get; }
     }
 
     public class MainViewModel : BindableBase, IMainViewModel
     {
-        //private IEnumerable<UIFileData?>? fileItems;
-
-        //public IEnumerable<UIFileData?>? FileItems
-        //{
-        //    get => fileItems;
-        //    set => SetProperty(ref fileItems, value);
-        //}
-
-        private ObservableCollection<UIFileData?>? fileItems;
-
-        public ObservableCollection<UIFileData?>? FileItems
+        private void ChangeProperty()
         {
-            get => fileItems;
-            set => SetProperty(ref fileItems, value);
+            if (SideIndex < 0) return;
+            var model = SideItems[SideIndex];
+            SideItem = model;
+            FullPath = model?.File?.FullName;
+            FileItems = model?.Results;
+            //UIHelper.Refill(FileItems, model?.Results);
         }
-        //public ObservableCollection<UIFileData?> FileItems { get; set; }
-
-        public ObservableCollection<UIFileData?> Bookmarks { get; set; }
-
-        //public Service.Model.FileResultModel? SideItem { get; set; }
-        //public List<Service.Model.FileResultModel> SideItemsMirror { get; }
-        //public ObservableCollection<Service.Model.FileResultModel> SideItems { get; set; }
-
-        public List<UIFileResultModel> SideItemsMirror { get; }
-        public ObservableCollection<UIFileResultModel> SideItems { get; set; }
-
-        public IEnumerable<object>? SelectedFiles { get; set; }
-
-        public UIFileData? SelectedFile { get; set; }
-
-        public UIFileResultModel? SideItem { get; set; }
 
         private int sideIndex;
-
         public int SideIndex
         {
             get => sideIndex;
@@ -107,25 +84,32 @@ namespace BlackSugar.Views
             }
         }
 
-        private string? fullPath;
+        public UIFileResultModel? SideItem { get; set; }
 
+        private string? fullPath;
         public string? FullPath
         {
             get => fullPath;
             set => SetProperty(ref fullPath, value);
         }
 
-        private  void ChangeProperty()
+        private ObservableCollection<UIFileData?>? fileItems;
+        public ObservableCollection<UIFileData?>? FileItems
         {
-            if (SideIndex < 0) return;
-            var model = SideItems[SideIndex];
-            SideItem = model;
-            FullPath = model?.File?.FullName;
-            FileItems = model?.Results;
-            //UIHelper.Refill(FileItems, model?.Results);
+            get => fileItems;
+            set => SetProperty(ref fileItems, value);
         }
 
+        public IntPtr Handle { get; set; }
+
+        public ObservableCollection<UIFileResultModel> SideItems { get; set; }
+
+        public IEnumerable<object>? SelectedFiles { get; set; }
+
+        public UIFileData? SelectedFile { get; set; }
+
         public long? ID { get; set; }
+        public long MaxID { get; set; }
 
         private string? mainFilter;
         public string? MainFilter
@@ -141,10 +125,14 @@ namespace BlackSugar.Views
             set => SetProperty(ref sideFilter, value);
         }
 
+        public ObservableCollection<UIFileData?> Bookmarks { get; set; }
+
+        public ObservableCollection<UIContextMenuModel> ContextMenus { get; set; }
+
         //public DelegateCommand Command { get; }
         //public Action? Action { get; set; }
 
-        public long MaxID { get; set; }
+
 
         public DelegateCommand CloseCommand { get; }
         public DelegateCommand SelectMainCommand { get; }
@@ -154,11 +142,12 @@ namespace BlackSugar.Views
         public DelegateCommand UpFolderCommand { get; }
         public DelegateCommand OpenExplorerCommand { get; }
         public DelegateCommand PathEnterCommand { get; }
-        public DelegateCommand<IntPtr> RenameCommand { get; }
+        public DelegateCommand DeleteCommand { get; }
+        public DelegateCommand RenameCommand { get; }
         public DelegateCommand CreateFolderCommand { get; }
         public DelegateCommand CopyCommand { get; }
         public DelegateCommand CutCommand { get; }
-        public DelegateCommand<IntPtr> PasteCommand { get; }
+        public DelegateCommand PasteCommand { get; }
         public DelegateCommand SaveFileMenuCommand { get; }
         public DelegateCommand OpenFileMenuCommand { get; }
         public DelegateCommand OpenNewTabCommand { get; }
@@ -168,30 +157,27 @@ namespace BlackSugar.Views
         public DelegateCommand SideFilterReleaseCommand { get; }
         public DelegateCommand<string> ExpandCommand { get; }
         public DelegateCommand<UIFileData> SelectBookmarkCommand { get; }
-        public DelegateCommand<Tuple<string[], IntPtr>> DropFileCommand { get; }
+        public DelegateCommand<string[]> DropFileCommand { get; }
+        public DelegateCommand<UIContextMenuModel> ContextMenuCommand { get; }
+        public DelegateCommand AdjustMenuCommand { get; }
+
 
         public Action<UIFileResultModel?>? TabCloseAction { get; set; }
       
         public Action? OpenExplorerAction { get; set; }
-        public Action<IntPtr>? RenameAction { get; set; }
+        public Action? RenameAction { get; set; }
         public Action? CreateFolderAction { get; set; }
+        public Action? DeleteAction { get; set; }
         public Action<Effect>? CopyCutAction { get; set; }
-        public Action<IntPtr>? PasteAction { get; set; }
+        public Action? PasteAction { get; set; }
         public Action? SaveFileMenuAction { get; set; }
         public Action? OpenFileMenuAction { get; set; }   
         public Action? MainFilterAction { get; set; }
         public Action? MainFilterReleaseAction { get; set; }
         public Action? SideFilterAction { get; set; }
         public Action? SideFilterReleaseAction { get; set; }
-        public Action<Tuple<string[], IntPtr>> DropFileAction { get; set; }
-
-        //public Action? AddAction { get; set; }
-        //public Action? ReloadAction { get; set; }
-        //public Action? UpFolderAction { get; set; }
-        //public Action? PathEnterAction { get; set; }
-        //public Action? OpenNewTabAction { get; set; }
-        //public Action? SelectMainAction { get; set; }
-        //public Action<string>? ExpandAction { get; set; }
+        public Action<string[]>? DropFileAction { get; set; }
+        public Action<UIContextMenuModel>? ContextMenuAction { get; set; }
 
         public Func<Task>? AddAction { get; set; }
         public Func<Task>? ReloadAction { get; set; }
@@ -202,25 +188,28 @@ namespace BlackSugar.Views
         public Func<string, Task>? ExpandAction { get; set; }
         public Func<UIFileData, Task>? SelectBookmarkAction { get; set; }
 
+        public Action? AdjustMenuAction { get; set; }
 
         public MainViewModel()
         {
             sideIndex = -1;
             SideItems = new ObservableCollection<UIFileResultModel>();
-            SideItemsMirror = new List<UIFileResultModel>();
+            //SideItemsMirror = new List<UIFileResultModel>();
             FileItems = new ObservableCollection<UIFileData?>();
             Bookmarks = new ObservableCollection<UIFileData?>();
+            ContextMenus = new ObservableCollection<UIContextMenuModel>();
 
             CloseCommand = new DelegateCommand(() => Application.Current.Shutdown());
           
             TabCloseCommand = new DelegateCommand<UIFileResultModel?>((item) => TabCloseAction?.Invoke(item));
             OpenExplorerCommand = new DelegateCommand(() => OpenExplorerAction?.Invoke());
          
-            RenameCommand = new DelegateCommand<IntPtr>((handle) => RenameAction?.Invoke(handle), (handle) => SelectedFile != null && !SelectedFile.ExAttributes.HasFlag(ExFileAttributes.SpecsialFolder));
+            RenameCommand = new DelegateCommand(() => RenameAction?.Invoke(), () => SelectedFile != null && !SelectedFile.ExAttributes.HasFlag(ExFileAttributes.SpecsialFolder));
             CreateFolderCommand = new DelegateCommand(() => CreateFolderAction?.Invoke(), () => SideItem?.File != null && ! SideItem.File.ExAttributes.HasFlag(ExFileAttributes.Server));
             CopyCommand = new DelegateCommand(() => CopyCutAction?.Invoke(Effect.Copy),()=> SelectedFiles != null && SelectedFiles.Any());
             CutCommand = new DelegateCommand(() => CopyCutAction?.Invoke(Effect.Move), () => SelectedFiles != null && SelectedFiles.Any());
-            PasteCommand = new DelegateCommand<IntPtr>((handle) => PasteAction?.Invoke(handle), (handle) => SideItem?.File != null);
+            PasteCommand = new DelegateCommand(() => PasteAction?.Invoke(), () => SideItem?.File != null);
+            DeleteCommand = new DelegateCommand(() => DeleteAction?.Invoke());
 
             SaveFileMenuCommand = new DelegateCommand(() => SaveFileMenuAction?.Invoke());
             OpenFileMenuCommand = new DelegateCommand(() => OpenFileMenuAction?.Invoke());
@@ -230,12 +219,6 @@ namespace BlackSugar.Views
             SideFilterCommand = new DelegateCommand(() => SideFilterAction?.Invoke());
             SideFilterReleaseCommand = new DelegateCommand(() => SideFilterReleaseAction?.Invoke(), () => SideFilter?.Length > 0);
 
-            //AddCommand = new DelegateCommand(() => AddAction?.Invoke());
-            //ReloadCommand = new DelegateCommand(() => ReloadAction?.Invoke(), () => SideItem?.File != null);
-            //UpFolderCommand = new DelegateCommand(() => UpFolderAction?.Invoke());
-            //PathEnterCommand = new DelegateCommand(() => PathEnterAction?.Invoke());
-            //OpenNewTabCommand = new DelegateCommand(() => OpenNewTabAction?.Invoke());
-            //SelectMainCommand = new DelegateCommand(() => SelectMainAction?.Invoke());
             
             AddCommand = new DelegateCommand(async () => await AddAction?.Invoke());
             ReloadCommand = new DelegateCommand(async () => await ReloadAction?.Invoke(), () => SideItem?.File != null);
@@ -246,7 +229,9 @@ namespace BlackSugar.Views
             ExpandCommand = new DelegateCommand<string>(async (path) => await ExpandAction?.Invoke(path));
             SelectBookmarkCommand = new DelegateCommand<UIFileData>(async (file) => await SelectBookmarkAction?.Invoke(file));
 
-            DropFileCommand = new DelegateCommand<Tuple<string[], IntPtr>>((item) => DropFileAction?.Invoke(item));
+            DropFileCommand = new DelegateCommand<string[]>((data) => DropFileAction?.Invoke(data));
+            ContextMenuCommand = new DelegateCommand<UIContextMenuModel>((menu) => ContextMenuAction?.Invoke(menu));            
+            AdjustMenuCommand = new DelegateCommand(() => AdjustMenuAction?.Invoke());
         }
     }
 }

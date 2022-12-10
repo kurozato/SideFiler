@@ -117,11 +117,95 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AddBookmarks" xml:space="preserve">
+    <value>Add Bookmarks (stay tuned)</value>
+  </data>
+  <data name="AddNewTab" xml:space="preserve">
+    <value>Add New Tab (Ctrl+T)</value>
+  </data>
+  <data name="ClearFilter" xml:space="preserve">
+    <value>Clear Filter</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="Copy" xml:space="preserve">
+    <value>Copy</value>
+  </data>
+  <data name="CreateFolder" xml:space="preserve">
+    <value>Create Folder</value>
+  </data>
+  <data name="Cut" xml:space="preserve">
+    <value>Cut</value>
+  </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="folder.dark" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\folder.dark.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="folder.light" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\folder.light.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="FolderName" xml:space="preserve">
+    <value>Folder Name:</value>
+  </data>
+  <data name="ItemDate" xml:space="preserve">
+    <value>Date</value>
+  </data>
+  <data name="ItemName" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="ItemSize" xml:space="preserve">
+    <value>Size</value>
+  </data>
+  <data name="ItemType" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="MenuFile" xml:space="preserve">
+    <value>File</value>
+  </data>
+  <data name="MenuOpen" xml:space="preserve">
+    <value>Open SideFiler File...(beta)</value>
+  </data>
+  <data name="MenuSave" xml:space="preserve">
+    <value>Save SideFiler File...(beta)</value>
+  </data>
+  <data name="MenuSettings" xml:space="preserve">
+    <value>Settings(stay tuned)</value>
+  </data>
+  <data name="MoveUpFolder" xml:space="preserve">
+    <value>Move Upper Folder</value>
+  </data>
+  <data name="NewName" xml:space="preserve">
+    <value>New Name:</value>
+  </data>
+  <data name="NewTab" xml:space="preserve">
+    <value>New Tab</value>
+  </data>
+  <data name="OpenByExplorer" xml:space="preserve">
+    <value>Open By Explorer</value>
+  </data>
+  <data name="OpenNewTab" xml:space="preserve">
+    <value>Open New Tab</value>
+  </data>
+  <data name="Paste" xml:space="preserve">
+    <value>Paste</value>
+  </data>
+  <data name="RecentlyClosedFolders" xml:space="preserve">
+    <value>Recently Closed Folders...(stay tuned)</value>
+  </data>
+  <data name="RenameFile" xml:space="preserve">
+    <value>Rename Item</value>
+  </data>
+  <data name="SelectOpenFile" xml:space="preserve">
+    <value>Select Open File.</value>
+  </data>
+  <data name="SelectSaveFile" xml:space="preserve">
+    <value>Select Save File.</value>
+  </data>
+  <data name="TabClose" xml:space="preserve">
+    <value>Tab Close</value>
+  </data>
+  <data name="UpdateContent" xml:space="preserve">
+    <value>Update</value>
   </data>
 </root>

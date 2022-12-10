@@ -21,12 +21,13 @@ namespace BlackSugar.Presenters
     {
         ILogger _logger;
         ISideFilerService _service;
-        IUIInitializer _initializer;
+        IExConfiguration _config;
 
-        public InputNamePresenter(ISideFilerService service, ILogger logger)
+        public InputNamePresenter(ISideFilerService service, ILogger logger, IExConfiguration config)
         {
             _service = service ?? throw new ArgumentNullException(nameof(service));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _config = config ?? throw new ArgumentNullException(nameof(config));
         }
 
         //
@@ -36,9 +37,10 @@ namespace BlackSugar.Presenters
         {
             try
             {
-                ViewModel.Description = "Folder Name:";
-                ViewModel.Title = "Create Folder";
+                ViewModel.Description = ResourceService.Current.GetResource("FolderName");
+                ViewModel.Title = ResourceService.Current.GetResource("CreateFolder");
                 ViewModel.Name = "Untitled";
+                ViewModel.IsExtentionVisible = false;
 
                 var view = Router.To<InputNameViewModel>();
                 var owner = Router.To<IMainViewModel>();
@@ -73,16 +75,29 @@ namespace BlackSugar.Presenters
         {
             try
             {
-                ViewModel.Description = "New Name:";
-                ViewModel.Title = "Rename Item";
-                ViewModel.Name = file.Name;
-
+                ViewModel.Description = ResourceService.Current.GetResource("NewName");
+                ViewModel.Title = ResourceService.Current.GetResource("RenameFile");
+                if(file.IsFile)
+                {
+                    ViewModel.Name = Path.GetFileNameWithoutExtension(file.Name);
+                    ViewModel.Extention = Path.GetExtension(file.Name);
+                    ViewModel.IsExtentionVisible = true;
+                }
+                else
+                {
+                    ViewModel.Name = file.Name;
+                    ViewModel.IsExtentionVisible = false;
+                }
                 var view = Router.To<InputNameViewModel>();
                 var owner = Router.To<IMainViewModel>();
                 UIHelper.SetOwner(view, owner);
                 if (view?.ShowDialog() == true)
                 {
-                    if (file.Name == ViewModel.Name || ViewModel.Name == null || ViewModel.Name.Trim().Length == 0)
+                    var newName = ViewModel.Name;
+                    if(ViewModel.IsExtentionVisible)
+                        newName += ViewModel.Extention;
+
+                    if (file.Name == newName || newName == null || newName.Trim().Length == 0)
                         return;
 
                     var uiFile = _service.GetFileData(uiModel?.File?.FullName);
@@ -91,7 +106,7 @@ namespace BlackSugar.Presenters
                         File = uiFile,
                     };
 
-                    _service.Rename(file, ViewModel.Name, model, handle);
+                    _service.Rename(file, newName, model, handle);
 
                 }
                 view = null;
@@ -114,12 +129,12 @@ namespace BlackSugar.Presenters
                 var view = new OpenFileDialog()
                 {
                     Filter = "SFJSON Files(*.sfjson)|*.sfjson|All Files(*.*)|*.*",
-                    Title = "Select Open File.",
+                    Title = ResourceService.Current.GetResource("SelectOpenFile"),
                     RestoreDirectory = true
                 };
 
                 if (view.ShowDialog() == true)
-                    _service.Execute(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "SideFiler.exe"), view.FileName);
+                    _service.Execute(_config.ExecutionPath, view.FileName);
 
                 view = null;
 
@@ -142,7 +157,7 @@ namespace BlackSugar.Presenters
                 {
                     FileName = "untitled.sfjson",
                     Filter = "SFJSON Files(*.sfjson)|*.sfjson|All Files(*.*)|*.*",
-                    Title = "Select Save File.",
+                    Title = ResourceService.Current.GetResource("SelectSaveFile"),
                     RestoreDirectory = true
                 };
 

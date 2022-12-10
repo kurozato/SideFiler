@@ -20,7 +20,7 @@ namespace BlackSugar.Repository
 
         void CreateFolder(string path);
 
-        void OpenExplorer(IFileData file);
+        void OpenExplorer(IFileData file, bool select);
 
         bool ExecuteOrMove(ref IFileData file);
 
@@ -44,11 +44,11 @@ namespace BlackSugar.Repository
         public void CreateFolder(string path) 
             => Directory.CreateDirectory(path);
 
-        public void OpenExplorer(IFileData file)
+        public void OpenExplorer(IFileData file, bool select)
         {
             var process = new System.Diagnostics.Process();
             process.StartInfo.FileName = "EXPLORER.EXE";
-            process.StartInfo.Arguments = file.FullName;
+            process.StartInfo.Arguments = (select ? "/select, " : "") + file.FullName;
             process.StartInfo.UseShellExecute = true;
             process.Start();
         }
@@ -79,8 +79,44 @@ namespace BlackSugar.Repository
             var process = new System.Diagnostics.Process();
             process.StartInfo.FileName = application;
             process.StartInfo.Arguments = arguments;
+            process.StartInfo.CreateNoWindow = true;
             process.StartInfo.UseShellExecute = true;
+      
             process.Start();
         }
+
+        public void Rename(IFileData file, string newname)
+        {
+            if (file.IsDirectory)
+                RenameDirectory(file.FullName, newname);
+            else
+                File.Move(file.FullName, newname);
+        }
+
+        private void RenameDirectory(string sourceFilePath, string outputFilePath)
+        {
+            if ((string.Compare(sourceFilePath, outputFilePath, true) == 0))
+            {
+                var tempPath = GetSafeTempName(outputFilePath);
+
+                Directory.Move(sourceFilePath, tempPath);
+                Directory.Move(tempPath, outputFilePath);
+            }
+            else
+            {
+                Directory.Move(sourceFilePath, outputFilePath);
+            }
+        }
+
+        private string GetSafeTempName(string outputFilePath)
+        {
+            outputFilePath += "_";
+            while (File.Exists(outputFilePath) || Directory.Exists(outputFilePath))
+            {
+                outputFilePath += "_";
+            }
+            return outputFilePath;
+        }
+
     }
 }

@@ -1,6 +1,7 @@
 ﻿using BlackSugar.Service.Model;
 using BlackSugar.Views;
 using BlackSugar.WinApi;
+using BlackSugar.Wpf;
 using ControlzEx.Standard;
 using System;
 using System.Collections.Generic;
@@ -12,19 +13,26 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
+using System.Xml.Linq;
 
 namespace BlackSugar.Model
 {
-    public class UIFileResultModel
+    public class UIFileResultModel : BindableBase
     {
         public long? ID { get; set; }
         public string? Label { get; set; }
         public UIFileData? File { get; set; }
         public ObservableCollection<UIFileData>? Results { get; set; }
-       
+        private bool visible = true;
+        //public bool IsVisible { get; set; } = true;
+        public bool IsVisible { 
+            get => visible; 
+            set => SetProperty(ref visible, value); 
+        }
+        
         public UIFileResultModel()
         {
-
+            
         }
 
         public UIFileResultModel (FileResultModel model)
