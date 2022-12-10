@@ -1,6 +1,7 @@
 # SideFiler
  
 this app can switch folders with side tabs.   
+![sample Image](docs/image-sample.png) 
 
 ## Use Library
 using the following libraries:
@@ -84,6 +85,6 @@ equal
 ## Japanese
 Edge風にサイドでフォルダを切り替えできるようなファイラー。   
 ただし、できることが少ないので、ほぼ閲覧用。   
-ブックマークバー、色設定、最近閉じたタブは実装したい。   
-あとは、右クリックメニューも。
+色設定、最近閉じたタブは実装したい。   
+あとは、右クリックメニュー、ブックマークバーは設定も追加したい。
 
