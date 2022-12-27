@@ -5,7 +5,7 @@ using MaterialDesignThemes.Wpf;
 using System.Drawing;
 using System.Linq;
 using System.Windows;
-
+using System.Windows.Media;
 
 namespace BlackSugar.Views
 {

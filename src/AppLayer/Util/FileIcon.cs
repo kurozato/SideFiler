@@ -59,7 +59,12 @@ namespace BlackSugar.Views
             return source;
         }
 
-        public static bool Contains(string extension, FileAttributes attributes)
+        public static BitmapSource GetFolderSource()
+        {
+            return _icons[KEY_FOLDER];
+        }
+
+            public static bool Contains(string extension, FileAttributes attributes)
         {
             if (attributes.HasFlag(FileAttributes.Directory))
                 return true;
@@ -74,7 +79,6 @@ namespace BlackSugar.Views
 
             return _icons[extension.ToUpper()];
         }
-
 
         public static BitmapSource GetCacheSource(string extension) => _icons[extension.ToUpper()];
 

@@ -1,0 +1,236 @@
+﻿<mah:MetroWindow x:Class="BlackSugar.Views.Settings"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro" 
+        xmlns:views="clr-namespace:BlackSugar.Views"
+        d:DataContext="{d:DesignInstance Type=views:SettingsViewModel}"
+        mc:Ignorable="d"
+        Title="Settings"
+        TitleCharacterCasing="Normal"
+        NonActiveWindowTitleBrush="{DynamicResource MahApps.Brushes.Accent2}"
+        TitleForeground ="Transparent"
+        Height="550" Width="800">
+    <mah:MetroWindow.Resources>
+        <Style TargetType="Label" BasedOn="{StaticResource MaterialDesignLabel}">
+            <Setter Property="Margin" Value="0" />
+        </Style>
+        <Style TargetType="ComboBox" BasedOn="{StaticResource MaterialDesignComboBox}">
+            <Setter Property="Margin" Value="10 0" />
+        </Style>
+        <Style TargetType="TextBox" BasedOn="{StaticResource MaterialDesignTextBox}">
+            <Setter Property="Margin" Value="10 0" />
+        </Style>
+    </mah:MetroWindow.Resources>
+    <mah:MetroWindow.LeftWindowCommands>
+        <mah:WindowCommands>
+            <WrapPanel VerticalAlignment="Center">
+                <Image Source="/icon.ico" Width="20" Height="20" Margin="4 0 0 0" />
+                <TextBlock VerticalAlignment="Center" Margin="6 0 12 0" FontSize="12" Text="{Binding Source={x:Static views:ResourceService.Current}, Path=Resources.Settings, Mode=OneWay}"></TextBlock>
+            </WrapPanel>
+           
+        </mah:WindowCommands>
+    </mah:MetroWindow.LeftWindowCommands>
+        <Grid>
+        <TabControl
+            TabStripPlacement="Left">
+            <TabItem Header="General" Width="150" Style="{DynamicResource MaterialDesignTabItem}">
+                <Grid Margin="10" Background="{DynamicResource MahApps.Brushes.Window.Background}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="2*" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Row="0" Grid.Column="0">
+                        <Label Content="{Binding Source={x:Static views:ResourceService.Current}, Path=Resources.Language, Mode=OneWay}"></Label>
+                        <ComboBox
+                            ItemsSource="{Binding Languages, Mode=OneWay}"
+                            SelectedItem="{Binding Language, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            DisplayMemberPath="Content">
+                        </ComboBox>
+                    </StackPanel>
+                    <StackPanel  Grid.Row="1" Grid.Column="0">
+                        <Label Content="{Binding Source={x:Static views:ResourceService.Current}, Path=Resources.Theme, Mode=OneWay}" ></Label>
+                        <ComboBox    
+                            ItemsSource="{Binding Themes, Mode=OneWay}"
+                            SelectedItem="{Binding Theme, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            DisplayMemberPath="Content">
+                        </ComboBox>
+                    </StackPanel>
+                    <StackPanel Grid.Row="2" Grid.Column="0">
+                        <Label Content="WebSite" />
+                        <Button
+                            Style="{DynamicResource  MahApps.Styles.Button.Flat}"
+                            Command="{Binding VisitCommand}"
+                            Content="https://github.com/kurozato/SideFiler" />
+                    </StackPanel>
+                    <WrapPanel Grid.Row="3" Grid.Column="0">
+                        <Button
+                                Grid.Column="0"
+                                Style="{DynamicResource MaterialDesignOutlinedDarkButton}"
+                                Content="Commit"
+                                HorizontalContentAlignment="Left"
+                                Command="{Binding CommitCommand}"
+                                CommandParameter="General" Cursor="Hand" />
+                        <Label Content="" VerticalAlignment="Center"></Label>
+                    </WrapPanel>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Bookmarks" Style="{DynamicResource MaterialDesignTabItem}">
+                <Grid Margin="20" Background="{DynamicResource MahApps.Brushes.Window.Background}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0">
+                        <Label Content="{Binding Source={x:Static views:ResourceService.Current}, Path=Resources.Bookmarks, Mode=OneWay}" FontWeight="Bold"></Label>
+                        <ListBox
+                            SelectionMode="Single"
+                            ItemsSource="{Binding Bookmarks, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                            SelectedItem="{Binding SelectedBookmark, Mode=OneWayToSource}"
+                            SelectedIndex="{Binding BookmarksIndex}"
+                            >
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding Name}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </StackPanel>
+                    <Grid Grid.Column="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="50" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="50" />
+                        </Grid.RowDefinitions>
+                        <WrapPanel Grid.Row="0">
+                            <Button
+                                Grid.Column="0"
+                                Style="{DynamicResource MaterialDesignFlatButton}" Cursor="Arrow"
+                                FontFamily="Segoe MDL2 Assets"
+                                Content="&#xE948;"
+                                HorizontalContentAlignment="Left"
+                                Command="{Binding AddCommand}"
+                                CommandParameter="Bookmark"/>
+                            <Label Content=" Add Blank" VerticalAlignment="Center"></Label>
+                        </WrapPanel>
+                        <StackPanel Grid.Row="1"
+                             DataContext="{Binding SelectedBookmark}">
+                            <Label Content="{Binding Source={x:Static views:ResourceService.Current}, Path=Resources.ItemName, Mode=OneWay}" ></Label>
+                            <TextBox Text="{Binding Name}"></TextBox>
+                            <Label Content="{Binding Source={x:Static views:ResourceService.Current}, Path=Resources.ItemPath, Mode=OneWay}" ></Label>
+                            <TextBox Text="{Binding Path}"></TextBox>
+                        </StackPanel>
+                        <WrapPanel Grid.Row="2">
+                            <Button
+                                Grid.Column="0"
+                                Style="{DynamicResource MaterialDesignOutlinedDarkButton}"
+                                Content="Commit"
+                                HorizontalContentAlignment="Left"
+                                Command="{Binding CommitCommand}"
+                                CommandParameter="Bookmark" />
+                            <Label Content="" VerticalAlignment="Center"></Label>
+                        </WrapPanel>
+                    </Grid>
+                </Grid>
+            </TabItem>
+            <TabItem Header="ContextMenu" Style="{DynamicResource MaterialDesignTabItem}">
+                <Grid Margin="20" Background="{DynamicResource MahApps.Brushes.Window.Background}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0">
+                        <Label Content="{Binding Source={x:Static views:ResourceService.Current}, Path=Resources.ContextMenu, Mode=OneWay}" FontWeight="Bold"></Label>
+                        <ListBox
+                            SelectionMode="Single"
+                            ItemsSource="{Binding ContextMenus, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                            SelectedItem="{Binding SelectedContextMenu, Mode=OneWayToSource}"
+                            SelectedIndex="{Binding ContextMenusIndex}"
+                            >
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding Content}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </StackPanel>
+                    <Grid Grid.Column="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="50" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="50" />
+                        </Grid.RowDefinitions>
+                        <WrapPanel Grid.Row="0">
+                            <Button
+                                Grid.Column="0"
+                                Style="{DynamicResource MaterialDesignFlatButton}" Cursor="Arrow"
+                                FontFamily="Segoe MDL2 Assets"
+                                Content="&#xE948;"
+                                HorizontalContentAlignment="Left"
+                                Command="{Binding AddCommand}"
+                                CommandParameter="ContextMenu" />
+                            <Label Content=" Add Blank" VerticalAlignment="Center"></Label>
+                        </WrapPanel>
+                        <StackPanel Grid.Row="1"
+                                    DataContext="{Binding SelectedContextMenu}">
+                            <Label Content="Target" ></Label>
+                            <ComboBox 
+                                ItemsSource="{Binding Targets, Mode=OneWay}"
+                                SelectedItem="{Binding Target, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                DisplayMemberPath="Content">
+                            </ComboBox>
+                            
+                            <Label Content="Icon" ></Label>
+                            <TextBox Text="{Binding IconPath}"></TextBox>
+                            <Label Content="Content" ></Label>
+                            <TextBox Text="{Binding Content}"></TextBox>
+                            <Label Content="App" ></Label>
+                            <TextBox Text="{Binding App}"></TextBox>
+                            <Label Content="CommandLine" ></Label>
+                            <TextBox Text="{Binding Commandline}"></TextBox>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0">
+                                    <Label Content="Multiple" ></Label>
+                                    <ComboBox
+                                        ItemsSource="{Binding Multiples, Mode=OneWay}"
+                                        SelectedItem="{Binding Multiple, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                        DisplayMemberPath="Content">
+                                    </ComboBox>
+                                </StackPanel>
+                                <StackPanel Grid.Column="1">
+                                    <Label Content="Delimiter" ></Label>
+                                    <TextBox Text="{Binding Delimiter}"></TextBox>
+                                </StackPanel>
+                            </Grid>
+                        </StackPanel>
+                        <WrapPanel Grid.Row="2">
+                            <Button
+                                Grid.Column="0"
+                                Style="{DynamicResource MaterialDesignOutlinedDarkButton}"
+                                Content="Commit"
+                                HorizontalContentAlignment="Left"
+                                Command="{Binding CommitCommand}"
+                                CommandParameter="ContextMenu" />
+                            <Label Content="" VerticalAlignment="Center"></Label>
+                        </WrapPanel>
+                    </Grid>
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</mah:MetroWindow>

@@ -27,7 +27,9 @@ namespace SideFiler
     {
         public IMainViewModel? ViewModel => DataContext as IMainViewModel;
 
-        public IntPtr Handle => new System.Windows.Interop.WindowInteropHelper(this).Handle;
+        public dynamic Entitry => this;
+         
+        //public IntPtr Handle => new System.Windows.Interop.WindowInteropHelper(this).Handle;
 
         public MainWindow(IUIInitializer uiInitializer)
         {
@@ -40,7 +42,7 @@ namespace SideFiler
             //ListMain.KeyBind(Key.Enter, () => UIHelper.Executor(ViewModel?.SelectMainCommand));
             //ListMain.KeyBind(Key.Delete, () => UIHelper.Executor(ViewModel?.DeleteCommand));
             ListMain.MouseBind(MouseButton.XButton1, () => UIHelper.Executor(ViewModel?.UpFolderCommand));
-            ListMain.DragDropFile((data) => UIHelper.Executor(ViewModel?.DropFileCommand, new Tuple<string[], IntPtr>(data, Handle)));
+            ListMain.DragDropFile(data => UIHelper.Executor(ViewModel?.DropFileCommand, data));
  
             //ListMain.MouseBind(MouseButton.Middle, () => UIHelper.Executor(ViewModel?.OpenNewTabCommand));
             ListMain.BlankAreaClick(() => ListMain.UnselectAll());
@@ -49,7 +51,11 @@ namespace SideFiler
 
             ListMain.ContextMenuOpening += (s, e) => UIHelper.Executor(ViewModel?.AdjustMenuCommand);
 
- 
+            this.Closed += (s, e) =>
+            {
+                var items = ViewModel?.SideItems;
+
+            };
         }
 
     }  

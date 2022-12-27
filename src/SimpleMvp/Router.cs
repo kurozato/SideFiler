@@ -52,6 +52,14 @@ namespace BlackSugar.SimpleMvp
             return view;
         }
 
+        public static IView<TViewModel> To<TViewModel>(IPresenter<TViewModel> presenter)
+              where TViewModel : class
+        {
+            var view = resolver?.Resolve<IView<TViewModel>>();
+            view.DataContext = presenter?.ViewModel;
+            return view;
+        }
+
         /// <summary>
         /// 
         /// </summary>

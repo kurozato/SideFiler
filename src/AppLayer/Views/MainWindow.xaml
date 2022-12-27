@@ -56,10 +56,12 @@
                     <MenuItem 
                         Header="{Binding Source={x:Static views:ResourceService.Current}, Path=Resources.RecentlyClosedFolders, Mode=OneWay}" 
                         FontSize="12" 
+                        Command="{Binding RecentlyCloseFolderCommand}"
                         Style="{DynamicResource MaterialDesignMenuItem}" />
                     <Separator/>
                     <MenuItem 
                         Header="{Binding Source={x:Static views:ResourceService.Current}, Path=Resources.MenuSettings, Mode=OneWay}"  
+                        Command="{Binding SettingMenuCommand}"
                         FontSize="12" 
                         Style="{DynamicResource MaterialDesignMenuItem}" />
                     <Separator/>
@@ -206,10 +208,10 @@
                                 Mode=FindAncestor,
                                 AncestorType=FrameworkElement,
                                 AncestorLevel=1}}"
-                            ToolTip="{Binding FullName}">
+                            ToolTip="{Binding Path}">
                             <StackPanel Orientation="Horizontal" Margin="0" >
                                 <Image Source="{Binding Icon}" Width="16"  Margin="0 0 5 0" CacheMode="BitmapCache" />
-                                <TextBlock FontSize="12" Text="{Binding Name}" FontWeight="Normal" Foreground="{DynamicResource MaterialDesignLightForeground}" />
+                                <TextBlock FontSize="12" Text="{Binding Name}" FontWeight="Normal" Foreground="{DynamicResource BookmarkForeColor}" />
                             </StackPanel>
                         </Button>
                     </DataTemplate>

@@ -42,7 +42,7 @@ namespace BlackSugar.Presenters
                 ViewModel.Name = "Untitled";
                 ViewModel.IsExtentionVisible = false;
 
-                var view = Router.To<InputNameViewModel>();
+                var view = Router.To(this);
                 var owner = Router.To<IMainViewModel>();
                 UIHelper.SetOwner(view, owner);
                 if(view?.ShowDialog() == true)
@@ -60,6 +60,10 @@ namespace BlackSugar.Presenters
                 }
 
                 view = null;
+            }
+            catch (FileDataNotFoundException fileEx)
+            {
+                UIHelper.ShowErrorMessageEx(fileEx);
             }
             catch (Exception ex)
             {
@@ -88,7 +92,7 @@ namespace BlackSugar.Presenters
                     ViewModel.Name = file.Name;
                     ViewModel.IsExtentionVisible = false;
                 }
-                var view = Router.To<InputNameViewModel>();
+                var view = Router.To(this);
                 var owner = Router.To<IMainViewModel>();
                 UIHelper.SetOwner(view, owner);
                 if (view?.ShowDialog() == true)
@@ -110,6 +114,10 @@ namespace BlackSugar.Presenters
 
                 }
                 view = null;
+            }
+            catch (FileDataNotFoundException fileEx)
+            {
+                UIHelper.ShowErrorMessageEx(fileEx);
             }
             catch (Exception ex)
             {

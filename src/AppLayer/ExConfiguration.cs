@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BlackSugar.WinApi;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -14,6 +15,7 @@ namespace BlackSugar.Views
         string BaseDirectory { get; }
         string GetFullPath(string fileName, bool addJsonExtension = true, string? addExtension = null);
         string GetFullPath(string subDirectory, string fileName, bool addJsonExtension = true, string? addExtension = null);
+        IEnumerable<string> GetFiles(string subDirectory, string pattern);
 
     }
     public class ExConfiguration : IExConfiguration
@@ -49,6 +51,13 @@ namespace BlackSugar.Views
             }
             
             return result;
+        }
+
+        public IEnumerable<string> GetFiles(string subDirectory, string pattern)
+        {
+            var target = Path.Combine(BaseDirectory, subDirectory);
+            return Directory.GetFiles(target ,pattern, SearchOption.AllDirectories);
+            //DirectoryUtil.EnumerateFiles(target, pattern, SearchOption.AllDirectories); 
         }
            
     }

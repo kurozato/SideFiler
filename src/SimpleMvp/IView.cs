@@ -15,5 +15,7 @@ namespace BlackSugar.SimpleMvp
         bool? ShowDialog();
 
         void Show();
+
+        dynamic Entitry { get; }
     }
 }

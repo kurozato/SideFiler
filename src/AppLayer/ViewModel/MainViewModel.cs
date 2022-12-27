@@ -18,7 +18,7 @@ namespace BlackSugar.Views
 {
     public interface IMainViewModel
     {
-        ObservableCollection<UIFileData?> Bookmarks { get; set; }
+        ObservableCollection<UIBookmarkModel?> Bookmarks { get; set; }
         ObservableCollection<UIContextMenuModel> ContextMenus { get; set; }
         ObservableCollection<UIFileData?>? FileItems { get; set; }
         ObservableCollection<UIFileResultModel> SideItems { get; set; }
@@ -59,6 +59,8 @@ namespace BlackSugar.Views
         DelegateCommand<string[]> DropFileCommand { get; }
         DelegateCommand<UIContextMenuModel> ContextMenuCommand { get; }
         DelegateCommand AdjustMenuCommand { get; }
+        DelegateCommand SettingMenuCommand { get; }
+        DelegateCommand RecentlyCloseFolderCommand { get; }
     }
 
     public class MainViewModel : BindableBase, IMainViewModel
@@ -125,14 +127,12 @@ namespace BlackSugar.Views
             set => SetProperty(ref sideFilter, value);
         }
 
-        public ObservableCollection<UIFileData?> Bookmarks { get; set; }
+        public ObservableCollection<UIBookmarkModel?> Bookmarks { get; set; }
 
         public ObservableCollection<UIContextMenuModel> ContextMenus { get; set; }
 
         //public DelegateCommand Command { get; }
         //public Action? Action { get; set; }
-
-
 
         public DelegateCommand CloseCommand { get; }
         public DelegateCommand SelectMainCommand { get; }
@@ -156,11 +156,12 @@ namespace BlackSugar.Views
         public DelegateCommand SideFilterCommand { get; }
         public DelegateCommand SideFilterReleaseCommand { get; }
         public DelegateCommand<string> ExpandCommand { get; }
-        public DelegateCommand<UIFileData> SelectBookmarkCommand { get; }
+        public DelegateCommand<UIBookmarkModel> SelectBookmarkCommand { get; }
         public DelegateCommand<string[]> DropFileCommand { get; }
         public DelegateCommand<UIContextMenuModel> ContextMenuCommand { get; }
         public DelegateCommand AdjustMenuCommand { get; }
-
+        public DelegateCommand SettingMenuCommand { get; }
+        public DelegateCommand RecentlyCloseFolderCommand { get; }
 
         public Action<UIFileResultModel?>? TabCloseAction { get; set; }
       
@@ -178,6 +179,8 @@ namespace BlackSugar.Views
         public Action? SideFilterReleaseAction { get; set; }
         public Action<string[]>? DropFileAction { get; set; }
         public Action<UIContextMenuModel>? ContextMenuAction { get; set; }
+        public Action? SettingMenuAction { get; set; }
+        public Action? RecentlyCloseFolderAction { get; set; }
 
         public Func<Task>? AddAction { get; set; }
         public Func<Task>? ReloadAction { get; set; }
@@ -186,7 +189,7 @@ namespace BlackSugar.Views
         public Func<Task>? OpenNewTabAction { get; set; }
         public Func<Task>? SelectMainAction { get; set; }
         public Func<string, Task>? ExpandAction { get; set; }
-        public Func<UIFileData, Task>? SelectBookmarkAction { get; set; }
+        public Func<UIBookmarkModel, Task>? SelectBookmarkAction { get; set; }
 
         public Action? AdjustMenuAction { get; set; }
 
@@ -196,7 +199,7 @@ namespace BlackSugar.Views
             SideItems = new ObservableCollection<UIFileResultModel>();
             //SideItemsMirror = new List<UIFileResultModel>();
             FileItems = new ObservableCollection<UIFileData?>();
-            Bookmarks = new ObservableCollection<UIFileData?>();
+            Bookmarks = new ObservableCollection<UIBookmarkModel?>();
             ContextMenus = new ObservableCollection<UIContextMenuModel>();
 
             CloseCommand = new DelegateCommand(() => Application.Current.Shutdown());
@@ -227,11 +230,13 @@ namespace BlackSugar.Views
             OpenNewTabCommand = new DelegateCommand(async () => await OpenNewTabAction?.Invoke());
             SelectMainCommand = new DelegateCommand(async () => await SelectMainAction?.Invoke());
             ExpandCommand = new DelegateCommand<string>(async (path) => await ExpandAction?.Invoke(path));
-            SelectBookmarkCommand = new DelegateCommand<UIFileData>(async (file) => await SelectBookmarkAction?.Invoke(file));
+            SelectBookmarkCommand = new DelegateCommand<UIBookmarkModel>(async (bookmark) => await SelectBookmarkAction?.Invoke(bookmark));
 
             DropFileCommand = new DelegateCommand<string[]>((data) => DropFileAction?.Invoke(data));
             ContextMenuCommand = new DelegateCommand<UIContextMenuModel>((menu) => ContextMenuAction?.Invoke(menu));            
             AdjustMenuCommand = new DelegateCommand(() => AdjustMenuAction?.Invoke());
+            SettingMenuCommand = new DelegateCommand(()=> SettingMenuAction?.Invoke());
+            RecentlyCloseFolderCommand = new DelegateCommand(() => RecentlyCloseFolderAction?.Invoke());
         }
     }
 }

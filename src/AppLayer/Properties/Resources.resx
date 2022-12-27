@@ -170,7 +170,7 @@
     <value>Save SideFiler File...(beta)</value>
   </data>
   <data name="MenuSettings" xml:space="preserve">
-    <value>Settings(stay tuned)</value>
+    <value>Settings...</value>
   </data>
   <data name="MoveUpFolder" xml:space="preserve">
     <value>Move Upper Folder</value>
@@ -181,8 +181,11 @@
   <data name="NewTab" xml:space="preserve">
     <value>New Tab</value>
   </data>
+  <data name="NotFound" xml:space="preserve">
+    <value>is not found.</value>
+  </data>
   <data name="OpenByExplorer" xml:space="preserve">
-    <value>Open By Explorer</value>
+    <value>Open with Explorer</value>
   </data>
   <data name="OpenNewTab" xml:space="preserve">
     <value>Open New Tab</value>
@@ -191,21 +194,45 @@
     <value>Paste</value>
   </data>
   <data name="RecentlyClosedFolders" xml:space="preserve">
-    <value>Recently Closed Folders...(stay tuned)</value>
+    <value>Recently Closed Folders...(beta)</value>
   </data>
   <data name="RenameFile" xml:space="preserve">
     <value>Rename Item</value>
   </data>
   <data name="SelectOpenFile" xml:space="preserve">
-    <value>Select Open File.</value>
+    <value>Select Open File</value>
   </data>
   <data name="SelectSaveFile" xml:space="preserve">
-    <value>Select Save File.</value>
+    <value>Select Save File</value>
   </data>
   <data name="TabClose" xml:space="preserve">
     <value>Tab Close</value>
   </data>
   <data name="UpdateContent" xml:space="preserve">
     <value>Update</value>
+  </data>
+  <data name="Settings" xml:space="preserve">
+    <value>SETTINGS</value>
+  </data>
+  <data name="Language" xml:space="preserve">
+    <value>Language</value>
+  </data>
+  <data name="Theme" xml:space="preserve">
+    <value>Theme</value>
+  </data>
+  <data name="Bookmarks" xml:space="preserve">
+    <value>Bookmarks</value>
+  </data>
+  <data name="ContextMenu" xml:space="preserve">
+    <value>ContextMenu(beta)</value>
+  </data>
+  <data name="ItemPath" xml:space="preserve">
+    <value>Path</value>
+  </data>
+  <data name="Light" xml:space="preserve">
+    <value>Light</value>
+  </data>
+  <data name="Dark" xml:space="preserve">
+    <value>Dark</value>
   </data>
 </root>

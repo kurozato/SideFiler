@@ -170,7 +170,7 @@
     <value>SideFilerファイルを保存...(beta)</value>
   </data>
   <data name="MenuSettings" xml:space="preserve">
-    <value>設定(stay tuned)</value>
+    <value>設定...</value>
   </data>
   <data name="MoveUpFolder" xml:space="preserve">
     <value>上の階層へ</value>
@@ -180,6 +180,9 @@
   </data>
   <data name="NewTab" xml:space="preserve">
     <value>新しいタブ</value>
+  </data>
+  <data name="NotFound" xml:space="preserve">
+    <value>は見つかりません。</value>
   </data>
   <data name="OpenByExplorer" xml:space="preserve">
     <value>エクスプローラーで開く</value>
@@ -191,7 +194,7 @@
     <value>貼り付け</value>
   </data>
   <data name="RecentlyClosedFolders" xml:space="preserve">
-    <value>最近閉じたフォルダ...(stay tuned)</value>
+    <value>最近閉じたフォルダ...(beta)</value>
   </data>
   <data name="RenameFile" xml:space="preserve">
     <value>名前の変更</value>
@@ -207,5 +210,29 @@
   </data>
   <data name="UpdateContent" xml:space="preserve">
     <value>更新</value>
+  </data>
+  <data name="Settings" xml:space="preserve">
+    <value>設定</value>
+  </data>
+  <data name="Language" xml:space="preserve">
+    <value>言語</value>
+  </data>
+  <data name="Theme" xml:space="preserve">
+    <value>テーマ</value>
+  </data>
+  <data name="Bookmarks" xml:space="preserve">
+    <value>ブックマーク</value>
+  </data>
+  <data name="ContextMenu" xml:space="preserve">
+    <value>コンテキストメニュー(beta)</value>
+  </data>
+  <data name="ItemPath" xml:space="preserve">
+    <value>パス</value>
+  </data>
+  <data name="Light" xml:space="preserve">
+    <value>ライト</value>
+  </data>
+  <data name="Dark" xml:space="preserve">
+    <value>ダーク</value>
   </data>
 </root>

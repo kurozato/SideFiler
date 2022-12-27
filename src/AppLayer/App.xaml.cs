@@ -21,6 +21,7 @@ using Windows.UI.ViewManagement;
 using BlackSugar.Service.Model;
 using BlackSugar.Model;
 using BlackSugar.WinApi;
+using System.Globalization;
 
 namespace SideFiler
 {
@@ -31,59 +32,68 @@ namespace SideFiler
     {
         private void Application_Startup(object sender, StartupEventArgs e)
         {
-            InitializeLogger();
-
-            var resolver = new DependencyResolver();
-            resolver.Set(services =>
+            try
             {
+                InitializeLogger();
 
-                //repository
-                services.AddSingleton<IStorageItemFactory, StorageItemFactory>();
-                services.AddSingleton<IDbCommander, DbCommander>();
-                services.AddSingleton<IJsonAdpter, JsonAdpter>();
-                services.AddSingleton<IFileOperator, FileOperator>();
+                this.Resources.Clear();
 
-                //service
-                services.AddSingleton<ILogger>(LogManager.GetCurrentClassLogger());
-                services.AddSingleton<ISideFilerService, SideFilerService>();
+                var resolver = new DependencyResolver();
+                resolver.Set(services =>
+                {
 
-                services.AddSingleton<IClipboardHelper, ClipboardHelper>();
+                    //repository
+                    services.AddSingleton<IStorageItemFactory, StorageItemFactory>();
+                    services.AddSingleton<IDbCommander, DbCommander>();
+                    services.AddSingleton<IJsonAdpter, JsonAdpter>();
+                    services.AddSingleton<IFileOperator, FileOperator>();
 
-                //
-                services.AddSingleton<IUIInitializer, UIInitializer>();
-                services.AddSingleton<IExConfiguration, ExConfiguration>();
+                    //service
+                    services.AddSingleton<ILogger>(LogManager.GetCurrentClassLogger());
+                    services.AddSingleton<ISideFilerService, SideFilerService>();
 
-                //validator
+                    services.AddSingleton<IClipboardHelper, ClipboardHelper>();
 
-                //presenter
-                services.AddSingleton<IPresenter<IMainViewModel>, MainPresenter>();
-                services.AddSingleton<IPresenter<InputNameViewModel>, InputNamePresenter>();
+                    //
+                    services.AddSingleton<IUIInitializer, UIInitializer>();
+                    services.AddSingleton<IExConfiguration, ExConfiguration>();
 
-                //viewModel
-                services.AddSingleton<IMainViewModel, MainViewModel>();
-                services.AddSingleton<InputNameViewModel>();
+                    //validator
 
-                //view
-                services.AddSingleton<IView<IMainViewModel>, MainWindow>();
-                services.AddTransient<IView<InputNameViewModel>, InputNameWindow>();
+                    //presenter
+                    services.AddSingleton<IPresenter<IMainViewModel>, MainPresenter>();
+                    services.AddSingleton<IPresenter<InputNameViewModel>, InputNamePresenter>();
+                    services.AddSingleton<IPresenter<SettingsViewModel>, SettingsPresenter>();
 
-            });
+                    //viewModel
+                    services.AddSingleton<IMainViewModel, MainViewModel>();
+                    services.AddSingleton<InputNameViewModel>();
+                    services.AddSingleton<SettingsViewModel>();
 
-            Router.Configure(resolver);
+                    //view
+                    services.AddSingleton<IView<IMainViewModel>, MainWindow>();
+                    services.AddTransient<IView<InputNameViewModel>, InputNameWindow>();
+                    services.AddTransient<IView<SettingsViewModel>, Settings>();
 
-            //TODO->settings
-            ResourceService.Current.ChangeCulture("en");
+                });
 
-            Router.Resolver?.Resolve<IUIInitializer>()?.Initialize();
+                Router.Configure(resolver);
 
-            var view = Router.To<IMainViewModel>();
-            if(e.Args.Length == 0)
-                view?.ViewModel?.AddCommand?.Execute(view?.ViewModel);
-            else
-                view?.ViewModel?.ExpandCommand?.Execute(e.Args[0]);
+                Router.Resolver?.Resolve<IUIInitializer>()?.Initialize();
 
-            view?.Show();
-            
+                var view = Router.To<IMainViewModel>();
+                if (e.Args.Length == 0)
+                    view?.ViewModel?.AddCommand?.Execute(view?.ViewModel);
+                else
+                    view?.ViewModel?.ExpandCommand?.Execute(e.Args[0]);
+
+                view?.Show();
+
+            }
+            catch(Exception ex)
+            {
+                UIHelper.ShowErrorMessage(ex);
+            }
         }
 
         private void InitializeLogger()
@@ -104,6 +114,11 @@ namespace SideFiler
             conf.LoggingRules.Add(new LoggingRule("*", LogLevel.Trace, file));
 
             LogManager.Configuration = conf;
+        }
+
+        protected override void OnExit(ExitEventArgs e)
+        {
+            Router.NavigateTo<IMainViewModel>("Closed");
         }
     }
 }

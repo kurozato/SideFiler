@@ -20,17 +20,15 @@ namespace BlackSugar.Service
 
         void Startup(FileResultModel model);
 
-        void RegistRec(FileResultModel model, string dbfile);
-
-        void InitilizeRec(string dbfile);
-
         void OpenExplorer(IFileData file, bool select);
 
         void SaveJsonFile(object content, string fileName);
 
         IEnumerable<FileResultModel>? GetData(string fileName);
 
-        IEnumerable<IFileData?>? GetBookmarksData(string fileName);
+        IEnumerable<IFileData?>? GetBookmarksFileData(string fileName);
+
+        IEnumerable<BookmarkModel?>? GetBookmarksData(string fileName);
 
         IEnumerable<ContextMenuModel?>? GetContextMenusData(string fileName);
 
@@ -45,6 +43,14 @@ namespace BlackSugar.Service
         void Execute(string application, string arguments);
 
         void DoContextMenu(ContextMenuModel menu, string[] items);
+
+        void CheckDirectory(string path);
+
+        void RegistRec(IFileData? file, string dbfile);
+
+        void InitilizeRec(string dbfile);
+
+        IEnumerable<IFileData> GetRecData(string dbfile);
     }
 
     public class SideFilerService : ISideFilerService
@@ -66,7 +72,8 @@ namespace BlackSugar.Service
         {
             var file = _factory.CreateInstance(path).ToFileData();
             if(file == null)
-                throw new DirectoryNotFoundException("path:'" + path + "' is not found.");
+                //throw new DirectoryNotFoundException("path:'" + path + "' is not found.");
+                throw FileDataNotFoundException.Create(path);
 
             return file;
         }
@@ -169,16 +176,22 @@ namespace BlackSugar.Service
             //            });       
         }
 
-        public IEnumerable<IFileData?>? GetBookmarksData(string fileName)
+
+        public IEnumerable<IFileData?>? GetBookmarksFileData(string fileName)
         {
             return _adpter.Get<List<BookmarkModel>>(fileName, false)?
                       .Where(json => json?.Path != null)
                       .Select(json => _factory.CreateInstance(json.Path).ToFileData());
         }
 
+        public IEnumerable<BookmarkModel?>? GetBookmarksData(string fileName)
+        {
+            return _adpter.Get<List<BookmarkModel>>(fileName, false) ?? Enumerable.Empty<BookmarkModel?>();
+        }
+
         public IEnumerable<ContextMenuModel?>? GetContextMenusData(string fileName)
         {
-            return _adpter.Get<List<ContextMenuModel>>(fileName, false);
+            return _adpter.Get<List<ContextMenuModel>>(fileName, false) ?? Enumerable.Empty<ContextMenuModel?>();
         }
 
         public void DoContextMenu(ContextMenuModel menu, string[] items)
@@ -233,23 +246,32 @@ namespace BlackSugar.Service
             return result;
         }
 
-        /***********************/
-        public void RegistRec(FileResultModel model, string dbfile)
+        public void CheckDirectory(string path)
         {
-            var file = model?.File;
+            if (!Directory.Exists(path))
+                Directory.CreateDirectory(path);
 
+            var files = Directory.GetFiles(path);
+
+            files.OrderByDescending(f => f).TakeLast(files.Length - 2).Invoke(f => File.Delete(f));
+        }
+
+     
+
+
+
+        /***********************/
+        public void RegistRec(IFileData? file, string dbfile)
+        {
             if (file == null) return;
 
             string qry;
             string connect = _commander.ConnectionString(dbfile);
-            qry = "SELECT recNo FROM SFCloseRec WHERE path = '@Path; ";
-            var tmp = _commander.Get<dynamic>(qry, new { Path = file.FullName }, connect)?.FirstOrDefault();
-            int recNo = tmp != null ? tmp.recNo : 0;
+
             qry = "";
             qry += "DELETE FROM SFCloseRec WHERE path = @Path; ";
-            qry += "INSERT INTO SFCloseRec(recNo, name, path)VALUES(1, @Name, @Path); ";
-            qry += "UPDATE SFCloseRec SET recNo = recNo + 1 WHERE recNo < @RecNo Or @RecNo = 0; ";
-            _commander.Execute(qry, new { Name = file.Name, Path = file.FullName, RecNo = recNo }, connect);
+            qry += "INSERT INTO SFCloseRec(name, path, regist)VALUES(@Name, @Path, @Regist); ";
+            _commander.Execute(qry, new { Name = file.Name, Path = file.FullName, Regist = DateTime.UtcNow.ToString("yyyyMMddTHHmmssfffZ") }, connect);
 
         }
 
@@ -261,11 +283,23 @@ namespace BlackSugar.Service
             qry += "CREATE TABLE IF NOT EXISTS ";
             qry += "SFCloseRec( ";
             qry += " name TEXT NOT NULL,";
-            qry += " path TEXT NOT NULL";
-            qry += " recNo INTEGER NOT NULL";
+            qry += " path TEXT NOT NULL,";
+            qry += " regist TEXT NOT NULL";
             qry += ") ";
 
             _commander.Execute(qry, null, connect);
+        }
+
+        public IEnumerable<IFileData> GetRecData(string dbfile)
+        {
+            string qry;
+            string connect = _commander.ConnectionString(dbfile);
+
+            qry = "";
+            qry += "SELECT * FROM SFCloseRec ORDER BY regist LIMIT 30; ";
+
+            return _commander.Get<dynamic>(qry, null, connect)
+                .Select<dynamic, IFileData>(data => _factory.CreateInstance(data.path).ToFileData());
         }
     }
 }

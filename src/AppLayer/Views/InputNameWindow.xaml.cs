@@ -29,6 +29,8 @@ namespace BlackSugar.Views
 
         public InputNameViewModel? ViewModel => DataContext as InputNameViewModel;
 
+        public dynamic Entitry => this;
+
         public InputNameWindow(IUIInitializer uiInitializer)
         {
             InitializeComponent();

@@ -35,6 +35,8 @@ namespace BlackSugar.Service.Model
         [JsonPropertyName("width")]
         public int? Width { get; set; }
 
+        [JsonPropertyName("language")]
+        public string? Language { get; set; }
 
         [JsonIgnore]
         public UITheme Theme => ThemeName.TryParse<UITheme>();//ConvertTheme.TryGetTheme(ThemeName);

@@ -1,4 +1,5 @@
 ﻿using BlackSugar.Model;
+using BlackSugar.Service;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -20,7 +21,17 @@ namespace BlackSugar.Views
                 "Error", 
                 MessageBoxButton.OK, 
                 MessageBoxImage.Error);
-    
+
+        public static MessageBoxResult ShowErrorMessage(string message)
+            => MessageBox.Show(
+                message,
+                "Error",
+                MessageBoxButton.OK,
+                MessageBoxImage.Error);
+
+        public static MessageBoxResult ShowErrorMessageEx(FileDataNotFoundException fileEx)
+            => ShowErrorMessage(fileEx.BuildMessage(ResourceService.Current.GetResource("NotFound")));
+
         public static void Executor(ICommand? command, object? parameter = null)
         {
             if (command?.CanExecute(parameter) == true)

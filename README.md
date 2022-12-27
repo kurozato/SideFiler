@@ -53,18 +53,25 @@ equal
  materialDesign:BundledTheme BaseTheme="Light" PrimaryColor="Grey" SecondaryColor="LightBlue"
 ```
 
-## BookMarks
+## BookMarks(future)
+
+bookmarks.json
+
 ```json
 [
-    {"name":"DATA(D:)", "path":"D://"  }
+    {"name":"DATA(D:)", "path":"D://"  },
+    {"name":"Windows(C:)", "path":"C://"  }
 ]
 ```
-## ContextMenu
+## ContextMenu(future)
+
+context_menu.json
+
 ```json
 [
     {
         "icon": null,
-        "content": "sakuraで開く",
+        "content": "Open with sakura",
         "app": "C:\\Program Files (x86)\\sakura\\sakura.exe",
         "commandline": "\"%1\"",
         "multiple": "roop",
@@ -73,7 +80,7 @@ equal
     },
     {
         "icon": null,
-        "content": "codeで開く",
+        "content": "Open with code",
         "app": "C:\\Users\\****\\AppData\\Local\\Programs\\Microsoft VS Code\\Code.exe",
         "commandline": "%1",
         "multiple": "combine",
@@ -82,6 +89,17 @@ equal
     }
 ]
 ```
+## Directory Structure 
+<pre>
+(install)/
+   ├ SideFiler.exe
+   ├ ui_settings.json
+   ├ bookmarks.json
+   └ context_menu/
+      ├ context_menu.json
+      ├ xxx_icon.png
+</pre>
+
 ## Japanese
 Edge風にサイドでフォルダを切り替えできるようなファイラー。   
 ただし、できることが少ないので、ほぼ閲覧用。   

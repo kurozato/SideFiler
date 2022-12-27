@@ -30,10 +30,12 @@ namespace BlackSugar.Views
             return _resources.GetType()?.GetProperty(key)?.GetValue(_resources) as string;
         }
 
+        public string GetCurrentCulture() => CultureInfo.CurrentCulture.Name;
+
         public void ChangeCulture(string name)
         {
             Resources.Culture = CultureInfo.GetCultureInfo(name);
-            _resources = new Resources();
+            Resources = new Resources();
         }
     }
 

@@ -79,6 +79,15 @@ namespace BlackSugar.Properties {
         }
         
         /// <summary>
+        ///   Bookmarks に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Bookmarks {
+            get {
+                return ResourceManager.GetString("Bookmarks", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Clear Filter に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string ClearFilter {
@@ -93,6 +102,15 @@ namespace BlackSugar.Properties {
         public static string Close {
             get {
                 return ResourceManager.GetString("Close", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   ContextMenu(beta) に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string ContextMenu {
+            get {
+                return ResourceManager.GetString("ContextMenu", resourceCulture);
             }
         }
         
@@ -120,6 +138,15 @@ namespace BlackSugar.Properties {
         public static string Cut {
             get {
                 return ResourceManager.GetString("Cut", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Dark に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Dark {
+            get {
+                return ResourceManager.GetString("Dark", resourceCulture);
             }
         }
         
@@ -171,6 +198,15 @@ namespace BlackSugar.Properties {
         }
         
         /// <summary>
+        ///   Path に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string ItemPath {
+            get {
+                return ResourceManager.GetString("ItemPath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Size に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string ItemSize {
@@ -185,6 +221,24 @@ namespace BlackSugar.Properties {
         public static string ItemType {
             get {
                 return ResourceManager.GetString("ItemType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Language に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Language {
+            get {
+                return ResourceManager.GetString("Language", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Light に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Light {
+            get {
+                return ResourceManager.GetString("Light", resourceCulture);
             }
         }
         
@@ -216,7 +270,7 @@ namespace BlackSugar.Properties {
         }
         
         /// <summary>
-        ///   Settings(stay tuned) に類似しているローカライズされた文字列を検索します。
+        ///   Settings... に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string MenuSettings {
             get {
@@ -252,7 +306,16 @@ namespace BlackSugar.Properties {
         }
         
         /// <summary>
-        ///   Open By Explorer に類似しているローカライズされた文字列を検索します。
+        ///   is not found. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string NotFound {
+            get {
+                return ResourceManager.GetString("NotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Open with Explorer に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string OpenByExplorer {
             get {
@@ -279,7 +342,7 @@ namespace BlackSugar.Properties {
         }
         
         /// <summary>
-        ///   Recently Closed Folders...(stay tuned) に類似しているローカライズされた文字列を検索します。
+        ///   Recently Closed Folders...(beta) に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string RecentlyClosedFolders {
             get {
@@ -297,7 +360,7 @@ namespace BlackSugar.Properties {
         }
         
         /// <summary>
-        ///   Select Open File. に類似しているローカライズされた文字列を検索します。
+        ///   Select Open File に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string SelectOpenFile {
             get {
@@ -306,11 +369,20 @@ namespace BlackSugar.Properties {
         }
         
         /// <summary>
-        ///   Select Save File. に類似しているローカライズされた文字列を検索します。
+        ///   Select Save File に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string SelectSaveFile {
             get {
                 return ResourceManager.GetString("SelectSaveFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   SETTINGS に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Settings {
+            get {
+                return ResourceManager.GetString("Settings", resourceCulture);
             }
         }
         
@@ -320,6 +392,15 @@ namespace BlackSugar.Properties {
         public static string TabClose {
             get {
                 return ResourceManager.GetString("TabClose", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Theme に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Theme {
+            get {
+                return ResourceManager.GetString("Theme", resourceCulture);
             }
         }
         
