@@ -1,0 +1,6 @@
+.vs/*
+src/**/bin/*
+src/**/obj/*
+*.user
+tests/**/bin/*
+tests/**/obj/*

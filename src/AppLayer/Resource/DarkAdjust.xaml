@@ -1,0 +1,8 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <SolidColorBrush x:Key="FileDialogBackColor" Color="#040404"/>
+    <SolidColorBrush x:Key="MenuForeColor" Color="White"/>
+    <SolidColorBrush x:Key="FileDialogInputColor" Color="#383838"/>
+    <SolidColorBrush x:Key="BookmarkForeColor" Color="#eeeeee"/>
+</ResourceDictionary>
