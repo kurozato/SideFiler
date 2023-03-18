@@ -18,7 +18,7 @@ namespace BlackSugar.Service
 
         bool Up(FileResultModel model);
 
-        void Startup(FileResultModel model);
+        bool Startup(FileResultModel model);
 
         void OpenExplorer(IFileData file, bool select);
 
@@ -28,9 +28,9 @@ namespace BlackSugar.Service
 
         IEnumerable<IFileData?>? GetBookmarksFileData(string fileName);
 
-        IEnumerable<BookmarkModel?>? GetBookmarksData(string fileName);
+        IEnumerable<BookmarkModel?> GetBookmarksData(string fileName);
 
-        IEnumerable<ContextMenuModel?>? GetContextMenusData(string fileName);
+        IEnumerable<ContextMenuModel?> GetContextMenusData(string fileName);
 
         void CopyOrMove(FileResultModel model, IntPtr handle, string[] data, Effect effect);
 
@@ -51,6 +51,12 @@ namespace BlackSugar.Service
         void InitilizeRec(string dbfile);
 
         IEnumerable<IFileData> GetRecData(string dbfile);
+
+        void RegistReadingList(BookmarkModel? file, string dbfile);
+
+        void InitilizeReadingList(string dbfile);
+
+        IEnumerable<BookmarkModel> GetReadingListData(string dbfile);
     }
 
     public class SideFilerService : ISideFilerService
@@ -99,10 +105,12 @@ namespace BlackSugar.Service
                 _operator.Copy(data.ToList(), model.File.FullName, handle);
         }
 
-        public void Startup(FileResultModel model)
+        public bool Startup(FileResultModel model)
         {
             var startupItem = _factory.CreateInstance(null);
             model.Results = startupItem.SortDatas(startupItem.GetDatas());
+
+            return true;
         }
 
         public bool Open(FileResultModel model)
@@ -184,12 +192,12 @@ namespace BlackSugar.Service
                       .Select(json => _factory.CreateInstance(json.Path).ToFileData());
         }
 
-        public IEnumerable<BookmarkModel?>? GetBookmarksData(string fileName)
+        public IEnumerable<BookmarkModel?> GetBookmarksData(string fileName)
         {
             return _adpter.Get<List<BookmarkModel>>(fileName, false) ?? Enumerable.Empty<BookmarkModel?>();
         }
 
-        public IEnumerable<ContextMenuModel?>? GetContextMenusData(string fileName)
+        public IEnumerable<ContextMenuModel?> GetContextMenusData(string fileName)
         {
             return _adpter.Get<List<ContextMenuModel>>(fileName, false) ?? Enumerable.Empty<ContextMenuModel?>();
         }
@@ -207,7 +215,7 @@ namespace BlackSugar.Service
             }
         }
 
-        public async Task<bool> OpenAsynic(FileResultModel model, CancellationToken token)
+        public async Task<bool> OpenAsync(FileResultModel model, CancellationToken token)
         {
             var result = false;
             var file = model.File;
@@ -257,9 +265,6 @@ namespace BlackSugar.Service
         }
 
      
-
-
-
         /***********************/
         public void RegistRec(IFileData? file, string dbfile)
         {
@@ -300,6 +305,47 @@ namespace BlackSugar.Service
 
             return _commander.Get<dynamic>(qry, null, connect)
                 .Select<dynamic, IFileData>(data => _factory.CreateInstance(data.path).ToFileData());
+        }
+
+
+        public void RegistReadingList(BookmarkModel? model, string dbfile)
+        {
+            if (model == null) return;
+
+            string qry;
+            string connect = _commander.ConnectionString(dbfile);
+
+            qry = "";
+            qry += "DELETE FROM SFReadingList WHERE path = @Path; ";
+            qry += "INSERT INTO SFReadingList(name, path, regist)VALUES(@Name, @Path, @Regist); ";
+            _commander.Execute(qry, new { model.Name, model.Path, Regist = DateTime.UtcNow.ToString("yyyyMMddTHHmmssfffZ") }, connect);
+
+        }
+
+        public void InitilizeReadingList(string dbfile)
+        {
+            string qry;
+            string connect = _commander.ConnectionString(dbfile);
+            qry = "";
+            qry += "CREATE TABLE IF NOT EXISTS ";
+            qry += "SFReadingList( ";
+            qry += " name TEXT NOT NULL,";
+            qry += " path TEXT NOT NULL,";
+            qry += " regist TEXT NOT NULL";
+            qry += ") ";
+
+            _commander.Execute(qry, null, connect);
+        }
+
+        public IEnumerable<BookmarkModel> GetReadingListData(string dbfile)
+        {
+            string qry;
+            string connect = _commander.ConnectionString(dbfile);
+
+            qry = "";
+            qry += "SELECT name as Name, path as Path FROM SFReadingList ORDER BY regist LIMIT 30; ";
+
+            return _commander.Get<BookmarkModel>(qry, null, connect);
         }
     }
 }

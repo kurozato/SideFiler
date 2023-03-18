@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AddBookmarks" xml:space="preserve">
-    <value>Add Bookmarks (stay tuned)</value>
+    <value>Add Bookmarks</value>
   </data>
   <data name="AddNewTab" xml:space="preserve">
     <value>Add New Tab (Ctrl+T)</value>
@@ -234,5 +234,29 @@
   </data>
   <data name="Dark" xml:space="preserve">
     <value>Dark</value>
+  </data>
+  <data name="Up" xml:space="preserve">
+    <value>Up</value>
+  </data>
+  <data name="Down" xml:space="preserve">
+    <value>Down</value>
+  </data>
+  <data name="Remove" xml:space="preserve">
+    <value>Remove</value>
+  </data>
+  <data name="Commit" xml:space="preserve">
+    <value>Commit</value>
+  </data>
+  <data name="AddBlank" xml:space="preserve">
+    <value>Add Blank</value>
+  </data>
+  <data name="ReadingList" xml:space="preserve">
+    <value>ReadingList...</value>
+  </data>
+  <data name="AddReadingList" xml:space="preserve">
+    <value>Add ReadingList</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Delete</value>
   </data>
 </root>

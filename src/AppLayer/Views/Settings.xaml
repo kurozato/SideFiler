@@ -74,7 +74,7 @@
                         <Button
                                 Grid.Column="0"
                                 Style="{DynamicResource MaterialDesignOutlinedDarkButton}"
-                                Content="Commit"
+                                Content="{Binding Source={x:Static views:ResourceService.Current}, Path=Resources.Commit, Mode=OneWay}"
                                 HorizontalContentAlignment="Left"
                                 Command="{Binding CommitCommand}"
                                 CommandParameter="General" Cursor="Hand" />
@@ -94,8 +94,7 @@
                             SelectionMode="Single"
                             ItemsSource="{Binding Bookmarks, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                             SelectedItem="{Binding SelectedBookmark, Mode=OneWayToSource}"
-                            SelectedIndex="{Binding BookmarksIndex}"
-                            >
+                            SelectedIndex="{Binding BookmarksIndex}">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <StackPanel>
@@ -103,15 +102,27 @@
                                     </StackPanel>
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
+                            <ListBox.ItemContainerStyle>
+                                <Style TargetType="ListBoxItem" BasedOn="{StaticResource MaterialDesignNavigationListBoxItem}">
+                                    <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                                    <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                </Style>
+                            </ListBox.ItemContainerStyle>
                         </ListBox>
                     </StackPanel>
                     <Grid Grid.Column="1">
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="50" />
+                            <RowDefinition Height="120" />
                             <RowDefinition Height="*" />
                             <RowDefinition Height="50" />
                         </Grid.RowDefinitions>
-                        <WrapPanel Grid.Row="0">
+                        <Grid Grid.Row="0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="40" />
+                                <RowDefinition Height="30" />
+                                <RowDefinition Height="30" />
+                            </Grid.RowDefinitions>
+                            <WrapPanel Grid.Row="0">
                             <Button
                                 Grid.Column="0"
                                 Style="{DynamicResource MaterialDesignFlatButton}" Cursor="Arrow"
@@ -120,20 +131,54 @@
                                 HorizontalContentAlignment="Left"
                                 Command="{Binding AddCommand}"
                                 CommandParameter="Bookmark"/>
-                            <Label Content=" Add Blank" VerticalAlignment="Center"></Label>
-                        </WrapPanel>
+                                <Label Content="{Binding Source={x:Static views:ResourceService.Current}, Path=Resources.AddBlank, Mode=OneWay}" VerticalAlignment="Center"></Label>
+                            </WrapPanel>
+                            <WrapPanel Margin="10 0 0 0"  Grid.Row="1">
+                                <Button
+                                Grid.Column="0"
+                                Style="{DynamicResource MaterialDesignFlatButton}" Cursor="Arrow"
+                                FontFamily="Segoe MDL2 Assets"
+                                Content="&#xE74A;"
+                                HorizontalContentAlignment="Left"
+                                Command="{Binding UpCommand}"
+                                CommandParameter="Bookmark"/>
+                                <Label Content="{Binding Source={x:Static views:ResourceService.Current}, Path=Resources.Up, Mode=OneWay}" VerticalAlignment="Center"></Label>
+                            </WrapPanel>
+                            <WrapPanel Margin="10 0 0 0"  Grid.Row="2">
+                                <Button
+                                Grid.Column="0"
+                                Style="{DynamicResource MaterialDesignFlatButton}" Cursor="Arrow"
+                                FontFamily="Segoe MDL2 Assets"
+                                Content="&#xE74B;"
+                                HorizontalContentAlignment="Left"
+                                Command="{Binding DownCommand}"
+                                CommandParameter="Bookmark"/>
+                                <Label Content="{Binding Source={x:Static views:ResourceService.Current}, Path=Resources.Down, Mode=OneWay}" VerticalAlignment="Center"></Label>
+                            </WrapPanel>
+                        </Grid>
                         <StackPanel Grid.Row="1"
                              DataContext="{Binding SelectedBookmark}">
                             <Label Content="{Binding Source={x:Static views:ResourceService.Current}, Path=Resources.ItemName, Mode=OneWay}" ></Label>
                             <TextBox Text="{Binding Name}"></TextBox>
                             <Label Content="{Binding Source={x:Static views:ResourceService.Current}, Path=Resources.ItemPath, Mode=OneWay}" ></Label>
                             <TextBox Text="{Binding Path}"></TextBox>
+                            <WrapPanel Margin="0 10 0 0"  Grid.Row="2">
+                                <Button
+                                Grid.Column="0"
+                                Style="{DynamicResource MaterialDesignFlatButton}" Cursor="Arrow"
+                                FontFamily="Segoe MDL2 Assets"
+                                Content="&#xE74D;"
+                                HorizontalContentAlignment="Left"
+                                Command="{Binding DataContext.RemoveCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                CommandParameter="Bookmark"/>
+                                <Label Content="{Binding Source={x:Static views:ResourceService.Current}, Path=Resources.Remove, Mode=OneWay}" VerticalAlignment="Center"></Label>
+                            </WrapPanel>
                         </StackPanel>
                         <WrapPanel Grid.Row="2">
                             <Button
                                 Grid.Column="0"
                                 Style="{DynamicResource MaterialDesignOutlinedDarkButton}"
-                                Content="Commit"
+                                Content="{Binding Source={x:Static views:ResourceService.Current}, Path=Resources.Commit, Mode=OneWay}"
                                 HorizontalContentAlignment="Left"
                                 Command="{Binding CommitCommand}"
                                 CommandParameter="Bookmark" />
@@ -144,7 +189,22 @@
             </TabItem>
             <TabItem Header="ContextMenu" Style="{DynamicResource MaterialDesignTabItem}">
                 <Grid Margin="20" Background="{DynamicResource MahApps.Brushes.Window.Background}">
+                    
                     <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Row="0" Grid.Column="0">
+                        <Label Content="{Binding Source={x:Static views:ResourceService.Current}, Path=Resources.ContextMenu, Mode=OneWay}" FontWeight="Bold"></Label>
+
+                        <Label Content="Edit json" />
+                        <Button
+                            Style="{DynamicResource  MahApps.Styles.Button.Flat}"
+                            Command="{Binding VisitCommand}"
+                            CommandParameter="ContextMenu"
+                            Content="Open ContextMenu Folder" />
+                    </StackPanel>
+                    <!--<Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
@@ -228,7 +288,7 @@
                                 CommandParameter="ContextMenu" />
                             <Label Content="" VerticalAlignment="Center"></Label>
                         </WrapPanel>
-                    </Grid>
+                    </Grid>-->
                 </Grid>
             </TabItem>
         </TabControl>

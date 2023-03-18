@@ -19,6 +19,6 @@ namespace BlackSugar.Repository
 
         public bool IsRoot => Path.GetPathRoot(FullName)?.TrimEnd('\\') == FullName.TrimEnd('\\');
 
-        public virtual IFileData? ToFileData() => FileUtil.Create(FullName);
+        public virtual IFileData? ToFileData() => FileUtil.Create(FullName);  
     }
 }

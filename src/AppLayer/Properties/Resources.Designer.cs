@@ -61,7 +61,16 @@ namespace BlackSugar.Properties {
         }
         
         /// <summary>
-        ///   Add Bookmarks (stay tuned) に類似しているローカライズされた文字列を検索します。
+        ///   Add Blank に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string AddBlank {
+            get {
+                return ResourceManager.GetString("AddBlank", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Add Bookmarks に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string AddBookmarks {
             get {
@@ -75,6 +84,15 @@ namespace BlackSugar.Properties {
         public static string AddNewTab {
             get {
                 return ResourceManager.GetString("AddNewTab", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Add ReadingList に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string AddReadingList {
+            get {
+                return ResourceManager.GetString("AddReadingList", resourceCulture);
             }
         }
         
@@ -102,6 +120,15 @@ namespace BlackSugar.Properties {
         public static string Close {
             get {
                 return ResourceManager.GetString("Close", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Commit に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Commit {
+            get {
+                return ResourceManager.GetString("Commit", resourceCulture);
             }
         }
         
@@ -147,6 +174,24 @@ namespace BlackSugar.Properties {
         public static string Dark {
             get {
                 return ResourceManager.GetString("Dark", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Delete に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Delete {
+            get {
+                return ResourceManager.GetString("Delete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Down に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Down {
+            get {
+                return ResourceManager.GetString("Down", resourceCulture);
             }
         }
         
@@ -342,11 +387,29 @@ namespace BlackSugar.Properties {
         }
         
         /// <summary>
+        ///   ReadingList... に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string ReadingList {
+            get {
+                return ResourceManager.GetString("ReadingList", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recently Closed Folders...(beta) に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string RecentlyClosedFolders {
             get {
                 return ResourceManager.GetString("RecentlyClosedFolders", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Remove に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Remove {
+            get {
+                return ResourceManager.GetString("Remove", resourceCulture);
             }
         }
         
@@ -401,6 +464,15 @@ namespace BlackSugar.Properties {
         public static string Theme {
             get {
                 return ResourceManager.GetString("Theme", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Up に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Up {
+            get {
+                return ResourceManager.GetString("Up", resourceCulture);
             }
         }
         

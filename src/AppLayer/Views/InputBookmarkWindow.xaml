@@ -1,0 +1,71 @@
+﻿<Window x:Class="BlackSugar.Views.InputBookmarkWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:views="clr-namespace:BlackSugar.Views"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance Type=views:InputBookmarkViewModel}"
+        ResizeMode="CanResizeWithGrip"
+        Title="Add Bookmark..."
+        ShowInTaskbar="False"
+        WindowStartupLocation="CenterOwner"
+        Icon="../icon.ico"
+        Height="200" MinHeight="200" MaxHeight="200" Width="500" MinWidth="300">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        
+        
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="70"/>
+                <ColumnDefinition Width="300"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                <Label Content="Name:"/>
+            </StackPanel>
+            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                <TextBox Margin="10 0" Style="{DynamicResource MaterialDesignTextBox}" Text="{Binding Name}" ></TextBox>
+            </StackPanel>
+           
+        </Grid>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="70"/>
+                <ColumnDefinition Width="300"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                <Label Content="Path:"/>
+            </StackPanel>
+            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                <TextBlock Margin="10 0" Text="{Binding Path}" />
+            </StackPanel>
+        </Grid>
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="150"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="180"/>
+            </Grid.ColumnDefinitions>
+            <Button 
+                Name="btnAddBookmark" 
+                Margin="10" 
+                Style="{DynamicResource MaterialDesignOutlinedButton}" 
+                Grid.Column="0" 
+                Content="Add Bookmark" 
+                Command="{Binding AddBookmarkCommand}" />
+            <StackPanel />
+            <Button 
+                Name="btnAddReadingList"
+                Margin="10" 
+                Style="{DynamicResource MaterialDesignFlatButton}"
+                Grid.Column="2" 
+                Content="Add Reading List"
+                Command="{Binding AddReadingListCommand}"/>
+        </Grid>
+    </Grid>
+</Window>

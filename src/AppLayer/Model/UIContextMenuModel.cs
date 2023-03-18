@@ -21,7 +21,8 @@ namespace BlackSugar.Model
             Targets = new ObservableCollection<UIComboBoxModel>() {
                 new UIComboBoxModel("file", "file"),
                 new UIComboBoxModel("deirectory","deirectory"),
-                new UIComboBoxModel("both","both")
+                new UIComboBoxModel("both","both"),
+                new UIComboBoxModel("none","none")
             };
 
             Multiples = new ObservableCollection<UIComboBoxModel>() {
@@ -111,7 +112,7 @@ namespace BlackSugar.Model
             Commandline = value.Commandline;
             Delimiter = value.Delimiter;
 
-            Target = Targets.FirstOrDefault(comb => comb.Value == value.Target);
+            Target = Targets.FirstOrDefault(comb => comb.Value == value.TargetName);
             Multiple = Multiples.FirstOrDefault(comb => comb.Value == value.Multiple);
         }
 
@@ -123,7 +124,7 @@ namespace BlackSugar.Model
                App = App,
                Commandline = Commandline,
                Delimiter = Delimiter,
-               Target = Target?.Value,
+               TargetName = Target?.Value,
                Multiple = Multiple?.Value
            };
 

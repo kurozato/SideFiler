@@ -23,8 +23,8 @@ namespace BlackSugar.Model
         public string? Label { get; set; }
         public UIFileData? File { get; set; }
         public ObservableCollection<UIFileData>? Results { get; set; }
+
         private bool visible = true;
-        //public bool IsVisible { get; set; } = true;
         public bool IsVisible { 
             get => visible; 
             set => SetProperty(ref visible, value); 

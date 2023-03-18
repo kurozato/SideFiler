@@ -39,23 +39,23 @@ namespace BlackSugar.Views
             set => SetProperty(ref bookmarksIndex, value);
         }
 
-        /*ContextMenus */
+        ///*ContextMenus */
 
-        public ObservableCollection<UIContextMenuModel> ContextMenus { get; set; }
+        //public ObservableCollection<UIContextMenuModel> ContextMenus { get; set; }
 
-        private UIContextMenuModel? selectedContextMenu;
-        public UIContextMenuModel? SelectedContextMenu
-        {
-            get => selectedContextMenu;
-            set => SetProperty(ref selectedContextMenu, value);
-        }
+        //private UIContextMenuModel? selectedContextMenu;
+        //public UIContextMenuModel? SelectedContextMenu
+        //{
+        //    get => selectedContextMenu;
+        //    set => SetProperty(ref selectedContextMenu, value);
+        //}
 
-        private int contextMenusIndex;
-        public int ContextMenusIndex
-        {
-            get => contextMenusIndex;
-            set => SetProperty(ref contextMenusIndex, value);
-        }
+        //private int contextMenusIndex;
+        //public int ContextMenusIndex
+        //{
+        //    get => contextMenusIndex;
+        //    set => SetProperty(ref contextMenusIndex, value);
+        //}
 
         /*** Command ***/
 
@@ -64,14 +64,18 @@ namespace BlackSugar.Views
 
 
         public DelegateCommand<string> AddCommand { get; }
-        public DelegateCommand<string> EditCommand { get; }
+        public DelegateCommand<string> RemoveCommand { get; }
         public DelegateCommand<string> CommitCommand { get; }
-        public DelegateCommand VisitCommand { get; }
+        public DelegateCommand<string> UpCommand { get; }
+        public DelegateCommand<string> DownCommand { get; }
+        public DelegateCommand<string> VisitCommand { get; }
 
         public Action<string>? AddAction { get; set; }
-        public Action<string>? EditAction { get; set; }
+        public Action<string>? RemoveAction { get; set; }
         public Action<string>? CommitAction { get; set; }
-        public Action? VisitAction { get; set; }
+        public Action<string>? UpAction { get; set; }
+        public Action<string>? DownAction { get; set; }
+        public Action<string>? VisitAction { get; set; }
 
 
         public SettingsViewModel()
@@ -84,12 +88,14 @@ namespace BlackSugar.Views
             Themes = new ObservableCollection<UIComboBoxModel>();
 
             Bookmarks = new ObservableCollection<UIBookmarkModel>();
-            ContextMenus = new ObservableCollection<UIContextMenuModel>();
+            //ContextMenus = new ObservableCollection<UIContextMenuModel>();
 
             AddCommand = new DelegateCommand<string>((tag) => AddAction?.Invoke(tag));
-            EditCommand = new DelegateCommand<string>((tag) => EditAction?.Invoke(tag));
+            RemoveCommand = new DelegateCommand<string>((tag) => RemoveAction?.Invoke(tag));
             CommitCommand = new DelegateCommand<string>((tag) => CommitAction?.Invoke(tag));
-            VisitCommand = new DelegateCommand(() => VisitAction?.Invoke());
+            UpCommand = new DelegateCommand<string>((tag) => UpAction?.Invoke(tag));
+            DownCommand = new DelegateCommand<string>((tag) => DownAction?.Invoke(tag));
+            VisitCommand = new DelegateCommand<string>((tag) => VisitAction?.Invoke(tag));
         }
     }
 }

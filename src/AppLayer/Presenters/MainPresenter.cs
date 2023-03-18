@@ -16,6 +16,7 @@ using System.Windows.Media.Imaging;
 using MaterialDesignThemes.Wpf;
 using System.IO;
 using System.Drawing;
+using System.Windows.Controls;
 
 namespace BlackSugar.Presenters
 {
@@ -53,7 +54,7 @@ namespace BlackSugar.Presenters
         private void buildBookmarks()
         {
             ViewModel.Bookmarks.Clear();
-
+            
             var bookmarks = _service.GetBookmarksData(_config.GetFullPath(Literal.File_Json_Bookmarks));
             var source = FileIcon.GetFolderSource();
             foreach (var bookmark in bookmarks)
@@ -63,18 +64,38 @@ namespace BlackSugar.Presenters
         private void buildContexts()
         {
             var contexts = new List<ContextMenuModel>();
+
             contexts.Add(new ContextMenuModel()
             {
                 Content = ResourceService.Current.GetResource("OpenNewTab"),
                 Result = "OpenNewTab",
-                Target = "directory"
+                TargetName = "directory"
             });
+            contexts.Add(new ContextMenuModel()
+            {
+                Content = ResourceService.Current.GetResource("CreateFolder"),
+                Result = "CreateFolder",
+                TargetName = "none"
+            });
+            contexts.Add(new ContextMenuModel()
+            {
+                Content = ResourceService.Current.GetResource("RenameFile"),
+                Result = "Rename",
+                TargetName = "both"
+            });
+
             var menus = _service.GetContextMenusData(_config.GetFullPath(Literal.Direcotry_ContextMenu, Literal.File_Json_ContextMenu));
             contexts.AddRange(menus);
 
             var uiContexts = UIContextMenuModel.Convert(contexts, iconPath => _config.GetFullPath(Literal.Direcotry_ContextMenu, iconPath, false));
 
             UIHelper.Refill(ViewModel.ContextMenus, uiContexts);
+        }
+
+        private Task<IFileData?> getFileDataAsync(string path)
+        {
+            var task = Task.Run(() => _service.GetFileData(path));
+            return task;
         }
 
         private async Task updateSideAsync(FileResultModel? model)
@@ -112,7 +133,8 @@ namespace BlackSugar.Presenters
         {
             try
             {
-                var file = _service.GetFileData(path);
+                //var file = _service.GetFileData(path);
+                var file = await getFileDataAsync(path);
                 var model = new FileResultModel(file, ID);
 
                 if (predicate(model))
@@ -133,18 +155,39 @@ namespace BlackSugar.Presenters
             }
         }
 
+        public async Task AddResultTemplateAsync(IFileData? file, string? label, Func<FileResultModel, bool> predicate)
+        {
+            try
+            {
+                var model = new FileResultModel(file, null);
+
+                if (predicate(model))
+                {
+                    ViewModel.MaxID += 1;
+                    model.ID = ViewModel.MaxID;
+                    model.Label = label ?? model.File?.Name;
+
+                    await addSideAsync(model);
+                }
+
+            }
+            catch (FileDataNotFoundException fileEx)
+            {
+                UIHelper.ShowErrorMessageEx(fileEx);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+                UIHelper.ShowErrorMessage(ex);
+            }
+        }
+
         [ActionAutoLink]
         public async Task AddResult()
         {
             try
             {
-                ViewModel.MaxID += 1;
-                var model = new FileResultModel(null, ViewModel.MaxID);
-             
-                _service.Startup(model);
-                model.Label = ResourceService.Current.GetResource("NewTab");
-
-                await addSideAsync(model);
+                await AddResultTemplateAsync(null, ResourceService.Current.GetResource("NewTab"), _service.Startup);
             }
             catch (Exception ex)
             {
@@ -161,17 +204,10 @@ namespace BlackSugar.Presenters
                 if (ViewModel?.SelectedFile == null) return;
 
                 var selected = ViewModel?.SelectedFile;
-                var file = _service.GetFileData(selected?.FullName);
-                var model = new FileResultModel(file, null);
+                //var file = _service.GetFileData(selected?.FullName);
+                var file = await getFileDataAsync(selected?.FullName);
 
-                if (_service.Open(model))
-                {
-                    ViewModel.MaxID += 1;
-                    model.ID = ViewModel.MaxID;
-                    model.Label = model.File?.Name;
-
-                    await addSideAsync(model);
-                }
+                await AddResultTemplateAsync(file, null, _service.Open);
             }
             catch (FileDataNotFoundException fileEx)
             {
@@ -340,19 +376,23 @@ namespace BlackSugar.Presenters
         }
 
         [ActionAutoLink]
-        public void PasteResult()
+        public async Task PasteResult()
         {
             try
             {
                 var data = _clipboard.GetFiles();
 
-                if (data == null) return;
+                if (data != null)
+                {
+                    var item = ViewModel?.SideItem;
+                    var file = _service.GetFileData(item?.File?.FullName);
+                    var model = new FileResultModel(file, item?.ID);
 
-                var item = ViewModel?.SideItem;
-                var file = _service.GetFileData(item?.File?.FullName);
-                var model = new FileResultModel(file, item?.ID);
+                    await Task.Run(()=> _service.CopyOrMove(
+                        model, ViewModel.Handle, data, _clipboard.GetDropEffect()));
+                }
 
-                _service.CopyOrMove(model, ViewModel.Handle, data, _clipboard.GetDropEffect());
+                
             }
             catch (FileDataNotFoundException fileEx)
             {
@@ -374,7 +414,7 @@ namespace BlackSugar.Presenters
 
                 var file = _service.GetFileData(ViewModel?.SelectedFile?.FullName);
 
-                Router.NavigateTo<InputNameViewModel>("RenameFile", file, ViewModel?.SideItem, ViewModel.Handle);
+                Router.NavigateTo<SubViewModel>("RenameFile", file, ViewModel?.SideItem, ViewModel.Handle);
                 //await ReloadResult();
             }
             catch (FileDataNotFoundException fileEx)
@@ -393,7 +433,7 @@ namespace BlackSugar.Presenters
         {
             try
             {
-                Router.NavigateTo<InputNameViewModel>("CreateFolder", ViewModel?.SideItem);
+                Router.NavigateTo<SubViewModel>("CreateFolder", ViewModel?.SideItem);
                 //await ReloadResult();
             }
             catch (Exception ex)
@@ -408,7 +448,7 @@ namespace BlackSugar.Presenters
         {
             try
             {
-                Router.NavigateTo<InputNameViewModel>("OpenFileMenu");
+                Router.NavigateTo<SubViewModel>("OpenFileMenu");
             }
             catch (Exception ex)
             {
@@ -422,7 +462,7 @@ namespace BlackSugar.Presenters
         {
             try
             {
-                Router.NavigateTo<InputNameViewModel>("SaveFileMenu", ViewModel?.SideItems?.ToList());
+                Router.NavigateTo<SubViewModel>("SaveFileMenu", ViewModel?.SideItems?.ToList());
             }
             catch (Exception ex)
             {
@@ -590,15 +630,43 @@ namespace BlackSugar.Presenters
         {
             try
             {
-                var isFolder = ViewModel?.SelectedFile?.ExAttributes.HasFlag(ExFileAttributes.Folder);
+                var selected = ViewModel?.SelectedFile;
+                var isFolder = selected?.ExAttributes.HasFlag(ExFileAttributes.Folder);
 
                 foreach (var menu in ViewModel?.ContextMenus)
                 {
-                    if (menu.BaseModel.Target.ToLower() == "directory")
-                        menu.IsVisible = (isFolder == true);
-                    else
-                        menu.IsVisible = (isFolder != true);
-                } 
+                    menu.IsVisible = false;
+
+                    var target = menu.BaseModel.Target;
+                    if (selected == null && target == Target.None)
+                        menu.IsVisible = true;
+                    else if (selected != null)
+                    {
+                        if (target == Target.Both)
+                            menu.IsVisible = true;
+                        else
+                        {
+                            if (isFolder == true && target == Target.Directory)
+                                menu.IsVisible = true;
+                            else if (isFolder == false && target == Target.File)
+                            {
+                                var ext = Path.GetExtension(selected.FullName)?.ToUpper()?.Substring(1);
+                                if (menu.BaseModel.Extension == null)
+                                    menu.IsVisible = true;
+                                else if (menu.BaseModel.Extension.Any(item => item.ToUpper() == ext))
+                                    menu.IsVisible = true;
+                                else
+                                    menu.IsVisible = false;
+                            }
+                        }
+
+                        //if (menu.BaseModel.Target == "directory")
+                        //    menu.IsVisible = (isFolder == true);
+                        //else
+                        //    menu.IsVisible = (isFolder != true);
+
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -630,6 +698,22 @@ namespace BlackSugar.Presenters
                 if (file == null) return;
 
                 _service.Execute(_config.ExecutionPath, file);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+                UIHelper.ShowErrorMessage(ex);
+            }
+        }
+
+        [ActionAutoLink]
+        public void AddBookmarkResult()
+        {
+            try
+            {
+                var file = _service.GetFileData(ViewModel?.SideItem?.File?.FullName);
+                Router.NavigateTo<SubViewModel>("AddBookmark", file);
+                buildBookmarks();
             }
             catch (Exception ex)
             {

@@ -20,7 +20,7 @@ namespace BlackSugar.Presenters.Tests
     public class UTPresenters
     {
         MainPresenter mainPresenter;
-        InputNamePresenter inputNamePresenter;
+        SubPresenter subPresenter;
 
         Mock<ISideFilerService> _serviceMock;
         Mock<ILogger> _loggerMock;
@@ -51,7 +51,7 @@ namespace BlackSugar.Presenters.Tests
 
                 //presenter
                 services.AddSingleton<IPresenter<IMainViewModel>, MainPresenter>();
-                services.AddSingleton<IPresenter<InputNameViewModel>, InputNamePresenter>();
+                services.AddSingleton<IPresenter<SubViewModel>, SubPresenter>();
 
                 //viewModel
                 services.AddSingleton<IMainViewModel, MainViewModel>();
@@ -71,7 +71,7 @@ namespace BlackSugar.Presenters.Tests
             Router.To<InputNameViewModel>();
 
             mainPresenter = Router.Resolver.Resolve<IPresenter<IMainViewModel>>() as MainPresenter;
-            inputNamePresenter = Router.Resolver.Resolve<IPresenter<InputNameViewModel>>() as InputNamePresenter;
+            subPresenter = Router.Resolver.Resolve<IPresenter<SubViewModel>>() as SubPresenter;
         }
 
         private FileResultModel GetTestModelData(int count, FileAttributes attributes)
@@ -291,7 +291,7 @@ namespace BlackSugar.Presenters.Tests
 
             _inputViewMock
                 .Setup(v => v.ShowDialog())
-                .Callback(() => { inputNamePresenter.ViewModel.Name = "TEST"; })
+                .Callback(() => { subPresenter.ViewModel.InputName.Name = "TEST"; })
                 .Returns(true);
 
             mainPresenter.RenameResult();
@@ -311,7 +311,7 @@ namespace BlackSugar.Presenters.Tests
 
             _inputViewMock
                 .Setup(v => v.ShowDialog())
-                .Callback(() => { inputNamePresenter.ViewModel.Name = "TEST"; })
+                .Callback(() => { subPresenter.ViewModel.InputName.Name = "TEST"; })
                 .Returns(true);
 
             mainPresenter.CreateFolderResult();

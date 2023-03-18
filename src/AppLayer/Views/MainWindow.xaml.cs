@@ -13,7 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using BlackSugar.Views.Extension;
+using BlackSugar.Wpf.Extension;
 using BlackSugar.SimpleMvp;
 using BlackSugar.Views;
 using ModernWpf.Controls;
@@ -43,7 +43,7 @@ namespace SideFiler
             //ListMain.KeyBind(Key.Delete, () => UIHelper.Executor(ViewModel?.DeleteCommand));
             ListMain.MouseBind(MouseButton.XButton1, () => UIHelper.Executor(ViewModel?.UpFolderCommand));
             ListMain.DragDropFile(data => UIHelper.Executor(ViewModel?.DropFileCommand, data));
- 
+            
             //ListMain.MouseBind(MouseButton.Middle, () => UIHelper.Executor(ViewModel?.OpenNewTabCommand));
             ListMain.BlankAreaClick(() => ListMain.UnselectAll());
 

@@ -1,5 +1,5 @@
 ﻿using BlackSugar.SimpleMvp;
-using BlackSugar.Views.Extension;
+using BlackSugar.Wpf.Extension;
 using BlackSugar.Wpf;
 using ModernWpf;
 using ModernWpf.Controls.Primitives;

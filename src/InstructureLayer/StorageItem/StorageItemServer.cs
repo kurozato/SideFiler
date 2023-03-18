@@ -14,6 +14,6 @@ namespace BlackSugar.Repository
 
         public IStorageItem? UpperLayer() => null;
 
-        public new IFileData ToFileData() => FileUtil.Create(FullName, true);
+        public override IFileData? ToFileData() => FileUtil.Create(FullName, true);       
     }
 }

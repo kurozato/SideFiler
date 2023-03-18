@@ -30,7 +30,7 @@ namespace BlackSugar.Repository
     public class FileOperator : IFileOperator
     {
         public void Copy(List<string> targets, string toFolder, IntPtr handle)
-            => FileUtil.Copy(targets, toFolder, handle);    
+            => FileUtil.Copy(targets, toFolder, handle);
 
         public void Move(List<string> targets, string toFolder, IntPtr handle)
             => FileUtil.Move(targets, toFolder, handle);
@@ -38,10 +38,10 @@ namespace BlackSugar.Repository
         public void Delete(List<string> targets, IntPtr handle)
             => FileUtil.Delete(targets, handle);
 
-        public void Rename(string target, string name, IntPtr handle) 
+        public void Rename(string target, string name, IntPtr handle)
             => FileUtil.Rename(new List<string>() { target }, name, handle);
 
-        public void CreateFolder(string path) 
+        public void CreateFolder(string path)
             => Directory.CreateDirectory(path);
 
         public void OpenExplorer(IFileData file, bool select)
@@ -81,7 +81,7 @@ namespace BlackSugar.Repository
             process.StartInfo.Arguments = arguments;
             process.StartInfo.CreateNoWindow = true;
             process.StartInfo.UseShellExecute = true;
-      
+
             process.Start();
         }
 

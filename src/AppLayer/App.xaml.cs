@@ -62,18 +62,22 @@ namespace SideFiler
 
                     //presenter
                     services.AddSingleton<IPresenter<IMainViewModel>, MainPresenter>();
-                    services.AddSingleton<IPresenter<InputNameViewModel>, InputNamePresenter>();
+                    services.AddSingleton<IPresenter<SubViewModel>, SubPresenter>();
                     services.AddSingleton<IPresenter<SettingsViewModel>, SettingsPresenter>();
+                    services.AddSingleton<IPresenter<ReadingListViewModel>, ReadingListPresenter>();
 
                     //viewModel
                     services.AddSingleton<IMainViewModel, MainViewModel>();
-                    services.AddSingleton<InputNameViewModel>();
+                    services.AddSingleton<SubViewModel>();
                     services.AddSingleton<SettingsViewModel>();
+                    services.AddSingleton<ReadingListViewModel>();
 
                     //view
                     services.AddSingleton<IView<IMainViewModel>, MainWindow>();
                     services.AddTransient<IView<InputNameViewModel>, InputNameWindow>();
                     services.AddTransient<IView<SettingsViewModel>, Settings>();
+                    services.AddTransient<IView<InputBookmarkViewModel>, InputBookmarkWindow>();
+                    services.AddTransient<IView<ReadingListViewModel>, ReadingListWindow>();
 
                 });
 

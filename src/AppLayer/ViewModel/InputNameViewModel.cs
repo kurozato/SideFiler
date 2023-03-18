@@ -9,29 +9,29 @@ namespace BlackSugar.Views
 {
     public class InputNameViewModel : BindableBase
     {
-        private string name;
-        public string Name
+        private string? name;
+        public string? Name
         {
             get => name;
             set => SetProperty(ref name, value);
         }
 
-        private string extention;
-        public string Extention
+        private string? extention;
+        public string? Extention
         {
             get => extention;
             set => SetProperty(ref extention, value);
         }
 
-        private string description;
-        public string Description
+        private string? description;
+        public string? Description
         {
             get => description;
             set => SetProperty(ref description, value);
         }
 
-        private string title;
-        public string Title
+        private string? title;
+        public string? Title
         {
             get => title;
             set => SetProperty(ref title, value);

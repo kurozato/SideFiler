@@ -14,6 +14,14 @@ namespace BlackSugar.Service.Model
         Combine
     }
 
+    public enum Target
+    {
+        None = -1,
+        File = 1,
+        Directory,
+        Both
+    }
+
     public class ContextMenuModel
     {
         [JsonPropertyName("icon")]
@@ -29,8 +37,12 @@ namespace BlackSugar.Service.Model
         [JsonPropertyName("delimiter")]
         public string? Delimiter { get; set; }
         [JsonPropertyName("target")]
-        public string? Target { get; set; }
+        public string? TargetName { get; set; }
+        [JsonPropertyName("extension")]
+        public IEnumerable<string>? Extension { get; set; }
 
+        [JsonIgnore]
+        public Target Target => TargetName.TryParse<Target>();
         [JsonIgnore]
         public string? Result { get; set; }
  

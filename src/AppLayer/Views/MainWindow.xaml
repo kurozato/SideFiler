@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:SideFiler"
         xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro" 
         xmlns:views="clr-namespace:BlackSugar.Views" 
+        xmlns:bw="clr-namespace:BlackSugar.Wpf;assembly=BlackSugar.Util.WpfBase"          
         xmlns:properties="clr-namespace:BlackSugar.Properties"
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         d:DataContext="{d:DesignInstance Type=views:IMainViewModel}"
@@ -18,7 +19,7 @@
         TitleForeground ="Transparent"
         ResizeMode="CanResizeWithGrip">
     <mah:MetroWindow.Resources>
-        <views:ImageConverter x:Key="ImageConverter" />
+        <bw:ImageConverter x:Key="ImageConverter" />
     </mah:MetroWindow.Resources>
     <mah:MetroWindow.InputBindings>
         <KeyBinding Command="{Binding AddCommand}" Gesture="Ctrl+T" />
@@ -57,6 +58,11 @@
                         Header="{Binding Source={x:Static views:ResourceService.Current}, Path=Resources.RecentlyClosedFolders, Mode=OneWay}" 
                         FontSize="12" 
                         Command="{Binding RecentlyCloseFolderCommand}"
+                        Style="{DynamicResource MaterialDesignMenuItem}" />
+                    <MenuItem 
+                        Header="{Binding Source={x:Static views:ResourceService.Current}, Path=Resources.ReadingList, Mode=OneWay}" 
+                        FontSize="12"
+                        
                         Style="{DynamicResource MaterialDesignMenuItem}" />
                     <Separator/>
                     <MenuItem 
@@ -184,7 +190,7 @@
                 Grid.Column="3"
                 Content="&#xE734;"
                 ToolTip="{Binding Source={x:Static views:ResourceService.Current}, Path=Resources.AddBookmarks, Mode=OneWay}"
-                Command="" />
+                Command="{Binding AddBookmarkCommand}" />
             <Button
                 Grid.Column="4"
                 Content="&#xE72D;"
@@ -347,7 +353,7 @@
                 ScrollViewer.VerticalScrollBarVisibility="Visible"
                 HorizontalContentAlignment="Stretch">
                 <i:Interaction.Behaviors>
-                    <views:SelectedItemsBehavior SelectedItems="{Binding SelectedFiles, Mode=OneWayToSource}" />
+                    <bw:SelectedItemsBehavior SelectedItems="{Binding SelectedFiles, Mode=OneWayToSource}" />
                 </i:Interaction.Behaviors>
                 <ListView.View>
                     <GridView >
@@ -430,6 +436,6 @@
         </DockPanel>
     </Grid>
     <i:Interaction.Behaviors>
-        <views:WindowHandleBehavior WindowHandle="{Binding Handle}" />
+        <bw:WindowHandleBehavior WindowHandle="{Binding Handle}" />
     </i:Interaction.Behaviors>
 </mah:MetroWindow>

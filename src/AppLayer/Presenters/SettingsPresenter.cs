@@ -45,10 +45,10 @@ namespace BlackSugar.Presenters
             foreach (var bookmark in bookmarks)
                 ViewModel.Bookmarks.Add(new UIBookmarkModel(bookmark));
 
-            var menus = _service.GetContextMenusData(_config.GetFullPath(Literal.Direcotry_ContextMenu, Literal.File_Json_ContextMenu));
-            ViewModel.ContextMenus.Clear();
-            foreach (var menu in menus)
-                ViewModel.ContextMenus.Add(new UIContextMenuModel(menu));
+            //var menus = _service.GetContextMenusData(_config.GetFullPath(Literal.Direcotry_ContextMenu, Literal.File_Json_ContextMenu));
+            //ViewModel.ContextMenus.Clear();
+            //foreach (var menu in menus)
+            //    ViewModel.ContextMenus.Add(new UIContextMenuModel(menu));
 
 
             ViewModel.Language = ViewModel.Languages.SingleOrDefault(l => l.Value == _initializer.UISettingsModel.Language);
@@ -91,13 +91,13 @@ namespace BlackSugar.Presenters
                 switch (param)
                 {
                     case tagBookmark:
-                        ViewModel.Bookmarks.Add(new UIBookmarkModel());
+                        ViewModel.Bookmarks.Add(new UIBookmarkModel() { Name = "Untitled..."});
                         ViewModel.BookmarksIndex = ViewModel.Bookmarks.Count - 1;
                         break;
-                    case tagContextMenu:
-                        ViewModel.ContextMenus.Add(new UIContextMenuModel());
-                        ViewModel.ContextMenusIndex = ViewModel.ContextMenus.Count - 1;
-                        break;
+                    //case tagContextMenu:
+                    //    ViewModel.ContextMenus.Add(new UIContextMenuModel());
+                    //    ViewModel.ContextMenusIndex = ViewModel.ContextMenus.Count - 1;
+                    //    break;
 
                 }
 
@@ -110,14 +110,76 @@ namespace BlackSugar.Presenters
         }
 
         [ActionAutoLink]
-        public void EditResult(string param)
+        public void RemoveResult(string param)
         {
             try
             {
-                var index = ViewModel.BookmarksIndex;
-                ViewModel.Bookmarks.RemoveAt(index);
-                ViewModel.Bookmarks.Insert(index, ViewModel.SelectedBookmark);
-                
+                switch (param)
+                {
+                    case tagBookmark:
+                        var index = ViewModel.BookmarksIndex;
+                       
+                        if (index == -1) return;
+
+                        ViewModel.Bookmarks.RemoveAt(index);
+                        var max = ViewModel.Bookmarks.Count - 1;
+                        ViewModel.BookmarksIndex = (max <= index) ? max  : index + 1;
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+                UIHelper.ShowErrorMessage(ex);
+            }
+        }
+
+        [ActionAutoLink]
+        public void UpResult(string param)
+        {
+            try
+            {
+                switch (param)
+                {
+                    case tagBookmark:
+                        var index = ViewModel.BookmarksIndex;
+                        var selected = ViewModel.SelectedBookmark;
+                        if (index <= 0) return;
+
+                        
+                        ViewModel.Bookmarks.RemoveAt(index);
+                        ViewModel.Bookmarks.Insert(index - 1, selected);
+                        ViewModel.BookmarksIndex = index - 1;
+
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+                UIHelper.ShowErrorMessage(ex);
+            }
+        }
+
+        [ActionAutoLink]
+        public void DownResult(string param)
+        {
+            try
+            {
+                switch (param)
+                {
+                    case tagBookmark:
+                        var index = ViewModel.BookmarksIndex;
+                        var selected = ViewModel.SelectedBookmark;
+                        
+                        if (ViewModel.Bookmarks.Count - 1  <= index) return;
+
+                        ViewModel.Bookmarks.RemoveAt(index);
+                        ViewModel.Bookmarks.Insert(index + 1, selected);
+                        ViewModel.BookmarksIndex = index + 1;
+
+                        break;
+                }
             }
             catch (Exception ex)
             {
@@ -139,10 +201,10 @@ namespace BlackSugar.Presenters
                         content = ViewModel.Bookmarks.Select(u => u.GetEditBookmark());
                         file = _config.GetFullPath(Literal.File_Json_Bookmarks);
                         break;
-                    case tagContextMenu:
-                        content = ViewModel.ContextMenus.Select(u => u.GetEditContextMenu());
-                        file = _config.GetFullPath(Literal.Direcotry_ContextMenu, Literal.File_Json_ContextMenu);
-                        break;
+                    //case tagContextMenu:
+                    //    content = ViewModel.ContextMenus.Select(u => u.GetEditContextMenu());
+                    //    file = _config.GetFullPath(Literal.Direcotry_ContextMenu, Literal.File_Json_ContextMenu);
+                    //    break;
                     default:
 
                         _initializer.ChangeTheme(ViewModel.Theme.Value, 
@@ -169,11 +231,20 @@ namespace BlackSugar.Presenters
         }
 
         [ActionAutoLink]
-        public void VisitResult()
+        public void VisitResult(string param)
         {
             try
             {
-                _service.Execute("https://github.com/kurozato/SideFiler", null);
+                switch (param)
+                {
+                    case tagContextMenu:
+                        _service.Execute(_config.GetFullPath("context_menu", false), null);
+                        break;
+                    default:
+                        _service.Execute("https://github.com/kurozato/SideFiler", null);
+                        break;
+                }
+                
             }
             catch (Exception ex)
             {
