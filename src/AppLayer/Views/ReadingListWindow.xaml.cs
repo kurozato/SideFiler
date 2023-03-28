@@ -1,4 +1,5 @@
 ﻿using BlackSugar.SimpleMvp;
+using MahApps.Metro.Controls;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +19,7 @@ namespace BlackSugar.Views
     /// <summary>
     /// ReadingListWindow.xaml の相互作用ロジック
     /// </summary>
-    public partial class ReadingListWindow : Window, IView<ReadingListViewModel>
+    public partial class ReadingListWindow : MetroWindow, IView<ReadingListViewModel>
     {
         public ReadingListViewModel? ViewModel => DataContext as ReadingListViewModel;
 

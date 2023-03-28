@@ -21,6 +21,8 @@ namespace BlackSugar.WinApi
             [Flags]
             public enum FILEOP_FLAGS : ushort
             {
+                FOF_NONE = 0x0,
+
                 FOF_MULTIDESTFILES = 0x1,
                 FOF_CONFIRMMOUSE = 0x2,
                 /// <summary>
@@ -197,7 +199,7 @@ namespace BlackSugar.WinApi
         private const string NullZero = "\0";
 
 
-        internal static void FileOperateCore(List<string> pFroms, string? pTo, NativeMethods.FileFuncFlags funcFlags, IntPtr handle)
+        internal static void FileOperateCore(List<string> pFroms, string? pTo, NativeMethods.FileFuncFlags funcFlags, NativeMethods.FILEOP_FLAGS fileOpFlags, IntPtr handle)
         {
             string pFrom = string.Empty;
             foreach (string file in pFroms)
@@ -208,7 +210,8 @@ namespace BlackSugar.WinApi
             shfos.wFunc = funcFlags;
             shfos.pFrom = pFrom + NullZero;
             shfos.pTo = (pTo == null) ? string.Empty : pTo + NullZero + NullZero;
-            shfos.fFlags = NativeMethods.FILEOP_FLAGS.FOF_ALLOWUNDO;
+            
+            shfos.fFlags = NativeMethods.FILEOP_FLAGS.FOF_ALLOWUNDO | fileOpFlags;
             shfos.fAnyOperationsAborted = true;
             shfos.hNameMappings = IntPtr.Zero;
             shfos.lpszProgressTitle = string.Empty;
@@ -218,22 +221,22 @@ namespace BlackSugar.WinApi
 
         public static void Copy(List<string> targets, string toFolder, IntPtr handle)
         {
-            FileOperateCore(targets, toFolder, NativeMethods.FileFuncFlags.FO_COPY, handle);
+            FileOperateCore(targets, toFolder, NativeMethods.FileFuncFlags.FO_COPY, NativeMethods.FILEOP_FLAGS.FOF_RENAMEONCOLLISION, handle);
         }
 
         public static void Move(List<string> targets, string toFolder, IntPtr handle)
         {
-            FileOperateCore(targets, toFolder, NativeMethods.FileFuncFlags.FO_MOVE, handle);
+            FileOperateCore(targets, toFolder, NativeMethods.FileFuncFlags.FO_MOVE, NativeMethods.FILEOP_FLAGS.FOF_NONE, handle);
         }
 
         public static void Delete(List<string> targets, IntPtr handle)
         {
-            FileOperateCore(targets, null, NativeMethods.FileFuncFlags.FO_DELETE, handle);
+            FileOperateCore(targets, null, NativeMethods.FileFuncFlags.FO_DELETE, NativeMethods.FILEOP_FLAGS.FOF_NONE, handle);
         }
 
         public static void Rename(List<string> targets, string name, IntPtr handle)
         {
-            FileOperateCore(targets, name, NativeMethods.FileFuncFlags.FO_RENAME, handle);
+            FileOperateCore(targets, name, NativeMethods.FileFuncFlags.FO_RENAME, NativeMethods.FILEOP_FLAGS.FOF_NONE, handle);
         }
 
         //************************************************************//

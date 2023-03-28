@@ -61,7 +61,6 @@ namespace BlackSugar.WinApi
             return FileUtil.Create(Environment.GetFolderPath(specialFolder));
         }
 
-
     }
         
 }

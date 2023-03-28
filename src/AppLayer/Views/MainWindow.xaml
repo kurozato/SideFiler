@@ -62,7 +62,7 @@
                     <MenuItem 
                         Header="{Binding Source={x:Static views:ResourceService.Current}, Path=Resources.ReadingList, Mode=OneWay}" 
                         FontSize="12"
-                        
+                        Command="{Binding ReadListMenuCommand}"
                         Style="{DynamicResource MaterialDesignMenuItem}" />
                     <Separator/>
                     <MenuItem 

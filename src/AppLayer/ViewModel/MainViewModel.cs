@@ -62,6 +62,7 @@ namespace BlackSugar.Views
         DelegateCommand SettingMenuCommand { get; }
         DelegateCommand RecentlyCloseFolderCommand { get; }
         DelegateCommand AddBookmarkCommand { get; }
+        DelegateCommand ReadListMenuCommand { get; }
     }
 
     public class MainViewModel : BindableBase, IMainViewModel
@@ -73,7 +74,7 @@ namespace BlackSugar.Views
             SideItem = model;
             FullPath = model?.File?.FullName;
             FileItems = model?.Results;
-            mainFilter = null;
+            MainFilter = null;
             //UIHelper.Refill(FileItems, model?.Results);
         }
 
@@ -165,13 +166,13 @@ namespace BlackSugar.Views
         public DelegateCommand SettingMenuCommand { get; }
         public DelegateCommand RecentlyCloseFolderCommand { get; }
         public DelegateCommand AddBookmarkCommand { get; }
+        public DelegateCommand ReadListMenuCommand { get; }
 
         public Action<UIFileResultModel?>? TabCloseAction { get; set; }
       
         public Action? OpenExplorerAction { get; set; }
         public Action? RenameAction { get; set; }
         public Action? CreateFolderAction { get; set; }
-        public Action? DeleteAction { get; set; }
         public Action<Effect>? CopyCutAction { get; set; }
     
         public Action? SaveFileMenuAction { get; set; }
@@ -180,7 +181,6 @@ namespace BlackSugar.Views
         public Action? MainFilterReleaseAction { get; set; }
         public Action? SideFilterAction { get; set; }
         public Action? SideFilterReleaseAction { get; set; }
-        public Action<string[]>? DropFileAction { get; set; }
         public Action<UIContextMenuModel>? ContextMenuAction { get; set; }
         public Action? SettingMenuAction { get; set; }
         public Action? RecentlyCloseFolderAction { get; set; }
@@ -195,8 +195,11 @@ namespace BlackSugar.Views
         public Func<string, Task>? ExpandAction { get; set; }
         public Func<UIBookmarkModel, Task>? SelectBookmarkAction { get; set; }
         public Func<Task>? PasteAction { get; set; }
+        public Func<Task>? DeleteAction { get; set; }
+        public Func<string[], Task>? DropFileAction { get; set; }
 
         public Action? AdjustMenuAction { get; set; }
+        public Action? ReadListMenuAction { get; set; }
 
         public MainViewModel()
         {
@@ -217,7 +220,7 @@ namespace BlackSugar.Views
             CopyCommand = new DelegateCommand(() => CopyCutAction?.Invoke(Effect.Copy),()=> SelectedFiles != null && SelectedFiles.Any());
             CutCommand = new DelegateCommand(() => CopyCutAction?.Invoke(Effect.Move), () => SelectedFiles != null && SelectedFiles.Any());
             PasteCommand = new DelegateCommand(async () => await PasteAction?.Invoke(), () => SideItem?.File != null);
-            DeleteCommand = new DelegateCommand(() => DeleteAction?.Invoke());
+            DeleteCommand = new DelegateCommand(async () => await DeleteAction?.Invoke());
 
             SaveFileMenuCommand = new DelegateCommand(() => SaveFileMenuAction?.Invoke());
             OpenFileMenuCommand = new DelegateCommand(() => OpenFileMenuAction?.Invoke());
@@ -237,12 +240,14 @@ namespace BlackSugar.Views
             ExpandCommand = new DelegateCommand<string>(async (path) => await ExpandAction?.Invoke(path));
             SelectBookmarkCommand = new DelegateCommand<UIBookmarkModel>(async (bookmark) => await SelectBookmarkAction?.Invoke(bookmark));
 
-            DropFileCommand = new DelegateCommand<string[]>((data) => DropFileAction?.Invoke(data));
+            DropFileCommand = new DelegateCommand<string[]>(async (data) => await DropFileAction?.Invoke(data));
             ContextMenuCommand = new DelegateCommand<UIContextMenuModel>((menu) => ContextMenuAction?.Invoke(menu));            
             AdjustMenuCommand = new DelegateCommand(() => AdjustMenuAction?.Invoke());
             SettingMenuCommand = new DelegateCommand(()=> SettingMenuAction?.Invoke());
             RecentlyCloseFolderCommand = new DelegateCommand(() => RecentlyCloseFolderAction?.Invoke());
             AddBookmarkCommand = new DelegateCommand(() => AddBookmarkAction?.Invoke(), () => SideItem?.File != null);
+
+            ReadListMenuCommand = new DelegateCommand(()=> ReadListMenuAction?.Invoke());
         }
     }
 }

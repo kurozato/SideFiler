@@ -31,7 +31,7 @@ namespace BlackSugar.Repository
     {
         public void Copy(List<string> targets, string toFolder, IntPtr handle)
             => FileUtil.Copy(targets, toFolder, handle);
-
+        
         public void Move(List<string> targets, string toFolder, IntPtr handle)
             => FileUtil.Move(targets, toFolder, handle);
 

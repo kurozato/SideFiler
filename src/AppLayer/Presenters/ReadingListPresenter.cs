@@ -34,12 +34,30 @@ namespace BlackSugar.Presenters
             => _service.GetReadingListData(_config.GetFullPath(Literal.File_DB_CloseRec, false))
                     .Select(b => new UIBookmarkModel(b));
 
+
+        public void ShowMenuResult()
+        {
+            try
+            {
+                var view = Router.To(this);
+    
+
+                view.ShowDialog();
+                view = null;
+
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+                UIHelper.ShowErrorMessage(ex);
+            }
+        }
+
         [ActionAutoLink]
         public void FilterResult()
         {
             try
             {
-
                 if (ViewModel?.Filter == null || ViewModel?.Filter?.Length == 0)
                     return;
 

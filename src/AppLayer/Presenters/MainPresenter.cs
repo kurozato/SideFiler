@@ -43,6 +43,7 @@ namespace BlackSugar.Presenters
                 buildContexts();
 
                 _service.InitilizeRec(_config.GetFullPath(Literal.File_DB_CloseRec, false));
+                _service.InitilizeReadingList(_config.GetFullPath(Literal.File_DB_CloseRec, false));
             }
             catch (Exception ex)
             {
@@ -66,7 +67,7 @@ namespace BlackSugar.Presenters
             var contexts = new List<ContextMenuModel>();
 
             contexts.Add(new ContextMenuModel()
-            {
+            {                
                 Content = ResourceService.Current.GetResource("OpenNewTab"),
                 Result = "OpenNewTab",
                 TargetName = "directory"
@@ -181,6 +182,8 @@ namespace BlackSugar.Presenters
                 UIHelper.ShowErrorMessage(ex);
             }
         }
+
+        /**** Result ****/
 
         [ActionAutoLink]
         public async Task AddResult()
@@ -337,14 +340,16 @@ namespace BlackSugar.Presenters
         }
 
         [ActionAutoLink]
-        public void DeleteResult()
+        public async Task DeleteResult()
         {
             try
             {
                 var items = ViewModel?.SelectedFiles?.Cast<UIFileData>();
-                if (items == null) return;
+                //if (items == null) return;
+                if (items != null)
+                    await Task.Run(() => _service.Delete(items.Select(f => f.FullName), ViewModel.Handle));
 
-                _service.Delete(items.Select(f => f.FullName), ViewModel.Handle);
+                //_service.Delete(items.Select(f => f.FullName), ViewModel.Handle);
             }
             catch (Exception ex)
             {
@@ -384,12 +389,14 @@ namespace BlackSugar.Presenters
 
                 if (data != null)
                 {
+                    var effect = _clipboard.GetDropEffect();
+
                     var item = ViewModel?.SideItem;
-                    var file = _service.GetFileData(item?.File?.FullName);
+                    var file = await getFileDataAsync(item?.File?.FullName);
                     var model = new FileResultModel(file, item?.ID);
 
                     await Task.Run(()=> _service.CopyOrMove(
-                        model, ViewModel.Handle, data, _clipboard.GetDropEffect()));
+                        model, ViewModel.Handle, data, effect));
                 }
 
                 
@@ -478,11 +485,10 @@ namespace BlackSugar.Presenters
             {
                 if (ViewModel?.MainFilter == null || ViewModel?.MainFilter?.Length == 0)
                     return;
-                //ViewModel.FileItems = ViewModel?.SideItem?.Results?.Select(file => ViewFileData.Create(file))?.ToList();
-
+              
                 ViewModel.FileItems = UIFileResultModel.EmptyResult;
                 var filtering = ViewModel?.SideItem?.Results?.Where(f => f?.FullName?.ToUpper().IndexOf(ViewModel?.MainFilter?.ToUpper()) >= 0);
-                //ViewModel.FileItems = filtering?.ToList();
+              
                 UIHelper.Refill(ViewModel.FileItems, filtering);
             }
             catch (Exception ex)
@@ -581,17 +587,18 @@ namespace BlackSugar.Presenters
         }
 
         [ActionAutoLink]
-        public void DropFileResult(string[] data)
+        public async Task DropFileResult(string[] data)
         {
             try
             {
-                if (data == null) return;
+                if (data != null)
+                {
+                    var item = ViewModel?.SideItem;
+                    var file = await getFileDataAsync(item?.File?.FullName);
+                    var model = new FileResultModel(file, item?.ID);
 
-                var item = ViewModel?.SideItem;
-                var file = _service.GetFileData(item?.File?.FullName);
-                var model = new FileResultModel(file, item?.ID);
-
-                _service.CopyOrMove(model, ViewModel.Handle, data, Effect.Copy);
+                    await Task.Run(() => _service.CopyOrMove(model, ViewModel.Handle, data, Effect.Copy));
+                }
             }
             catch (FileDataNotFoundException fileEx)
             {
@@ -681,6 +688,20 @@ namespace BlackSugar.Presenters
             try
             {
                 Router.NavigateTo<SettingsViewModel>("ShowMenu");
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+                UIHelper.ShowErrorMessage(ex);
+            }
+        }
+
+        [ActionAutoLink]
+        public void ReadListMenuResult()
+        {
+            try
+            {
+                Router.NavigateTo<ReadingListViewModel>("ShowMenu");
             }
             catch (Exception ex)
             {
