@@ -76,7 +76,8 @@ context_menu.json
         "commandline": "\"%1\"",
         "multiple": "roop",
         "delimiter": null,
-        "target": "file"
+        "target": "file",
+        "extension": null
     },
     {
         "icon": null,
@@ -85,7 +86,22 @@ context_menu.json
         "commandline": "%1",
         "multiple": "combine",
         "delimiter": " ",
-        "target": "file"
+        "target": "file",
+        "extension": null
+    },
+    {
+         {
+        "icon": null,
+        "content": "Open new XXXX",
+        "app": "XXXX.exe",
+        "commandline": "%1",
+        "multiple": "roop",
+        "delimiter": " ",
+        "target": "file",
+        "extension": [
+            "Xxx","XxXx"
+        ]
+    }
     }
 ]
 ```
