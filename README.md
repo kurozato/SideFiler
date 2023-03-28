@@ -90,7 +90,6 @@ context_menu.json
         "extension": null
     },
     {
-         {
         "icon": null,
         "content": "Open new XXXX",
         "app": "XXXX.exe",
@@ -101,7 +100,6 @@ context_menu.json
         "extension": [
             "Xxx","XxXx"
         ]
-    }
     }
 ]
 ```
