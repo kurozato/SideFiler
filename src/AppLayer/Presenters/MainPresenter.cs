@@ -66,6 +66,9 @@ namespace BlackSugar.Presenters
         {
             var contexts = new List<ContextMenuModel>();
 
+            var menus = _service.GetContextMenusData(_config.GetFullPath(Literal.Direcotry_ContextMenu, Literal.File_Json_ContextMenu));
+            contexts.AddRange(menus);
+
             contexts.Add(new ContextMenuModel()
             {                
                 Content = ResourceService.Current.GetResource("OpenNewTab"),
@@ -84,9 +87,6 @@ namespace BlackSugar.Presenters
                 Result = "Rename",
                 TargetName = "both"
             });
-
-            var menus = _service.GetContextMenusData(_config.GetFullPath(Literal.Direcotry_ContextMenu, Literal.File_Json_ContextMenu));
-            contexts.AddRange(menus);
 
             var uiContexts = UIContextMenuModel.Convert(contexts, iconPath => _config.GetFullPath(Literal.Direcotry_ContextMenu, iconPath, false));
 
@@ -640,40 +640,38 @@ namespace BlackSugar.Presenters
                 var selected = ViewModel?.SelectedFile;
                 var isFolder = selected?.ExAttributes.HasFlag(ExFileAttributes.Folder);
 
-                foreach (var menu in ViewModel?.ContextMenus)
-                {
-                    menu.IsVisible = false;
-
-                    var target = menu.BaseModel.Target;
-                    if (selected == null && target == Target.None)
-                        menu.IsVisible = true;
-                    else if (selected != null)
+                if (ViewModel?.SideItem?.File != null && !ViewModel.SideItem.File.ExAttributes.HasFlag(ExFileAttributes.Server))
+                    foreach (var menu in ViewModel?.ContextMenus)
                     {
-                        if (target == Target.Both)
+                        menu.IsVisible = false;
+
+                        var target = menu.BaseModel.Target;
+                        if (selected == null && target == Target.None)
                             menu.IsVisible = true;
-                        else
+                        else if (selected != null)
                         {
-                            if (isFolder == true && target == Target.Directory)
+                            if (target == Target.Both)
                                 menu.IsVisible = true;
-                            else if (isFolder == false && target == Target.File)
+                            else
                             {
-                                var ext = Path.GetExtension(selected.FullName)?.ToUpper()?.Substring(1);
-                                if (menu.BaseModel.Extension == null)
+                                if (isFolder == true && target == Target.Directory)
                                     menu.IsVisible = true;
-                                else if (menu.BaseModel.Extension.Any(item => item.ToUpper() == ext))
-                                    menu.IsVisible = true;
-                                else
-                                    menu.IsVisible = false;
+                                else if (isFolder == false && target == Target.File)
+                                {
+                                    var ext = Path.GetExtension(selected.FullName)?.ToUpper()?.Substring(1);
+                                    if (menu.BaseModel.Extension == null)
+                                        menu.IsVisible = true;
+                                    else if (menu.BaseModel.Extension.Any(item => item.ToUpper() == ext))
+                                        menu.IsVisible = true;
+                                    else
+                                        menu.IsVisible = false;
+                                }
                             }
                         }
-
-                        //if (menu.BaseModel.Target == "directory")
-                        //    menu.IsVisible = (isFolder == true);
-                        //else
-                        //    menu.IsVisible = (isFolder != true);
-
                     }
-                }
+                else
+                    foreach (var menu in ViewModel?.ContextMenus)
+                        menu.IsVisible = false;
             }
             catch (Exception ex)
             {
@@ -715,7 +713,7 @@ namespace BlackSugar.Presenters
         {
             try
             {
-                var file = _config.GetFiles(Literal.Direcotry_Backups, "*.*").OrderBy(f => f).FirstOrDefault();
+                var file = _config.GetFiles(Literal.Direcotry_Backups, "*.*").OrderByDescending(f => f).FirstOrDefault();
                 if (file == null) return;
 
                 _service.Execute(_config.ExecutionPath, file);

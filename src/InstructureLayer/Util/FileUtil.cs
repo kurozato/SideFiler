@@ -219,9 +219,20 @@ namespace BlackSugar.WinApi
             NativeMethods.SHFileOperation(ref shfos);
         }
 
+        private static bool IsSameFolder(List<string> targets, string toFolder)
+        {
+            if (!targets.Any()) return false;
+
+            var compare = (toFolder.EndsWith("\\")) ? toFolder.Substring(0, toFolder.Length - 1) : toFolder;
+            return Path.GetDirectoryName(targets[0]) == compare;
+        }
+
         public static void Copy(List<string> targets, string toFolder, IntPtr handle)
         {
-            FileOperateCore(targets, toFolder, NativeMethods.FileFuncFlags.FO_COPY, NativeMethods.FILEOP_FLAGS.FOF_RENAMEONCOLLISION, handle);
+            if (IsSameFolder(targets, toFolder))
+                FileOperateCore(targets, toFolder, NativeMethods.FileFuncFlags.FO_COPY, NativeMethods.FILEOP_FLAGS.FOF_RENAMEONCOLLISION, handle);
+            else
+                FileOperateCore(targets, toFolder, NativeMethods.FileFuncFlags.FO_COPY, NativeMethods.FILEOP_FLAGS.FOF_NONE, handle);
         }
 
         public static void Move(List<string> targets, string toFolder, IntPtr handle)
