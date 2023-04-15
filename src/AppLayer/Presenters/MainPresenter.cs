@@ -42,8 +42,7 @@ namespace BlackSugar.Presenters
                 buildBookmarks();
                 buildContexts();
 
-                _service.InitilizeRec(_config.GetFullPath(Literal.File_DB_CloseRec, false));
-                _service.InitilizeReadingList(_config.GetFullPath(Literal.File_DB_CloseRec, false));
+                //_service.InitilizeHistory(_config.GetFullPath(Literal.File_DB_CloseRec, false));
             }
             catch (Exception ex)
             {
@@ -134,7 +133,6 @@ namespace BlackSugar.Presenters
         {
             try
             {
-                //var file = _service.GetFileData(path);
                 var file = await getFileDataAsync(path);
                 var model = new FileResultModel(file, ID);
 
@@ -207,7 +205,6 @@ namespace BlackSugar.Presenters
                 if (ViewModel?.SelectedFile == null) return;
 
                 var selected = ViewModel?.SelectedFile;
-                //var file = _service.GetFileData(selected?.FullName);
                 var file = await getFileDataAsync(selected?.FullName);
 
                 await AddResultTemplateAsync(file, null, _service.Open);
@@ -232,8 +229,7 @@ namespace BlackSugar.Presenters
 
                 var deleted = ViewModel.SideItems[index];
                 var file = _service.GetFileData(deleted?.File?.FullName);
-                _service.RegistRec(file, _config.GetFullPath(Literal.File_DB_CloseRec, false));
-
+                
                 ViewModel.SideItems.RemoveAt(index);
 
                 index -= ViewModel.SideItems.Count - 1 < index ? 1 : 0;
@@ -291,6 +287,10 @@ namespace BlackSugar.Presenters
                 var item = ViewModel?.SideItem;
 
                 await ResultTemplateAsync(item?.File?.FullName, item?.ID, _service.Up);
+
+                var idx = ViewModel.FileItems.IndexOf(f => f.FullName == item.File.FullName);
+                
+                ViewModel.SelectedIndex = idx;
             }
             catch (Exception ex)
             {
@@ -345,11 +345,9 @@ namespace BlackSugar.Presenters
             try
             {
                 var items = ViewModel?.SelectedFiles?.Cast<UIFileData>();
-                //if (items == null) return;
+
                 if (items != null)
                     await Task.Run(() => _service.Delete(items.Select(f => f.FullName), ViewModel.Handle));
-
-                //_service.Delete(items.Select(f => f.FullName), ViewModel.Handle);
             }
             catch (Exception ex)
             {
@@ -395,8 +393,7 @@ namespace BlackSugar.Presenters
                     var file = await getFileDataAsync(item?.File?.FullName);
                     var model = new FileResultModel(file, item?.ID);
 
-                    await Task.Run(()=> _service.CopyOrMove(
-                        model, ViewModel.Handle, data, effect));
+                    await Task.Run(()=> _service.CopyOrMove(model, ViewModel.Handle, data, effect));
                 }
 
                 
@@ -506,7 +503,7 @@ namespace BlackSugar.Presenters
                 ViewModel.MainFilter = null;
                 ViewModel.FileItems = UIFileResultModel.EmptyResult;
 
-                ViewModel.FileItems = ViewModel?.SideItem?.Results;
+                ViewModel.FileItems = ViewModel?.SideItem?.ToObservableCollection();
             }
             catch (Exception ex)
             {
@@ -616,12 +613,13 @@ namespace BlackSugar.Presenters
         {
             try
             {
-                var selects = ViewModel.SelectedFiles.Cast<UIFileData>();
+                var selecteds = ViewModel.SelectedFiles.Cast<UIFileData>();
+                var item = ViewModel.SideItem?.File;
 
                 if (menu.BaseModel.Result != null)
                     Router.NavigateTo<IMainViewModel>(menu.BaseModel.Result);
                 else
-                    _service.DoContextMenu(menu.BaseModel, selects.Select(f => f.FullName).ToArray());
+                    _service.DoContextMenu(menu.BaseModel, selecteds.Select(f => f.FullName).ToArray(), item?.FullName);
 
             }
             catch (Exception ex)
@@ -646,32 +644,41 @@ namespace BlackSugar.Presenters
                         menu.IsVisible = false;
 
                         var target = menu.BaseModel.Target;
-                        if (selected == null && target == Target.None)
-                            menu.IsVisible = true;
-                        else if (selected != null)
+
+                        switch (target)
                         {
-                            if (target == Target.Both)
-                                menu.IsVisible = true;
-                            else
-                            {
-                                if (isFolder == true && target == Target.Directory)
-                                    menu.IsVisible = true;
-                                else if (isFolder == false && target == Target.File)
+                            case Target.None:
+                                menu.IsVisible = (selected == null);
+                                break;
+                            case Target.Both:
+                                menu.IsVisible = (selected != null);
+                                break;
+                            case Target.Directory:
+                                menu.IsVisible = (selected != null) && (isFolder == true);
+                                break;
+                            case Target.File:
+                                if (selected == null || isFolder == true) break;
+
+                                //Target.File : Anything Extension
+                                if (menu.BaseModel.Extension == null)
                                 {
-                                    var ext = Path.GetExtension(selected.FullName)?.ToUpper()?.Substring(1);
-                                    if (menu.BaseModel.Extension == null)
-                                        menu.IsVisible = true;
-                                    else if (menu.BaseModel.Extension.Any(item => item.ToUpper() == ext))
-                                        menu.IsVisible = true;
-                                    else
-                                        menu.IsVisible = false;
+                                    menu.IsVisible = true;
+                                    break;
                                 }
-                            }
+
+                                //Target.File : Specific Extension
+                                var ext = Path.GetExtension(selected.FullName)?.ToUpper()?.Substring(1);
+
+                                if (menu.BaseModel.Extension.Any(item => item.ToUpper() == ext))
+                                    menu.IsVisible = true;
+
+                                break;
                         }
                     }
                 else
                     foreach (var menu in ViewModel?.ContextMenus)
-                        menu.IsVisible = false;
+                        menu.IsVisible = false;               
+
             }
             catch (Exception ex)
             {
@@ -695,11 +702,33 @@ namespace BlackSugar.Presenters
         }
 
         [ActionAutoLink]
-        public void ReadListMenuResult()
+        public void OpenTrashMenuResult()
         {
             try
             {
-                Router.NavigateTo<ReadingListViewModel>("ShowMenu");
+                _service.OpenTrash();
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+                UIHelper.ShowErrorMessage(ex);
+            }
+        }
+
+        [ActionAutoLink]
+        public void OpenCmdMenuResult()
+        {
+            try
+            {
+                var item = ViewModel?.SideItem;
+                if (item?.File?.FullName == null)
+                    _service.OpenCmd(null);
+
+                else
+                {
+                    var file = _service.GetFileData(item?.File?.FullName);
+                    _service.OpenCmd(file);
+                }
             }
             catch (Exception ex)
             {

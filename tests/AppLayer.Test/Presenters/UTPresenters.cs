@@ -328,10 +328,10 @@ namespace BlackSugar.Presenters.Tests
             vm.MainFilter = "TEST";
             var model = GetTestModelData(4, FileAttributes.Directory);
 
-            vm.SideItem = new UIFileResultModel() { Results = new System.Collections.ObjectModel.ObservableCollection<UIFileData>() };
+            vm.SideItem = new UIFileResultModel() { Results = new List<UIFileData>() };
 
-            UIHelper.Refill(vm.SideItem.Results, model.Results.Select(f => new UIFileData(new FakeFileData() { FullName = @"D:\Work\Test" })), false);
-            UIHelper.Refill(vm.SideItem.Results, model.Results.Select(f => new UIFileData(new FakeFileData() { FullName = @"D:\Work\1" })), false);
+            vm.SideItem.Results.AddRange(model.Results.Select(f => new UIFileData(new FakeFileData() { FullName = @"D:\Work\Test" })));
+            vm.SideItem.Results.AddRange(model.Results.Select(f => new UIFileData(new FakeFileData() { FullName = @"D:\Work\1" })));
 
             mainPresenter.MainFilterResult();
 
@@ -347,10 +347,10 @@ namespace BlackSugar.Presenters.Tests
             vm.MainFilter = "TEST";
             var model = GetTestModelData(4, FileAttributes.Directory);
 
-            vm.SideItem = new UIFileResultModel() { Results = new System.Collections.ObjectModel.ObservableCollection<UIFileData>() };
+            vm.SideItem = new UIFileResultModel() { Results = new List<UIFileData>() };
 
-            UIHelper.Refill(vm.SideItem.Results, model.Results.Select(f => new UIFileData(new FakeFileData() { FullName = @"D:\Work\Test" })), false);
-            UIHelper.Refill(vm.SideItem.Results, model.Results.Select(f => new UIFileData(new FakeFileData() { FullName = @"D:\Work\1" })), false);
+            vm.SideItem.Results.AddRange(model.Results.Select(f => new UIFileData(new FakeFileData() { FullName = @"D:\Work\Test" })));
+            vm.SideItem.Results.AddRange(model.Results.Select(f => new UIFileData(new FakeFileData() { FullName = @"D:\Work\1" })));
 
             mainPresenter.MainFilterResult();
 

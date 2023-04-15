@@ -24,7 +24,11 @@ namespace BlackSugar.Repository
 
         bool ExecuteOrMove(ref IFileData file);
 
-        void Execute(string application, string arguments);
+        void Execute(string application, string? arguments, string? workingDirectory = null);
+
+        void OpenTrash();
+
+        void OpenCmd(IFileData? file);
     }
 
     public class FileOperator : IFileOperator
@@ -61,6 +65,7 @@ namespace BlackSugar.Repository
             {
                 System.Diagnostics.Process process = new System.Diagnostics.Process();
                 process.StartInfo = lnk?.ToStartInfo() ?? new System.Diagnostics.ProcessStartInfo(file.FullName);
+                process.StartInfo.WorkingDirectory = Path.GetDirectoryName(result.FullName);
                 process.StartInfo.UseShellExecute = true;
                 process.Start();
                 return false;
@@ -74,11 +79,12 @@ namespace BlackSugar.Repository
             return false;
         }
 
-        public void Execute(string application, string arguments)
+        public void Execute(string application, string? arguments, string? workingDirectory = null)
         {
             var process = new System.Diagnostics.Process();
             process.StartInfo.FileName = application;
             process.StartInfo.Arguments = arguments;
+            process.StartInfo.WorkingDirectory = workingDirectory;
             process.StartInfo.CreateNoWindow = true;
             process.StartInfo.UseShellExecute = true;
 
@@ -116,6 +122,15 @@ namespace BlackSugar.Repository
                 outputFilePath += "_";
             }
             return outputFilePath;
+        }
+
+        public void OpenTrash() => Execute("EXPLORER.EXE", "/e,::{645FF040-5081-101B-9F08-00AA002F954E}");
+
+        public void OpenCmd(IFileData? file)
+        {
+            var path = file?.FullName ?? Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+
+            Execute("cmd.exe", null, path);
         }
 
     }

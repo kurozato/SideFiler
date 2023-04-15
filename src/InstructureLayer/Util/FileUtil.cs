@@ -223,7 +223,7 @@ namespace BlackSugar.WinApi
         {
             if (!targets.Any()) return false;
 
-            var compare = (toFolder.EndsWith("\\")) ? toFolder.Substring(0, toFolder.Length - 1) : toFolder;
+            var compare = (toFolder.EndsWith("\\", StringComparison.Ordinal)) ? toFolder.Substring(0, toFolder.Length - 1) : toFolder;
             return Path.GetDirectoryName(targets[0]) == compare;
         }
 

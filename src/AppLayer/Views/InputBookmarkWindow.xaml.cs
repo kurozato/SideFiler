@@ -29,7 +29,6 @@ namespace BlackSugar.Views
             InitializeComponent();
 
             btnAddBookmark.Click += (s, e) => { DialogResult = true; };
-            btnAddReadingList.Click += (s, e) => { DialogResult = true; };
         }
     }
 }

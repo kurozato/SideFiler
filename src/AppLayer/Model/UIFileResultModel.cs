@@ -22,7 +22,8 @@ namespace BlackSugar.Model
         public long? ID { get; set; }
         public string? Label { get; set; }
         public UIFileData? File { get; set; }
-        public ObservableCollection<UIFileData>? Results { get; set; }
+        public int Index { get; set; }
+        public List<UIFileData>? Results { get; set; }
 
         private bool visible = true;
         public bool IsVisible { 
@@ -42,10 +43,12 @@ namespace BlackSugar.Model
             File = UIFileData.Create(model.File);
         }
 
+        public ObservableCollection<UIFileData>? ToObservableCollection()
+            => new ObservableCollection<UIFileData>(Results);
 
         public void SetResultsToEntity(IEnumerable<IFileData>? results)
         {
-            var impl = new List<UIFileData?>();
+            var impl = new List<UIFileData?>(512);
 
             string ext;
             BitmapSource source;
@@ -65,7 +68,8 @@ namespace BlackSugar.Model
                 impl.Add(UIFileData.Create(file, source));
             }
 
-            Results = new ObservableCollection<UIFileData>(impl);
+            impl.TrimExcess();
+            Results = impl;
         }
 
         public async Task SetResultsToEntityAsync(IEnumerable<IFileData>? results)

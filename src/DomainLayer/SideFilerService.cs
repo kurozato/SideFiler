@@ -42,21 +42,17 @@ namespace BlackSugar.Service
 
         void Execute(string application, string arguments);
 
-        void DoContextMenu(ContextMenuModel menu, string[] items);
+        void DoContextMenu(ContextMenuModel menu, string[] items, string? workingDirectory = null);
 
         void CheckDirectory(string path);
 
-        void RegistRec(IFileData? file, string dbfile);
+        void OpenTrash();
 
-        void InitilizeRec(string dbfile);
+        void OpenCmd(IFileData? file);
 
-        IEnumerable<IFileData> GetRecData(string dbfile);
+        Task PushHistoryAsync(IFileData? file, string dbfile);
 
-        void RegistReadingList(BookmarkModel? file, string dbfile);
-
-        void InitilizeReadingList(string dbfile);
-
-        IEnumerable<BookmarkModel> GetReadingListData(string dbfile);
+        Task InitilizeHistoryAsync(string dbfile);
     }
 
     public class SideFilerService : ISideFilerService
@@ -78,15 +74,20 @@ namespace BlackSugar.Service
         {
             var file = _factory.CreateInstance(path).ToFileData();
             if(file == null)
-                //throw new DirectoryNotFoundException("path:'" + path + "' is not found.");
                 throw FileDataNotFoundException.Create(path);
 
             return file;
         }
 
 
-        public void Execute(string application, string arguments)
+        public void Execute(string application, string? arguments)
             => _operator.Execute(application, arguments);
+
+        public void OpenTrash() 
+            => _operator.OpenTrash();
+
+        public void OpenCmd(IFileData? file) 
+            => _operator.OpenCmd(file);
 
         public void Delete(IEnumerable<string> data, IntPtr handle)
             => _operator.Delete(data.ToList(), handle);
@@ -171,17 +172,7 @@ namespace BlackSugar.Service
                             {
                                 File = _factory.CreateInstance(json.Path).ToFileData(),
                                 Label = json.Name
-                            });
-
-            //var data = _adpter.Get(fileName)?.AsArray();
-
-            //return data?.Select(node => new { name = node?["name"]?.ToString(), path = node?["path"]?.ToString() })
-            //        .Where(json => json?.path != null)
-            //        .Select(json 
-            //            => new FileResultModel(){
-            //                File = _factory.CreateInstance(json.path).ToFileData(),
-            //                Label = json.name
-            //            });       
+                            });    
         }
 
 
@@ -202,16 +193,16 @@ namespace BlackSugar.Service
             return _adpter.Get<List<ContextMenuModel>>(fileName, false) ?? Enumerable.Empty<ContextMenuModel?>();
         }
 
-        public void DoContextMenu(ContextMenuModel menu, string[] items)
+        public void DoContextMenu(ContextMenuModel menu, string[] items, string? workingDirectory = null)
         {
             if(menu.Multiple.TryParse<Multiple>() == Multiple.Combine)
             {
-                _operator.Execute(menu.App, menu.GetArguments(items));                 
+                _operator.Execute(menu.App, menu.GetArguments(items), workingDirectory);                 
             }
             if(menu.Multiple.TryParse<Multiple>() == Multiple.Roop)
             {
                 foreach(var item in items)
-                    _operator.Execute(menu.App, menu.GetArguments(item));
+                    _operator.Execute(menu.App, menu.GetArguments(item), workingDirectory);
             }
         }
 
@@ -264,88 +255,32 @@ namespace BlackSugar.Service
             files.OrderByDescending(f => f).TakeLast(files.Length - 2).Invoke(f => File.Delete(f));
         }
 
-     
         /***********************/
-        public void RegistRec(IFileData? file, string dbfile)
+        public async Task PushHistoryAsync(IFileData? file, string dbfile)
         {
             if (file == null) return;
 
             string qry;
             string connect = _commander.ConnectionString(dbfile);
-
             qry = "";
-            qry += "DELETE FROM SFCloseRec WHERE path = @Path; ";
-            qry += "INSERT INTO SFCloseRec(name, path, regist)VALUES(@Name, @Path, @Regist); ";
-            _commander.Execute(qry, new { Name = file.Name, Path = file.FullName, Regist = DateTime.UtcNow.ToString("yyyyMMddTHHmmssfffZ") }, connect);
+            qry += "INSERT INTO History(name, path, date)VALUES(@Name, @Path, @Date); ";
+            await _commander.ExecuteAsync(qry, new { Name = file.Name, Path = file.FullName, Date = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss.fff") }, connect);
 
         }
 
-        public void InitilizeRec(string dbfile)
+        public async Task InitilizeHistoryAsync(string dbfile)
         {
             string qry;
             string connect = _commander.ConnectionString(dbfile);
             qry = "";
             qry += "CREATE TABLE IF NOT EXISTS ";
-            qry += "SFCloseRec( ";
+            qry += "History( ";
             qry += " name TEXT NOT NULL,";
             qry += " path TEXT NOT NULL,";
-            qry += " regist TEXT NOT NULL";
+            qry += " date TEXT NOT NULL";
             qry += ") ";
 
-            _commander.Execute(qry, null, connect);
-        }
-
-        public IEnumerable<IFileData> GetRecData(string dbfile)
-        {
-            string qry;
-            string connect = _commander.ConnectionString(dbfile);
-
-            qry = "";
-            qry += "SELECT * FROM SFCloseRec ORDER BY regist LIMIT 30; ";
-
-            return _commander.Get<dynamic>(qry, null, connect)
-                .Select<dynamic, IFileData>(data => _factory.CreateInstance(data.path).ToFileData());
-        }
-
-
-        public void RegistReadingList(BookmarkModel? model, string dbfile)
-        {
-            if (model == null) return;
-
-            string qry;
-            string connect = _commander.ConnectionString(dbfile);
-
-            qry = "";
-            qry += "DELETE FROM SFReadingList WHERE path = @Path; ";
-            qry += "INSERT INTO SFReadingList(name, path, regist)VALUES(@Name, @Path, @Regist); ";
-            _commander.Execute(qry, new { model.Name, model.Path, Regist = DateTime.UtcNow.ToString("yyyyMMddTHHmmssfffZ") }, connect);
-
-        }
-
-        public void InitilizeReadingList(string dbfile)
-        {
-            string qry;
-            string connect = _commander.ConnectionString(dbfile);
-            qry = "";
-            qry += "CREATE TABLE IF NOT EXISTS ";
-            qry += "SFReadingList( ";
-            qry += " name TEXT NOT NULL,";
-            qry += " path TEXT NOT NULL,";
-            qry += " regist TEXT NOT NULL";
-            qry += ") ";
-
-            _commander.Execute(qry, null, connect);
-        }
-
-        public IEnumerable<BookmarkModel> GetReadingListData(string dbfile)
-        {
-            string qry;
-            string connect = _commander.ConnectionString(dbfile);
-
-            qry = "";
-            qry += "SELECT name as Name, path as Path FROM SFReadingList ORDER BY regist LIMIT 30; ";
-
-            return _commander.Get<BookmarkModel>(qry, null, connect);
+            await _commander.ExecuteAsync(qry, null, connect);
         }
     }
 }

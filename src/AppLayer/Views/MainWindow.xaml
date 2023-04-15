@@ -59,10 +59,16 @@
                         FontSize="12" 
                         Command="{Binding RecentlyCloseFolderCommand}"
                         Style="{DynamicResource MaterialDesignMenuItem}" />
+                    <Separator/>
                     <MenuItem 
-                        Header="{Binding Source={x:Static views:ResourceService.Current}, Path=Resources.ReadingList, Mode=OneWay}" 
+                        Header="{Binding Source={x:Static views:ResourceService.Current}, Path=Resources.OpenTrash, Mode=OneWay}" 
                         FontSize="12"
-                        Command="{Binding ReadListMenuCommand}"
+                        Command="{Binding OpenTrashMenuCommand}"
+                        Style="{DynamicResource MaterialDesignMenuItem}" />
+                    <MenuItem 
+                        Header="{Binding Source={x:Static views:ResourceService.Current}, Path=Resources.OpenCmd, Mode=OneWay}" 
+                        FontSize="12"
+                        Command="{Binding OpenCmdMenuCommand}"
                         Style="{DynamicResource MaterialDesignMenuItem}" />
                     <Separator/>
                     <MenuItem 
@@ -342,6 +348,7 @@
                 SelectionMode="Extended"
                 ItemsSource="{Binding FileItems, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                 SelectedItem="{Binding SelectedFile, Mode=OneWayToSource}" 
+                SelectedIndex="{Binding SelectedIndex, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                 AllowDrop="True"
                 VirtualizingPanel.IsVirtualizing="True"
                 VirtualizingPanel.VirtualizationMode="Recycling"

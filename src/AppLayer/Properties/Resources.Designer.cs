@@ -369,6 +369,15 @@ namespace BlackSugar.Properties {
         }
         
         /// <summary>
+        ///   Open Command Prompt(stay tuned) に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string OpenCmd {
+            get {
+                return ResourceManager.GetString("OpenCmd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Open New Tab に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string OpenNewTab {
@@ -378,20 +387,20 @@ namespace BlackSugar.Properties {
         }
         
         /// <summary>
+        ///   OpenTrash... に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string OpenTrash {
+            get {
+                return ResourceManager.GetString("OpenTrash", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Paste に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string Paste {
             get {
                 return ResourceManager.GetString("Paste", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   ReadingList... に類似しているローカライズされた文字列を検索します。
-        /// </summary>
-        public static string ReadingList {
-            get {
-                return ResourceManager.GetString("ReadingList", resourceCulture);
             }
         }
         

@@ -227,12 +227,6 @@ namespace BlackSugar.Presenters
 
                         _service.SaveJsonFile(bookmarks, _config.GetFullPath(Literal.File_Json_Bookmarks));
                     }
-                    else
-                    {
-                        _service.RegistReadingList(
-                            ViewModel.InputBookmark.GetEditBookmarkModel(),
-                            _config.GetFullPath(Literal.File_DB_CloseRec, false));
-                    }
                 }
 
                 view = null;

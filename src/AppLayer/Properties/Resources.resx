@@ -250,13 +250,16 @@
   <data name="AddBlank" xml:space="preserve">
     <value>Add Blank</value>
   </data>
-  <data name="ReadingList" xml:space="preserve">
-    <value>ReadingList...</value>
+  <data name="OpenTrash" xml:space="preserve">
+    <value>OpenTrash...</value>
   </data>
   <data name="AddReadingList" xml:space="preserve">
     <value>Add ReadingList</value>
   </data>
   <data name="Delete" xml:space="preserve">
     <value>Delete</value>
+  </data>
+  <data name="OpenCmd" xml:space="preserve">
+    <value>Open Command Prompt(stay tuned)</value>
   </data>
 </root>

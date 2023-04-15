@@ -32,5 +32,12 @@ namespace BlackSugar.Extension
             foreach (var item in source)
                 action(item);
         }
+
+        public static int IndexOf<T>(this IEnumerable<T> source, Func<T?, bool> predicate) where T : class?
+        {
+            return source
+                .Select((a, i) => new { Content = a, Index = i })
+                .Top1OrDefault(item => predicate(item?.Content))?.Index ?? -1;
+        }
     }
 }

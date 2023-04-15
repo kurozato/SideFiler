@@ -250,13 +250,16 @@
   <data name="AddBlank" xml:space="preserve">
     <value>新しいブックマーク(空欄)を追加</value>
   </data>
-  <data name="ReadingList" xml:space="preserve">
-    <value>リーディングリスト...</value>
+  <data name="OpenTrash" xml:space="preserve">
+    <value>ゴミ箱を開く...</value>
   </data>
   <data name="AddReadingList" xml:space="preserve">
     <value>リーディングリストに追加</value>
   </data>
   <data name="Delete" xml:space="preserve">
     <value>削除</value>
+  </data>
+  <data name="OpenCmd" xml:space="preserve">
+    <value>コマンドプロンプトで開く(stay tuned)</value>
   </data>
 </root>

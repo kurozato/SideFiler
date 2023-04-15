@@ -13,6 +13,8 @@ namespace BlackSugar.Repository
         string ConnectionString(string filePath);
         IEnumerable<TModel> Get<TModel>(string commandText, object? param, string connectionString);
         int Execute(string commandText, object? param, string connectionString);
+        Task<IEnumerable<TModel>> GetAsync<TModel>(string commandText, object? param, string connectionString);
+        Task<int> ExecuteAsync(string commandText, object? param, string connectionString);
     }
     public class DbCommander : IDbCommander
     {

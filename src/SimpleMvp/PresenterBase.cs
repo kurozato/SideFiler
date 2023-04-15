@@ -77,7 +77,7 @@ namespace BlackSugar.SimpleMvp
             {
                 var target = result.GetCustomAttribute<ActionManualLinkAttribute>()?.Name;
 
-                if (target?.EndsWith("Action") == false)
+                if (target?.EndsWith("Action", StringComparison.Ordinal) == false)
                     target += "Action";
 
                 SetActionResultLink(target, result, nonThrowException);

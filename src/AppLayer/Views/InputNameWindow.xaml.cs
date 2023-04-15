@@ -37,6 +37,8 @@ namespace BlackSugar.Views
 
             uiInitializer.InitializeSub(this.Resources);
 
+            TextName.SetFocusSelectAll();
+
             btnOK.Click += (s, e) => { DialogResult = true; };
             btnCancel.Click += (s, e) => { DialogResult = false; };
         }

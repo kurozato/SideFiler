@@ -24,6 +24,7 @@ namespace BlackSugar.Views
         ObservableCollection<UIFileResultModel> SideItems { get; set; }
         IEnumerable<object>? SelectedFiles { get; set; }
         UIFileData? SelectedFile { get; set; }
+        int SelectedIndex { get; set; }
 
         UIFileResultModel? SideItem { get; set; }
         int SideIndex { get; set; }
@@ -62,20 +63,29 @@ namespace BlackSugar.Views
         DelegateCommand SettingMenuCommand { get; }
         DelegateCommand RecentlyCloseFolderCommand { get; }
         DelegateCommand AddBookmarkCommand { get; }
-        DelegateCommand ReadListMenuCommand { get; }
+        DelegateCommand OpenTrashMenuCommand { get; }
+        DelegateCommand OpenCmdMenuCommand { get; }
     }
 
     public class MainViewModel : BindableBase, IMainViewModel
     {
-        private void ChangeProperty()
+        private void AfterChangeProperty()
         {
             if (SideIndex < 0) return;
             var model = SideItems[SideIndex];
             SideItem = model;
             FullPath = model?.File?.FullName;
-            FileItems = model?.Results;
+            FileItems = model?.ToObservableCollection();
             MainFilter = null;
+            SelectedIndex = model.Index;
             //UIHelper.Refill(FileItems, model?.Results);
+        }
+
+        private void BeforeChangeProperty()
+        {
+            if (SideIndex < 0) return;
+
+            SideItems[sideIndex].Index = SelectedIndex;
         }
 
         private int sideIndex;
@@ -84,8 +94,9 @@ namespace BlackSugar.Views
             get => sideIndex;
             set
             {
+                BeforeChangeProperty();
                 if (SetProperty(ref sideIndex, value))
-                    ChangeProperty();
+                    AfterChangeProperty();
             }
         }
 
@@ -112,6 +123,14 @@ namespace BlackSugar.Views
         public IEnumerable<object>? SelectedFiles { get; set; }
 
         public UIFileData? SelectedFile { get; set; }
+
+
+        private int selectedIndex;
+        public int SelectedIndex
+        {
+            get => selectedIndex;
+            set => SetProperty(ref selectedIndex, value);
+        }
 
         public long? ID { get; set; }
         public long MaxID { get; set; }
@@ -166,7 +185,8 @@ namespace BlackSugar.Views
         public DelegateCommand SettingMenuCommand { get; }
         public DelegateCommand RecentlyCloseFolderCommand { get; }
         public DelegateCommand AddBookmarkCommand { get; }
-        public DelegateCommand ReadListMenuCommand { get; }
+        public DelegateCommand OpenTrashMenuCommand { get; }
+        public DelegateCommand OpenCmdMenuCommand { get; }
 
         public Action<UIFileResultModel?>? TabCloseAction { get; set; }
       
@@ -199,14 +219,15 @@ namespace BlackSugar.Views
         public Func<string[], Task>? DropFileAction { get; set; }
 
         public Action? AdjustMenuAction { get; set; }
-        public Action? ReadListMenuAction { get; set; }
+        public Action? OpenTrashMenuAction { get; set; }
+        public Action? OpenCmdMenuAction { get; set; }
 
         public MainViewModel()
         {
             sideIndex = -1;
             SideItems = new ObservableCollection<UIFileResultModel>();
             //SideItemsMirror = new List<UIFileResultModel>();
-            FileItems = new ObservableCollection<UIFileData?>();
+            FileItems = new ObservableCollection<UIFileData>();
             Bookmarks = new ObservableCollection<UIBookmarkModel?>();
             ContextMenus = new ObservableCollection<UIContextMenuModel>();
 
@@ -247,7 +268,8 @@ namespace BlackSugar.Views
             RecentlyCloseFolderCommand = new DelegateCommand(() => RecentlyCloseFolderAction?.Invoke());
             AddBookmarkCommand = new DelegateCommand(() => AddBookmarkAction?.Invoke(), () => SideItem?.File != null);
 
-            ReadListMenuCommand = new DelegateCommand(()=> ReadListMenuAction?.Invoke());
+            OpenTrashMenuCommand = new DelegateCommand(()=> OpenTrashMenuAction?.Invoke());
+            OpenCmdMenuCommand = new DelegateCommand(() => OpenCmdMenuAction?.Invoke());
         }
     }
 }

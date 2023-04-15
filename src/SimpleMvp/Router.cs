@@ -70,7 +70,7 @@ namespace BlackSugar.SimpleMvp
             where TViewModel : class
         {
             var presenter = GetPresenter<TViewModel>();
-            if (!resultName.EndsWith("Result"))
+            if (!resultName.EndsWith("Result", StringComparison.Ordinal))
                 resultName += "Result";
 
             var arg = argument ?? new object[] { null };
