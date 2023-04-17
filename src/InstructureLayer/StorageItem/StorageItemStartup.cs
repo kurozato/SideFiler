@@ -4,10 +4,10 @@ using System.Linq;
 
 namespace BlackSugar.Repository
 {
-    public class StorageItemStartup : StorageItemBase, IStorageItem
+    public class StorageItemStartup : IStorageItem
     {
         //TODO:'string.Empty' is not good
-        public StorageItemStartup() : base(string.Empty) { }
+        //public StorageItemStartup() : base(string.Empty) { }
         public IEnumerable<IFileData> GetDatas()
         {
             return Enumerable.Empty<IFileData>()
@@ -20,6 +20,6 @@ namespace BlackSugar.Repository
 
         public IStorageItem? UpperLayer() => null;
 
-        public override IFileData? ToFileData() => null;
+        public IFileData? ToFileData() => null;
     }
 }

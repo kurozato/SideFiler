@@ -51,11 +51,7 @@ namespace SideFiler
 
             ListMain.ContextMenuOpening += (s, e) => UIHelper.Executor(ViewModel?.AdjustMenuCommand);
 
-            this.Closed += (s, e) =>
-            {
-                var items = ViewModel?.SideItems;
-
-            };
+            ListSide.SelectionChanged += (s, e) => ListMain.ScrollIntoView(ListMain.SelectedItem);
         }
 
     }  

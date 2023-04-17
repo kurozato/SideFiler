@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace BlackSugar.Repository
 {
@@ -50,26 +51,34 @@ namespace BlackSugar.Repository
 
         public void OpenExplorer(IFileData file, bool select)
         {
-            var process = new System.Diagnostics.Process();
+            var process = new Process();
             process.StartInfo.FileName = "EXPLORER.EXE";
             process.StartInfo.Arguments = (select ? "/select, " : "") + file.FullName;
             process.StartInfo.UseShellExecute = true;
             process.Start();
         }
 
+        private ProcessStartInfo CreateStartInfo(IFileData file)
+            => new ProcessStartInfo()
+            {
+                FileName = file.FullName,
+                WorkingDirectory = Path.GetDirectoryName(file.FullName),
+                UseShellExecute = true,
+            };
+
         public bool ExecuteOrMove(ref IFileData file)
         {
-            var lnk = Win32Shortcut.Get(file.FullName);
-            var result = lnk == null ? file : FileUtil.Create(lnk.TargetPath);
+            var lnk = ShellLnk.Load(file.FullName);
+
+            var result = lnk == null ? file : FileUtil.Create(lnk.Target);
             if (result.IsFile)
             {
-                System.Diagnostics.Process process = new System.Diagnostics.Process();
-                process.StartInfo = lnk?.ToStartInfo() ?? new System.Diagnostics.ProcessStartInfo(file.FullName);
-                process.StartInfo.WorkingDirectory = Path.GetDirectoryName(result.FullName);
-                process.StartInfo.UseShellExecute = true;
+                Process process = new Process();
+                process.StartInfo = lnk?.ToStartInfo() ?? CreateStartInfo(file);
                 process.Start();
                 return false;
             }
+
             if (result.IsDirectory)
             {
                 file = result;
@@ -81,7 +90,7 @@ namespace BlackSugar.Repository
 
         public void Execute(string application, string? arguments, string? workingDirectory = null)
         {
-            var process = new System.Diagnostics.Process();
+            var process = new Process();
             process.StartInfo.FileName = application;
             process.StartInfo.Arguments = arguments;
             process.StartInfo.WorkingDirectory = workingDirectory;

@@ -83,9 +83,8 @@ namespace BlackSugar.Views
 
         private void BeforeChangeProperty()
         {
-            if (SideIndex < 0) return;
-
-            SideItems[sideIndex].Index = SelectedIndex;
+            if (0 <= SideIndex && SideIndex < SideItems.Count)
+                SideItems[sideIndex].Index = SelectedIndex;
         }
 
         private int sideIndex;
