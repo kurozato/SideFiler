@@ -17,6 +17,8 @@ BSD license
 ### [Microsoft.Extensions.DependencyInjection](https://dotnet.microsoft.com/)
 MIT License
 
+### [Shellify](https://github.com/sailro/Shellify)
+MIT License
 
 ### [Dapper](https://github.com/DapperLib/Dapper)
 Apache-2.0
@@ -25,11 +27,9 @@ Apache-2.0
 [License](https://www.sqlite.org/copyright.html)
 
 ## Future
-- Bookmarks
-- Color Settings
-- Recent Close Folers
+- Open folder history
 
-## Use dark mode(future)
+## Use dark mode
 
 theme -> MaterialDesign, MahApps.Metro Theme    
 accentColor -> MaterialDesignColor Primary   
@@ -53,7 +53,7 @@ equal
  materialDesign:BundledTheme BaseTheme="Light" PrimaryColor="Grey" SecondaryColor="LightBlue"
 ```
 
-## BookMarks(future)
+## BookMarks
 
 bookmarks.json
 
@@ -63,7 +63,7 @@ bookmarks.json
     {"name":"Windows(C:)", "path":"C://"  }
 ]
 ```
-## ContextMenu(future)
+## ContextMenu
 
 context_menu.json
 
@@ -115,8 +115,7 @@ context_menu.json
 </pre>
 
 ## Japanese
-Edge風にサイドでフォルダを切り替えできるようなファイラー。   
-ただし、できることが少ないので、ほぼ閲覧用。   
-色設定、最近閉じたタブは実装したい。   
-あとは、右クリックメニュー、ブックマークバーは設定も追加したい。
+Edge風にサイドで閲覧フォルダを切り替えできるファイラー。   
+
+
 
