@@ -188,7 +188,7 @@ namespace BlackSugar.WinApi
             var sharelist = NativeMethods.GetNetShares(server);
             foreach (NativeMethods.SHARE_INFO_1 shareInfo in sharelist)
             {
-                var path = server + @"\" + shareInfo.shi1_netname;
+                var path = Path.Combine(server, shareInfo.shi1_netname);
                 yield return selector.Create(ref path, shareInfo, server);
             }
         }

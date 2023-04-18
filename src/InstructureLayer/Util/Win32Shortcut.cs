@@ -21,21 +21,28 @@ namespace BlackSugar.WinApi
         {
             Arguments = lnk.Arguments;
             WorkingDirectory = lnk.WorkingDirectory;
-            Target = lnk.LinkInfo.LocalBasePath;
-            
+
+            if (lnk.LinkInfo.LinkInfoFlags.HasFlag(LinkInfoFlags.VolumeIDAndLocalBasePath))
+                Target = lnk.LinkInfo.LocalBasePath;
+
+            if (lnk.LinkInfo.LinkInfoFlags.HasFlag(LinkInfoFlags.CommonNetworkRelativeLinkAndPathSuffix))
+                Target = lnk.LinkInfo.CommonNetworkRelativeLink.NetName;
+
             switch (lnk.Header.ShowCommand)
             {
-                case ShowCommand.Normal: 
-                    WindowStyle = ProcessWindowStyle.Normal; 
+                case ShowCommand.Normal:
+                    WindowStyle = ProcessWindowStyle.Normal;
                     break;
-                case ShowCommand.Maximized: 
-                    WindowStyle = ProcessWindowStyle.Maximized; 
+                case ShowCommand.Maximized:
+                    WindowStyle = ProcessWindowStyle.Maximized;
                     break;
-                case ShowCommand.MinimizedNoActive: 
-                    WindowStyle = ProcessWindowStyle.Minimized; 
+                case ShowCommand.MinimizedNoActive:
+                    WindowStyle = ProcessWindowStyle.Minimized;
                     break;
-               
-            };
+                default:
+                    WindowStyle = ProcessWindowStyle.Normal;
+                    break;
+            }
         }
 
         public static ShellLnk? Load(string path)
@@ -43,7 +50,10 @@ namespace BlackSugar.WinApi
             if (Path.GetExtension(path).ToUpper() != ".LNK") return null;
 
             var lnk = ShellLinkFile.Load(path);
-            return new ShellLnk(lnk);
+            if (lnk.Header.LinkFlags.HasFlag(LinkFlags.HasLinkInfo))
+                return new ShellLnk(lnk);
+            else
+                return null; 
         }
 
         public ProcessStartInfo ToStartInfo()

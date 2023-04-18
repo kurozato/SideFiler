@@ -69,7 +69,7 @@ namespace BlackSugar.Views
 
     public class MainViewModel : BindableBase, IMainViewModel
     {
-        private void AfterChangeProperty()
+        private void AfterChangeSideIndex()
         {
             if (SideIndex < 0) return;
             var model = SideItems[SideIndex];
@@ -78,10 +78,9 @@ namespace BlackSugar.Views
             FileItems = model?.ToObservableCollection();
             MainFilter = null;
             SelectedIndex = model.Index;
-            //UIHelper.Refill(FileItems, model?.Results);
         }
 
-        private void BeforeChangeProperty()
+        private void BeforeChangeSideIndex()
         {
             if (0 <= SideIndex && SideIndex < SideItems.Count)
                 SideItems[sideIndex].Index = SelectedIndex;
@@ -93,9 +92,9 @@ namespace BlackSugar.Views
             get => sideIndex;
             set
             {
-                BeforeChangeProperty();
+                BeforeChangeSideIndex();
                 if (SetProperty(ref sideIndex, value))
-                    AfterChangeProperty();
+                    AfterChangeSideIndex();
             }
         }
 
@@ -225,7 +224,7 @@ namespace BlackSugar.Views
         {
             sideIndex = -1;
             SideItems = new ObservableCollection<UIFileResultModel>();
-            //SideItemsMirror = new List<UIFileResultModel>();
+
             FileItems = new ObservableCollection<UIFileData>();
             Bookmarks = new ObservableCollection<UIBookmarkModel?>();
             ContextMenus = new ObservableCollection<UIContextMenuModel>();

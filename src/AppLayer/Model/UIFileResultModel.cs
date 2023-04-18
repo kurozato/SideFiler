@@ -23,7 +23,7 @@ namespace BlackSugar.Model
         public string? Label { get; set; }
         public UIFileData? File { get; set; }
         public int Index { get; set; }
-        public List<UIFileData>? Results { get; set; }
+        public IEnumerable<UIFileData>? Results { get; set; }
 
         private bool visible = true;
         public bool IsVisible { 
@@ -69,7 +69,8 @@ namespace BlackSugar.Model
             }
 
             impl.TrimExcess();
-            Results = impl;
+            
+            Results = impl.ToArray();
         }
 
         public async Task SetResultsToEntityAsync(IEnumerable<IFileData>? results)

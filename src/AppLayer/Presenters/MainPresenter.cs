@@ -227,8 +227,8 @@ namespace BlackSugar.Presenters
             {
                 var index = item == null ? ViewModel.SideIndex : ViewModel.SideItems.IndexOf(item);
 
-                var deleted = ViewModel.SideItems[index];
-                var file = _service.GetFileData(deleted?.File?.FullName);
+                //var deleted = ViewModel.SideItems[index];
+                //var file = _service.GetFileData(deleted?.File?.FullName);
                 
                 ViewModel.SideItems.RemoveAt(index);
 

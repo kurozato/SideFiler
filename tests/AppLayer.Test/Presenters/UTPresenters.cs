@@ -330,8 +330,8 @@ namespace BlackSugar.Presenters.Tests
 
             vm.SideItem = new UIFileResultModel() { Results = new List<UIFileData>() };
 
-            vm.SideItem.Results.AddRange(model.Results.Select(f => new UIFileData(new FakeFileData() { FullName = @"D:\Work\Test" })));
-            vm.SideItem.Results.AddRange(model.Results.Select(f => new UIFileData(new FakeFileData() { FullName = @"D:\Work\1" })));
+            //vm.SideItem.Results.,(model.Results.Select(f => new UIFileData(new FakeFileData() { FullName = @"D:\Work\Test" })));
+            //vm.SideItem.Results.AddRange(model.Results.Select(f => new UIFileData(new FakeFileData() { FullName = @"D:\Work\1" })));
 
             mainPresenter.MainFilterResult();
 
@@ -349,8 +349,8 @@ namespace BlackSugar.Presenters.Tests
 
             vm.SideItem = new UIFileResultModel() { Results = new List<UIFileData>() };
 
-            vm.SideItem.Results.AddRange(model.Results.Select(f => new UIFileData(new FakeFileData() { FullName = @"D:\Work\Test" })));
-            vm.SideItem.Results.AddRange(model.Results.Select(f => new UIFileData(new FakeFileData() { FullName = @"D:\Work\1" })));
+            //vm.SideItem.Results.AddRange(model.Results.Select(f => new UIFileData(new FakeFileData() { FullName = @"D:\Work\Test" })));
+            //vm.SideItem.Results.AddRange(model.Results.Select(f => new UIFileData(new FakeFileData() { FullName = @"D:\Work\1" })));
 
             mainPresenter.MainFilterResult();
 
