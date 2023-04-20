@@ -26,8 +26,8 @@ namespace BlackSugar.WinApi
                 Target = lnk.LinkInfo.LocalBasePath;
 
             if (lnk.LinkInfo.LinkInfoFlags.HasFlag(LinkInfoFlags.CommonNetworkRelativeLinkAndPathSuffix))
-                Target = lnk.LinkInfo.CommonNetworkRelativeLink.NetName;
-
+                Target = Path.Combine(lnk.LinkInfo.CommonNetworkRelativeLink.NetName, lnk.LinkInfo.CommonPathSuffix);
+            
             switch (lnk.Header.ShowCommand)
             {
                 case ShowCommand.Normal:
