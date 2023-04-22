@@ -369,11 +369,20 @@ namespace BlackSugar.Properties {
         }
         
         /// <summary>
-        ///   Open Command Prompt(stay tuned) に類似しているローカライズされた文字列を検索します。
+        ///   Open Command Prompt... に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string OpenCmd {
             get {
                 return ResourceManager.GetString("OpenCmd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   OpenDownload... に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string OpenDL {
+            get {
+                return ResourceManager.GetString("OpenDL", resourceCulture);
             }
         }
         

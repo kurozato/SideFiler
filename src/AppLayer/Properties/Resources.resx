@@ -260,6 +260,9 @@
     <value>Delete</value>
   </data>
   <data name="OpenCmd" xml:space="preserve">
-    <value>Open Command Prompt(stay tuned)</value>
+    <value>Open Command Prompt...</value>
+  </data>
+  <data name="OpenDL" xml:space="preserve">
+    <value>OpenDownload...</value>
   </data>
 </root>

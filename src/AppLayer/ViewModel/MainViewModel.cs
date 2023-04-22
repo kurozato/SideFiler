@@ -65,6 +65,7 @@ namespace BlackSugar.Views
         DelegateCommand AddBookmarkCommand { get; }
         DelegateCommand OpenTrashMenuCommand { get; }
         DelegateCommand OpenCmdMenuCommand { get; }
+        DelegateCommand OpenDownloadMenuCommand { get; }
     }
 
     public class MainViewModel : BindableBase, IMainViewModel
@@ -185,6 +186,7 @@ namespace BlackSugar.Views
         public DelegateCommand AddBookmarkCommand { get; }
         public DelegateCommand OpenTrashMenuCommand { get; }
         public DelegateCommand OpenCmdMenuCommand { get; }
+        public DelegateCommand OpenDownloadMenuCommand { get; }
 
         public Action<UIFileResultModel?>? TabCloseAction { get; set; }
       
@@ -219,6 +221,7 @@ namespace BlackSugar.Views
         public Action? AdjustMenuAction { get; set; }
         public Action? OpenTrashMenuAction { get; set; }
         public Action? OpenCmdMenuAction { get; set; }
+        public Action? OpenDownloadMenuAction { get; set; }
 
         public MainViewModel()
         {
@@ -268,6 +271,7 @@ namespace BlackSugar.Views
 
             OpenTrashMenuCommand = new DelegateCommand(()=> OpenTrashMenuAction?.Invoke());
             OpenCmdMenuCommand = new DelegateCommand(() => OpenCmdMenuAction?.Invoke());
+            OpenDownloadMenuCommand = new DelegateCommand(() => OpenDownloadMenuAction?.Invoke());
         }
     }
 }

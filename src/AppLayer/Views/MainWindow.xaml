@@ -61,6 +61,11 @@
                         Style="{DynamicResource MaterialDesignMenuItem}" />
                     <Separator/>
                     <MenuItem 
+                        Header="{Binding Source={x:Static views:ResourceService.Current}, Path=Resources.OpenDL, Mode=OneWay}" 
+                        FontSize="12"
+                        Command="{Binding OpenDownloadMenuCommand}"
+                        Style="{DynamicResource MaterialDesignMenuItem}" />
+                    <MenuItem 
                         Header="{Binding Source={x:Static views:ResourceService.Current}, Path=Resources.OpenTrash, Mode=OneWay}" 
                         FontSize="12"
                         Command="{Binding OpenTrashMenuCommand}"

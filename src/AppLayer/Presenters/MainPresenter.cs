@@ -702,6 +702,20 @@ namespace BlackSugar.Presenters
         }
 
         [ActionAutoLink]
+        public void OpenDownloadMenuResult()
+        {
+            try
+            {
+                _service.OpenDownload();
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+                UIHelper.ShowErrorMessage(ex);
+            }
+        }
+
+        [ActionAutoLink]
         public void OpenTrashMenuResult()
         {
             try

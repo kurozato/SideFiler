@@ -27,6 +27,8 @@ namespace BlackSugar.Repository
 
         void Execute(string application, string? arguments, string? workingDirectory = null);
 
+        void OpenDownload();
+
         void OpenTrash();
 
         void OpenCmd(IFileData? file);
@@ -68,7 +70,7 @@ namespace BlackSugar.Repository
 
         public bool ExecuteOrMove(ref IFileData file)
         {
-            var lnk = ShellLnk.Load(file.FullName);
+            var lnk = MSShellLink.Load(file.FullName);
 
             var result = lnk == null ? file : FileUtil.Create(lnk.Target);
             if (result.IsFile)
@@ -132,6 +134,8 @@ namespace BlackSugar.Repository
             }
             return outputFilePath;
         }
+
+        public void OpenDownload() => Execute("EXPLORER.EXE", FileUtil.GetDownloadsFolderPath());
 
         public void OpenTrash() => Execute("EXPLORER.EXE", "/e,::{645FF040-5081-101B-9F08-00AA002F954E}");
 

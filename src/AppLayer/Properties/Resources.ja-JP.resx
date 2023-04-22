@@ -260,6 +260,9 @@
     <value>削除</value>
   </data>
   <data name="OpenCmd" xml:space="preserve">
-    <value>コマンドプロンプトで開く(stay tuned)</value>
+    <value>コマンドプロンプトで開く...</value>
+  </data>
+  <data name="OpenDL" xml:space="preserve">
+    <value>ダウンロードを開く...</value>
   </data>
 </root>

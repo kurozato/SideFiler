@@ -46,6 +46,8 @@ namespace BlackSugar.Service
 
         void CheckDirectory(string path);
 
+        void OpenDownload();
+
         void OpenTrash();
 
         void OpenCmd(IFileData? file);
@@ -82,6 +84,9 @@ namespace BlackSugar.Service
 
         public void Execute(string application, string? arguments)
             => _operator.Execute(application, arguments);
+
+        public void OpenDownload()
+            => _operator.OpenDownload();
 
         public void OpenTrash() 
             => _operator.OpenTrash();

@@ -4,39 +4,34 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
-using Shellify;
-using Shellify.Core;
+using ShellLink;
+using ShellLink.Flags;
 using System.Diagnostics;
 
 namespace BlackSugar.WinApi
 {
-    public class ShellLnk
+    public class MSShellLink
     {
-        public string Arguments { get; }
-        public string Target { get; }
-        public string WorkingDirectory { get; }
+        public string? Arguments { get; }
+        public string? Target { get; }
+        public string? WorkingDirectory { get; }
         public ProcessWindowStyle WindowStyle { get; }
 
-        internal ShellLnk(ShellLinkFile lnk)
+        internal MSShellLink(Shortcut lnk)
         {
-            Arguments = lnk.Arguments;
-            WorkingDirectory = lnk.WorkingDirectory;
+            Arguments = lnk.StringData?.CommandLineArguments;
+            Target = lnk.LinkTargetIDList?.Path ?? lnk.ExtraData?.EnvironmentVariableDataBlock?.TargetUnicode;            
+            WorkingDirectory = lnk.StringData?.WorkingDir;
 
-            if (lnk.LinkInfo.LinkInfoFlags.HasFlag(LinkInfoFlags.VolumeIDAndLocalBasePath))
-                Target = lnk.LinkInfo.LocalBasePath;
-
-            if (lnk.LinkInfo.LinkInfoFlags.HasFlag(LinkInfoFlags.CommonNetworkRelativeLinkAndPathSuffix))
-                Target = Path.Combine(lnk.LinkInfo.CommonNetworkRelativeLink.NetName, lnk.LinkInfo.CommonPathSuffix);
-            
-            switch (lnk.Header.ShowCommand)
+            switch (lnk.ShowCommand)
             {
-                case ShowCommand.Normal:
+                case ShowCommand.SW_SHOWNORMAL:
                     WindowStyle = ProcessWindowStyle.Normal;
                     break;
-                case ShowCommand.Maximized:
+                case ShowCommand.SW_SHOWMAXIMIZED:
                     WindowStyle = ProcessWindowStyle.Maximized;
                     break;
-                case ShowCommand.MinimizedNoActive:
+                case ShowCommand.SW_SHOWMINNOACTIVE:
                     WindowStyle = ProcessWindowStyle.Minimized;
                     break;
                 default:
@@ -45,13 +40,14 @@ namespace BlackSugar.WinApi
             }
         }
 
-        public static ShellLnk? Load(string path)
+        public static MSShellLink? Load(string path)
         {
             if (Path.GetExtension(path).ToUpper() != ".LNK") return null;
 
-            var lnk = ShellLinkFile.Load(path);
-            if (lnk.Header.LinkFlags.HasFlag(LinkFlags.HasLinkInfo))
-                return new ShellLnk(lnk);
+            var lnk = Shortcut.ReadFromFile(path);
+
+            if(lnk.LinkFlags.HasFlag(LinkFlags.HasLinkInfo))
+                return new MSShellLink(lnk);
             else
                 return null; 
         }
@@ -61,6 +57,7 @@ namespace BlackSugar.WinApi
             {
                 FileName = Target,
                 Arguments = Arguments,
+                WorkingDirectory = WorkingDirectory,
                 WindowStyle = WindowStyle,
                 UseShellExecute = true,
             };
